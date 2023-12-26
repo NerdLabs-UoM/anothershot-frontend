@@ -6,6 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
+import { AdapterUser } from "next-auth/adapters";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,6 @@ export const authOptions: AuthOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials: any, req) {
-                console.log(credentials)
                 try {
                     const user = await prisma.user.findUnique({
                         where: {
@@ -41,7 +41,6 @@ export const authOptions: AuthOptions = {
                     if (!isValid) {
                         throw new Error("Invalid password");
                     }
-                    console.log("user = ", user)
                     return user;
                 } catch (error: any) {
                     throw new Error(error.message);
@@ -62,18 +61,27 @@ export const authOptions: AuthOptions = {
         }),
     ],
     callbacks: {
-
-        async session({ session, user, token }: { session: any, user: any, token: any }) {
-            session.user.id = user.id
-            session.user.email = user.email
-            session.user.userRole = user.userRole
-            return session
+        async signIn({ user, account }: { user: AuthUser | AdapterUser, account: Account | null }) {
+            if (account?.provider === "credentials") {
+                return true;
+            }
+            if (account?.provider === "google") {
+                try {
+                    const existingUser = await prisma.user.findUnique({
+                        where: {
+                            email: user?.email as string,
+                        }
+                    });
+                    if (!existingUser) {
+                        throw new Error("Email is not registered");
+                    }
+                    return true;
+                } catch (error: any) {
+                    throw new Error(error.message);
+                }
+            }
+            return true;
         },
-
-        async jwt({ token, account, user }) {
-            
-            return {...token, ...user}
-        }
     },
 
     pages: {
