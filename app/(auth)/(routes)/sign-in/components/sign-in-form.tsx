@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { signIn, useSession } from "next-auth/react";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,8 +19,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const SignInFormSchema = z.object({
     email: z.string().email({ message: "Invalid email" }),
@@ -45,24 +45,20 @@ const SignUpForm = () => {
         e.preventDefault();
         setLoading(true);
 
-        console.log("values", values);
-
         const res = await signIn('credentials', {
             redirect: false,
             email: values.email,
             password: values.password,
-            callbackUrl: `${window.location.origin}/home`,
         });
 
-        console.log("res", res);
+        if (res?.error) {
+            toast.error(res.error);
+        }
 
-        // if (!res?.ok) {
-        //     toast.error("Invalid email or password");
-        // }
-        // if (res?.ok) {
-        //     toast.success("Login successful");
-        //     router.push('/home')
-        // }
+        if (res?.status === 200) {
+            toast.success("Signed in successfully");
+            router.push("/home");
+        }
         setLoading(false);
     }
 

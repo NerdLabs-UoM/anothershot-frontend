@@ -7,6 +7,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +21,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { useRouter } from "next/navigation";
 
 const SignUpFormSchema = z.object({
     userRole: z.enum(["photographer", "client"]),
@@ -48,7 +48,7 @@ const SignUpForm = () => {
         try {
             setLoading(true);
             if (values) {
-                const response = await axios.post("/api/register", values);
+                const response = await axios.post("/api/auth/register", values);
                 if (response.status === 400) {
                     toast.error("Email is already in use");
                 }
