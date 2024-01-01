@@ -32,7 +32,7 @@ const NotificationData: Notifications[] = [
     button: true,
   },
   {
-    id: 12,
+    id: 2,
     title: "Shared",
     description: "This is a notification",
     time: "2 minutes ago",
@@ -46,7 +46,7 @@ const NotificationData: Notifications[] = [
     button: true,
   },
   {
-    id: 3,
+    id: 4,
     title: "Notification",
     description: "This is a notification",
     time: "2 minutes ago",
@@ -69,32 +69,33 @@ const Header = () => {
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>Notification</SheetTitle>
-                <SheetDescription>
-                  {NotificationData.map((Notification) => {
-                    return (
-                      <div className="flex flex-col justify-start border-b py-2">
-                        <div className="flex flex-row justify-between">
-                          <div className="font-bold">{Notification.title}</div>
-                          <div className="text-sm">{Notification.time}</div>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                          <div className="text-sm">
-                            {Notification.description}
-                          </div>
-                          {Notification.button ? (
-                            <Button
-                              variant="default"
-                              className="w-3/12 h-7 sm:w-2/12"
-                              onClick={() => router.push("/")}
-                            >
-                              view
-                            </Button>
-                          ) : null}
-                        </div>
+                {NotificationData.map((Notification) => {
+                  return (
+                    <div
+                      key={Notification.id}
+                      className="flex flex-col justify-start border-b py-2"
+                    >
+                      <div className="flex flex-row justify-between">
+                        <div className="font-bold">{Notification.title}</div>
+                        <div className="text-sm">{Notification.time}</div>
                       </div>
-                    );
-                  })}
-                </SheetDescription>
+                      <div className="flex flex-row justify-between">
+                        <div className="text-sm">
+                          {Notification.description}
+                        </div>
+                        {Notification.button ? (
+                          <Button
+                            variant="default"
+                            className="w-3/12 h-7 sm:w-2/12"
+                            onClick={() => router.push("/")}
+                          >
+                            view
+                          </Button>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                })}
               </SheetHeader>
             </SheetContent>
           </Sheet>
