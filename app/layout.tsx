@@ -7,6 +7,8 @@ import { authOptions } from "../app/api/auth/[...nextauth]/route";
 
 import AuthProvider from '@/providers/AuthProvider'
 
+import Header from '@/components/Header'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -26,6 +28,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider session={session}>
+          <Header/>
           {children}
           <ToasterProvider />
         </AuthProvider>
