@@ -5,6 +5,7 @@ import './globals.css'
 import { ToasterProvider } from '@/providers/toast-provider'
 import AuthProvider from '@/providers/AuthProvider'
 import Header from '@/components/Header'
+import Navbar from '@/components/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,6 +25,7 @@ export default async function RootLayout({
         <AuthProvider >
           <Header />
           {children}
+          <Navbar/>
           <ToasterProvider />
         </AuthProvider>
       </body>
