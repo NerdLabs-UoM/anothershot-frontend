@@ -1,7 +1,9 @@
 "use client";
+
 import ContactForm from "./contactSection/components/contactForm";
 import ContactSection from "./contactSection/contactSection";
 import FeaturedPhotoSection from "./featuredPhoto/featuredPhotoSection";
+import TestMonialsSection from "./testimonialSection/testimonialSection";
 import { useEffect, useState } from "react";
 
 const PhotographerProfile = () => {
@@ -17,7 +19,7 @@ const PhotographerProfile = () => {
         <>
           <FeaturedPhotoSection />
           <ContactSection />
-          <ContactForm />
+          <TestMonialsSection />
         </>
       )}
     </div>
@@ -25,3 +27,4 @@ const PhotographerProfile = () => {
 };
 
 export default PhotographerProfile;
+
