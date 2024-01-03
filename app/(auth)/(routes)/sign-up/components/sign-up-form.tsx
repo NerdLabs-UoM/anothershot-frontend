@@ -41,28 +41,40 @@ const SignUpForm = () => {
         resolver: zodResolver(SignUpFormSchema),
         defaultValues: {
             userRole: "photographer",
+            email: "",
+            password: "",
+            passwordConfirmation: "",
         },
     });
+
+    const onTabsChange = (value: string) => {
+        if (value === "photographer" || value === "client") {
+            form.setValue("userRole", value);
+        }
+    }
 
     const onSubmit = async (values: z.infer<typeof SignUpFormSchema>, e: any) => {
         try {
             setLoading(true);
             if (values) {
-                const response = await axios.post("/api/auth/register", values);
-                if (response.status === 400) {
-                    toast.error("Email is already in use");
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
+                    email: values.email,
+                    password: values.password,
+                    name: values.email.split('@')[0],
+                    userRole: values.userRole,
+                });
+
+                if (response.data.error) {
+                    toast.error(response.data.error);
                 }
-                if (response.status === 200) {
+
+                if (response.data) {
                     toast.success("Account created successfully");
                     router.push("/sign-in");
                 }
             }
         } catch (error: any) {
-            if (error.response.status === 400) {
-                toast.error("Email is already in use");
-            } else {
-                toast.error("Something went wrong");
-            }
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -77,7 +89,7 @@ const SignUpForm = () => {
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <Tabs defaultValue="photographer">
+                                <Tabs onValueChange={(value) => onTabsChange(value)} defaultValue="photographer">
                                     <TabsList className="grid w-full grid-cols-2">
                                         <TabsTrigger value="photographer">Photographer</TabsTrigger>
                                         <TabsTrigger value="client">Client</TabsTrigger>
@@ -95,7 +107,7 @@ const SignUpForm = () => {
                         <FormItem>
                             <FormLabel >Email</FormLabel>
                             <FormControl>
-                                <Input placeholder="email" {...field} />
+                                <Input {...field} placeholder="email" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
