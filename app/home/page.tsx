@@ -8,16 +8,16 @@ import { Button } from "@/components/ui/button";
 
 const HomePage = () => {
 
-    const router = useRouter();    
-    const { data: session, status }: any = useSession();
-    
+    const { data: session } = useSession();   
 
     return (
         <div>
             <div>Home Page</div>
+            <div>{session?.user?.id}</div>
+            <div>{session?.user?.name}</div>
             <div>{session?.user?.email}</div>
             <Button onClick={() => signOut({
-                callbackUrl: `${window.location.origin}/`
+                callbackUrl: `${window.location.origin}/sign-in`
             })}>Sign Out</Button>
         </div>
     );
