@@ -1,6 +1,10 @@
-"use client"
+"use client";
+
+import ContactSection from "./contactSection/contactSection";
+import FeaturedPhotoSection from "./featuredPhoto/featuredPhotoSection";
+import Hero from "./heroSection/Hero";
+import TestMonialsSection from "./testimonialSection/testimonialSection";
 import { useEffect, useState } from "react";
-import Hero from "@/app/photographer/(routes)/profile/heroSection/Hero";
 
 const PhotographerProfile = () => {
   const [isClient, setIsClient] = useState(false);
@@ -13,7 +17,10 @@ const PhotographerProfile = () => {
     <div className="flex min-h-screen flex-col items-center justify-between p-5">
       {isClient && (
         <>
-        <Hero/>
+          <Hero />
+          <FeaturedPhotoSection />
+          <ContactSection />
+          <TestMonialsSection />
         </>
       )}
     </div>
@@ -21,3 +28,4 @@ const PhotographerProfile = () => {
 };
 
 export default PhotographerProfile;
+
