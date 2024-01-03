@@ -8,6 +8,7 @@ import { authOptions } from "../app/api/auth/[...nextauth]/route";
 import AuthProvider from '@/providers/AuthProvider'
 
 import Header from '@/components/Header'
+import Navbar from '@/components/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,6 +31,7 @@ export default async function RootLayout({
         <AuthProvider session={session}>
           <Header/>
           {children}
+          <Navbar/>
           <ToasterProvider />
         </AuthProvider>
       </body>
