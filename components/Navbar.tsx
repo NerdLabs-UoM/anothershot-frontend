@@ -43,9 +43,10 @@ const session: sessionTypes = {
 const Navbar = () => {
   let navigationMenuContent;
   const pathname = usePathname();
+  const isPathAdmin = location.pathname.startsWith('/admin');
 
   if (session.loged && session.client) {
-    navigationMenuContent = (
+    navigationMenuContent = !isPathAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="bg-black rounded-t-3xl sm:px-4 py-3 sm:gap-20">
           <NavigationMenuItem className="px-6 sm:px-10">
@@ -107,15 +108,15 @@ const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu>
     );
-  } else if (session.loged && session.Photographer) {
-    navigationMenuContent = (
+  } else if (session.loged && session.Photographer && pathname!="/admin") {
+    navigationMenuContent = !isPathAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="bg-black rounded-t-3xl sm: px-4 py-3 sm:gap-20">
           <NavigationMenuItem className="px-8 sm:px-6">
-            <Link href="/Home" legacyBehavior passHref>
+            <Link href="/" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
-                  pathname == "/Home"
+                  pathname == "/"
                     ? "flex flex-col items-center text-white"
                     : "flex flex-col items-center text-slate-500"
                 }
@@ -126,10 +127,10 @@ const Navbar = () => {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className="px-8 sm:px-6">
-            <Link href="/Photographer-profile" legacyBehavior passHref>
+            <Link href="/photographer/profile" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
-                  pathname == "/Photographer-profile"
+                  pathname == "/photographer/profile"
                     ? "flex flex-col items-center text-white"
                     : "flex flex-col items-center text-slate-500"
                 }
@@ -140,7 +141,7 @@ const Navbar = () => {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
-            <Link href="/Photographer-feed" legacyBehavior passHref>
+            <Link href="/photographer/feed" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
                   pathname == "/Photographer-feed"
@@ -154,7 +155,7 @@ const Navbar = () => {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className=" hidden lg:flex px-8 sm:px-6 ">
-            <Link href="/Phorographer-albums" legacyBehavior passHref>
+            <Link href="/phorographer/albums" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
                   pathname == "/Phorographer-albums"
@@ -168,7 +169,7 @@ const Navbar = () => {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
-            <Link href="/Photographer-bookings" legacyBehavior passHref>
+            <Link href="/photographer/bookings" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
                   pathname == "/Photographer-bookings"
@@ -182,7 +183,7 @@ const Navbar = () => {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className="px-8 sm:px-6 :flex">
-            <Link href="/inbox" legacyBehavior passHref>
+            <Link href="photographer/inbox" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
                   pathname == "/inbox"
@@ -203,7 +204,7 @@ const Navbar = () => {
                   <span className="text-xs">Menu</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <Link href="/Photographer-bookings" legacyBehavior passHref>
+                  <Link href="/photographer/bookings" legacyBehavior passHref>
                     <DropdownMenuItem
                       className={
                         pathname == "/Home"
@@ -214,7 +215,7 @@ const Navbar = () => {
                       Bookings
                     </DropdownMenuItem>
                   </Link>
-                  <Link href="/Phorographer-feed" legacyBehavior passHref>
+                  <Link href="/phorographer/feed" legacyBehavior passHref>
                     <DropdownMenuItem
                       className={
                         pathname == "/Home"
@@ -225,7 +226,7 @@ const Navbar = () => {
                       Feed
                     </DropdownMenuItem>
                   </Link>
-                  <Link href="/Phorographer-albums" legacyBehavior passHref>
+                  <Link href="/phorographer/albums" legacyBehavior passHref>
                     <DropdownMenuItem
                       className={
                         pathname == "/Home"
@@ -243,15 +244,15 @@ const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu>
     );
-  } else {
-    navigationMenuContent = (
+  } else if(pathname!="/admin"){
+    navigationMenuContent =!isPathAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="bg-black rounded-t-3xl sm: px-4 py-3 sm:gap-20">
           <NavigationMenuItem className="px-10">
-            <Link href="/Home" legacyBehavior passHref>
+            <Link href="/" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
-                  pathname == "/Home"
+                  pathname == "/"
                     ? "flex flex-col items-center text-white"
                     : "flex flex-col items-center text-slate-500"
                 }
