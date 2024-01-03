@@ -1,12 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+
 import { ToasterProvider } from '@/providers/toast-provider'
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "../app/api/auth/[...nextauth]/route";
-
 import AuthProvider from '@/providers/AuthProvider'
-
 import Header from '@/components/Header'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -21,14 +18,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode,
 }) {
-
-  const session = await getServerSession(authOptions);
-
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider session={session}>
-          <Header/>
+        <AuthProvider >
+          <Header />
           {children}
           <ToasterProvider />
         </AuthProvider>
