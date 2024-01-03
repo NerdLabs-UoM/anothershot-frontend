@@ -1,5 +1,4 @@
 "use client"
-
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,type CarouselApi} from "@/components/ui/carousel"
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image";
