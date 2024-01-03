@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
-import Hero from "@/app/photographer/profile/heroSection/Hero";
+import Hero from "@/app/photographer/(routes)/profile/heroSection/Hero";
 
 const PhotographerProfile = () => {
   const [isClient, setIsClient] = useState(false);
