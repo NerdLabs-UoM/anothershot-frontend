@@ -52,11 +52,9 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="container py-10 mx-auto">
-      <div className="flex-grow">
+    <div className="container py-10 ">
         <DataTable columns={columns} data={filteredUsers} />
-      </div>
-      <div className="sticky bottom-0 w-full p-4 bg-white">
+      <div className="absolute top-[85%] inset-x-0">
         <PaginationSection
           lastPage={last}
           currentPage={page}

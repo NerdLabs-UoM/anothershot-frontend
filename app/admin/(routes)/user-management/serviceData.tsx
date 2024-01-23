@@ -9,9 +9,6 @@ interface User {
     email: string;
     status: string;
 }
-
-
-
 export const fetchData = async (page: number): Promise<User[]> => {
     try {
         const users = await axios.get<User[]>(

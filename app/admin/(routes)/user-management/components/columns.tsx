@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 
+import { UserDetail } from "./userDetail";
+
 type UserManagement = {
   id: string;
   userRole: string;
@@ -69,20 +71,7 @@ export const columns: ColumnDef<UserManagement>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => (
-      <div className="relative flex gap-4">
-        <Image
-          src="/images/Avatar (1).png"
-          alt="image"
-          width={50}
-          height={50}
-        />
-        <div>
-          <div className="text-gray-900">{row.original.name}</div>
-          <div className="text-gray-500">{row.original.email}</div>
-        </div>
-      </div>
-    ),
+    cell: ({ row }) => ( <UserDetail name={row.original.name} email={row.original.email} image="/images/Avatar (1).png"/> ),
   },
   {
     accessorKey: "status",
