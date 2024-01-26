@@ -28,7 +28,7 @@ const ContactSectionContent = ({
   addressL3,
 }: Props) => {
   return (
-    <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 border-y-0 sm:border-y-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
+    <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:mr-2 border-y-0 sm:border-y-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
       <div className="flex flex-row  sm:flex sm:flex-row  sm:justify-between">
         <h1 className="flex text-4xl font-bold mb-0 ml-24 sm:ml-0">Contact</h1>
         <Button
@@ -41,11 +41,11 @@ const ContactSectionContent = ({
       </div>
 
       <div className="grid grid-cols-1 gap-0 sm:grid-cols-3 grid-rows-3 sm:grid-rows-1 sm:gap-10 sm:ml-16 mt-6">
-        <div className="flex flex-col sm:flex-row mt-4 sm:mt-0 border-r-0 sm:border-r-2 justify-center">
+        <div className="flex flex-col sm:flex-row mt-4 sm:mt-0 border-r-0 sm:border-r-2 justify-center ml-0 sm:ml-0">
           <div className="ml-0 mt-0 sm:mt-2 flex justify-center sm:justify-start">
             <Phone />
           </div>
-          <div className="ml-0 sm:ml-0 mt-0 sm:mt-2 flex flex-col justify-center sm:justify-start items-center sm:items-center">
+          <div className="ml-0 sm:ml-0 mt-0 sm:mt-2 flex flex-col justify-center sm:justify-start md:items-center items-center sm:items-center">
             <h4 className="mb-2 sm:mb-0 ">{phone1}</h4>
             <h4 className="mb-2 sm:mb-0">{phone2}</h4>
             <h4 className="mb-2 sm:mb-0">{email}</h4>
@@ -65,8 +65,8 @@ const ContactSectionContent = ({
           </div>
         </div>
 
-        <div className="flex flex-row mt-4 ml-8 sm:ml-2 md:ml-4 lg:ml-6 justify-center sm:justify-start">
-          <div className="w-32 h-0 mb-0">
+        <div className="flex flex-row mt-4 ml-10 sm:ml-6 md:ml-10 lg:ml-10 justify-center sm:justify-start">
+          <div className="w-32 h-0 mb-0 ml-4 sm:ml-8 md:ml-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"

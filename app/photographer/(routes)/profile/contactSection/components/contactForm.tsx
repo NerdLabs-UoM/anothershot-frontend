@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button";
 // import SubmitForm from "../../testimonialSection/components/SubmitForm";
 
 const formSchema = z.object({
-  ContactNumber: z.string().min(10).max(10),
+  ContactNumber1: z.string().min(10).max(10),
+  ContactNumber2: z.string().min(10).max(10),
   Address: z.string(),
   Instagram: z.string(),
   Facebook: z.string(),
@@ -26,7 +27,8 @@ export default function ContactForm() {
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ContactNumber: "",
+      ContactNumber1: "",
+      ContactNumber2: "",
       Address: "",
       Instagram: "",
       Facebook: "",
@@ -52,7 +54,7 @@ export default function ContactForm() {
 
             <FormField
               control={form1.control}
-              name="ContactNumber"
+              name="ContactNumber1"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-8 gap-4 justify-center items-center mb-4">
                   <FormLabel className="col-span-2 grid place-content-end">
@@ -63,9 +65,25 @@ export default function ContactForm() {
                       <FormControl className="col-span-3">
                         <Input placeholder="+94712469756" {...field} />
                       </FormControl>
-                      <FormControl className="col-span-3">
-                        <Input placeholder="+94786069824" {...field} />
-                      </FormControl>
+                      <FormField
+                        control={form1.control}
+                        name="ContactNumber2"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div>
+                              <div>
+                                <FormControl className="col-span-3 w-32">
+                                  <Input
+                                    placeholder="+94712469756"
+                                    {...field}
+                                  />
+                                </FormControl>
+                              </div>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </div>
                   <FormMessage />
