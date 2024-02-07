@@ -1,8 +1,10 @@
-"use server";
+"use client";
 
+import { useEffect, useState } from "react";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
-import axios from "axios";
+import { fetchData, fetchLastPage } from "./serviceData";
+import PaginationSection from "./components/pagination";
 
 interface User {
   id: string;
@@ -10,31 +12,58 @@ interface User {
   name: string;
   email: string;
   status: string;
-  
 }
 
-const AdminPage = async () => {
-  try {
-    const users = await axios.get<User[]>(
-      "http://localhost:8000/api/admin/getallusers"
-    );
+const AdminPage = () => {
+  const [page, setPage] = useState(1);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [last, setLast] = useState(1);
 
-    const filteredUsers = users.data.map((user) => ({
-      id: user.id,
-      userRole: user.userRole,
-      name: user.name,
-      email: user.email,
-      status: user.status,
-      
-    }));
-    return (
-      <div className="container py-10 mx-auto">
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const data = await fetchData(page);
+      setFilteredUsers(data);
+    };
+    fetchUsers();
+  }, [page]);
+
+  useEffect(() => {
+    const fetchLast = async () => {
+      const data = await fetchLastPage();
+      setLast(data);
+    };
+    fetchLast();
+  }, []);
+
+  const handlePrev = () => {
+    if (page > 1) {
+      setPage((prevState) => prevState - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (page < last) {
+      setPage((prevState) => prevState + 1);
+    }
+  };
+
+  const handleClick = (currentPage: number) => {
+    setPage(currentPage);
+  };
+
+  return (
+    <div className="container py-10 ">
         <DataTable columns={columns} data={filteredUsers} />
+      <div className="absolute top-[85%] inset-x-0">
+        <PaginationSection
+          lastPage={last}
+          currentPage={page}
+          handlePrev={handlePrev}
+          handleNext={handleNext}
+          handleClick={handleClick}
+        />
       </div>
-    );
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
+    </div>
+  );
 };
-
 export default AdminPage;
