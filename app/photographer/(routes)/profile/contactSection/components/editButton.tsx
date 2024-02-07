@@ -16,22 +16,24 @@ const EditButton = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"outline"} size={"icon"}>
+        <Button
+          variant={"outline"}
+          size={"icon"}
+          className=" bg-gray-200 sm:bg-white border-black"
+        >
           <Pencil />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] ">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogTitle></DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 ">
           <ContactForm />
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          {/* <Button type="submit">Save changes</Button> */}
         </DialogFooter>
       </DialogContent>
     </Dialog>
