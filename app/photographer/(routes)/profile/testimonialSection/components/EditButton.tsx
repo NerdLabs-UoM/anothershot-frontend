@@ -1,131 +1,206 @@
-"use client"
+"use client";
 
-import React, { Component, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
+import { Check, ChevronsUpDown, Pencil } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { cn } from "@/lib/utils";
 
 interface TestimonialsData {
   id: string;
   name: string;
-  message: string;
+  feedback: string;
   url: string;
   visibility: boolean;
 }
 
-const testimonialsData: TestimonialsData[] = [
-  {
-    id: "1",
-    name: 'Esther Howard',
-    message: 'The quality of their work is outstanding. The attention to detail and their editing skills truly  I am always impressed and the whole process, from booking to receiving the final photos, was seamless.',
-    url: '/images/avatar.png',
-    visibility: true
-  },
-  {
-    id: "2",
-    name: 'John Smith',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.',
-    url: '/images/ellipse.png',
-    visibility: true
-  },
-  {
-    id: "3",
-    name: 'Nick Smith',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.',
-    url: '/images/ellipse.png',
-    visibility: true
-  },
-  {
-    id: "4",
-    name: 'Ann Smith',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.',
-    url: '/images/ellipse.png',
-    visibility: true
-  },
-];
+interface EditButtonProps {
+  testimonialsData: TestimonialsData[];
+  setTestimonialsData: React.Dispatch<React.SetStateAction<TestimonialsData[]>>;
+}
 
-const EditButton = () => {
-
+const EditButton: React.FC<EditButtonProps> = ({
+  testimonialsData,
+  setTestimonialsData,
+}) => {
   const [testimonials, setTestimonials] = useState(testimonialsData);
-  const [selected, setSelected] = useState("");
   const [checked, setChecked] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
 
   const handleSubmit = () => {
-    console.log("submit")
-  }
-
+    setTestimonialsData(testimonials);
+    toast.success("Testimonials updated successfully!");
+  };
   const handleVisibility = () => {
-    const items = testimonials.map((item) =>
-      item.id === selected ? { ...item, visibility: !item.visibility } : item
-    )
-    setTestimonials(items)
-  }
-
+    const items = [...testimonials];
+    const testimonial = items.find((testimonial) => value === testimonial.id);
+    testimonial!.visibility = !testimonial?.visibility;
+    setTestimonials(items);
+    setChecked(!checked);
+  };
   const handleValueChange = (value: string) => {
-    const item = testimonials.find((item) =>
-      value === item.id
-    )
-    item?.visibility ? setChecked(true) : setChecked(false)
-    setSelected(value)
-  }
-
+    const testimonial = testimonials.find(
+      (testimonial) => value === testimonial.id
+    );
+    testimonial?.visibility ? setChecked(true) : setChecked(false);
+  };
   return (
-      <div className="flex justify-between space-x-[1000px] mb-16">
-        <p className="text-5xl font-extrabold">Testimonials</p>
-        <Dialog>
-          <DialogTrigger>
-            <Button variant={"outline"} size={"icon"}>
-              <Pencil />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit Testmonials</DialogTitle>
-              <DialogDescription>
-                Make changes to your tesmonials here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-5 py-4 ">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Select onValueChange={(value) => handleValueChange(value)}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select a testimonial" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {testimonials.map((item, key) => {
-                        return (
-                          <SelectItem key={key} value={item.id} >
-                            {item.name}
-                          </SelectItem>
-                        )
-                      })}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid items-center gap-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox onCheckedChange={handleVisibility} id="visibility"  />
-                  <label
-                    htmlFor="visibility"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    <div className="grid grid-cols-1 sm:grid-cols-5 xl:flex xl:flex-row xl:justify-between xl:space-x-[1024px] mb-16">
+      <p className="font-extrabold text-2xl md:text-5xl">Testimonials</p>
+      <Dialog>
+        <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
+          <Button
+            variant={"outline"}
+            size={"icon"}
+            className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px]"
+          >
+            <Pencil />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Testmonials</DialogTitle>
+            <DialogDescription>
+              Make changes to your tesmonials here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-6 py-4 ">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[180px] justify-between"
                   >
-                    Public Visible
-                  </label>
-                </div>
+                    {value
+                      ? testimonials.find(
+                        (testimonial) => testimonial.id === value
+                      )?.name
+                      : "Select testimonial..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search testimonials..." />
+                    <CommandEmpty>No framework found.</CommandEmpty>
+                    <CommandGroup>
+                      {testimonials.map((testimonial) => (
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <CommandItem
+                              key={testimonial.id}
+                              value={testimonial.id}
+                              onSelect={(currentValue) => {
+                                setValue(
+                                  currentValue === value ? "" : currentValue
+                                );
+                                handleValueChange(currentValue);
+                                setOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  testimonial.visibility
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {testimonial.name}
+                            </CommandItem>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-[500px]">
+                            <div>
+                              <img
+                                src="/images/com.png"
+                                alt="Description of the image"
+                                width={20}
+                                height={15}
+                              />
+                            </div>
+                            <div className="flex p-0 items-center gap-10 flex-1">
+                              <span className="flex flex-col justify-center items-end gap-3 flex-1 self-stretch text-right text-slate-950 text-xs">
+                                {testimonial.feedback}
+                              </span>
+                              <Avatar className="w-[70px] h-[70px]" >
+                                <AvatarImage src={testimonial.url} alt="@shadcn" />
+                                <AvatarFallback>CN</AvatarFallback>
+                              </Avatar>
+                            </div>
+                            <div>
+                              <span className="text-slate-950 text-right font-bold text-xl">
+                                {testimonial.name}
+                              </span>
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="grid items-center gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={checked}
+                  onCheckedChange={handleVisibility}
+                  id="visibility"
+                />
+                <label
+                  htmlFor="visibility"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Public Visible
+                </label>
               </div>
             </div>
-            <DialogFooter>
-              <Button type="submit" onClick={() => handleSubmit()}>Save changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-  )
-}
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={() => handleSubmit()}>
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
 
 export default EditButton;
