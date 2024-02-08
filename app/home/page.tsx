@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 
 const HomePage = () => {
 
-    const { data: session } = useSession();   
+    const { data: session } = useSession();
+
+    console.log(session);
 
     return (
         <div>
