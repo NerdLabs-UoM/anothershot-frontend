@@ -25,15 +25,22 @@ const SignInFormSchema = z.object({
     password: z.string().min(8, { message: "Password must be at least 8 characters long" }),
 })
 
-const SignUpForm = () => {
+const SignInForm = () => {
 
     const router = useRouter();
     const session = useSession();
+    console.log(session);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (session?.status === "authenticated") {
-            router.push("/home");
+            if (session.data.user.userRole === "admin") {
+                router.push(`/user/admin/${session.data.user.id}`);
+            } else if (session.data.user.userRole === "photographer") {
+                router.push(`/user/photographer/${session.data.user.id}`);
+            } else if (session.data.user.userRole === "client") {
+                router.push(`/user/client/${session.data.user.id}`);
+            }
         }
     }, [session, router])
 
@@ -105,4 +112,4 @@ const SignUpForm = () => {
 }
 
 
-export default SignUpForm;
+export default SignInForm;
