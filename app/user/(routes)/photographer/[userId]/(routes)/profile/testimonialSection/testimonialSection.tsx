@@ -48,7 +48,7 @@ const testimonialsData: TestimonialsData[] = [
 const TestMonialsSection = () => {
   const [testimonials, setTestimonials] = useState(testimonialsData);
   return (
-    <div className="flex flex-col items-center max-w-5xl border-y border-transparent py-40">
+    <div className="flex flex-col items-center w-full border-y border-transparent py-40">
       <EditButton
         testimonialsData={testimonials}
         setTestimonialsData={setTestimonials}

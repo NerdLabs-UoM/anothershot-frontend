@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import {useSession} from "next-auth/react";
+import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Check, ChevronsUpDown, Pencil } from "lucide-react";
 import {
@@ -55,6 +57,8 @@ const EditButton: React.FC<EditButtonProps> = ({
   testimonialsData,
   setTestimonialsData,
 }) => {
+  const { userId } = useParams();
+  const { data: session } = useSession();
   const [testimonials, setTestimonials] = useState(testimonialsData);
   const [checked, setChecked] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -64,6 +68,7 @@ const EditButton: React.FC<EditButtonProps> = ({
     setTestimonialsData(testimonials);
     toast.success("Testimonials updated successfully!");
   };
+
   const handleVisibility = () => {
     const items = [...testimonials];
     const testimonial = items.find((testimonial) => value === testimonial.id);
@@ -71,16 +76,17 @@ const EditButton: React.FC<EditButtonProps> = ({
     setTestimonials(items);
     setChecked(!checked);
   };
+
   const handleValueChange = (value: string) => {
     const testimonial = testimonials.find(
       (testimonial) => value === testimonial.id
     );
     testimonial?.visibility ? setChecked(true) : setChecked(false);
   };
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-5 xl:flex xl:flex-row xl:justify-between xl:space-x-[1024px] mb-16">
-      <p className="font-extrabold text-2xl md:text-5xl">Testimonials</p>
-      <Dialog>
+
+  const renderEditButton = () => {
+    if (session?.user?.id === userId) {
+      return (
         <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
           <Button
             variant={"outline"}
@@ -90,6 +96,16 @@ const EditButton: React.FC<EditButtonProps> = ({
             <Pencil />
           </Button>
         </DialogTrigger>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-5 mb-16 mx-3">
+      <p className="font-extrabold text-2xl md:text-5xl">Testimonials</p>
+      <Dialog>
+        {renderEditButton()}
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Edit Testmonials</DialogTitle>

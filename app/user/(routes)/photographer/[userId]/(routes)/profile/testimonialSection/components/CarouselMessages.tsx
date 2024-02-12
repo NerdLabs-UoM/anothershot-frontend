@@ -35,7 +35,18 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
+  const [windowWidth, setWindowWidth] = useState<number>(0);
 
+  React.useEffect(() => {
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", updateWindowWidth);
+    updateWindowWidth();
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  }, []);
   React.useEffect(() => {
     if (!api) {
       return;
@@ -50,13 +61,13 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
     (testimonial) => testimonial.visibility
   );
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col ml-3 sm:ml-0">
       {visibleTestimonials.length > 0 && (
         <Carousel
-          className="flex flex-row items-start gap-12 flex-1 self-stretch mb-10 w-[360px] sm:w-[550px] md:w-[700px] lg:w-[920px]"
+          className="flex flex-row items-start gap-12 flex-1 self-stretch mb-10 w-[360px] sm:w-[550px] md:w-[700px] lg:w-[920px] xl:w-[1200px]"
           setApi={setApi}
         >
-          <CarouselContent className="w-[365px] sm:w-[565px] md:w-[715px] lg:w-[935px]">
+          <CarouselContent className="w-[365px] sm:w-[565px] md:w-[715px] lg:w-[935px] xl:w-[1215px]">
             {visibleTestimonials.map((testimonial) => (
               <CarouselItem key={testimonial.id}>
                 <div className="p-1">
@@ -91,8 +102,8 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          {window.innerWidth > 779 && <CarouselPrevious />}
+          {window.innerWidth > 779 && <CarouselNext />}
         </Carousel>
       )}
     </div>
