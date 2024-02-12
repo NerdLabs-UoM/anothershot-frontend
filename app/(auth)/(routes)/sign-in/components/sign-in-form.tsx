@@ -34,11 +34,11 @@ const SignInForm = () => {
 
     useEffect(() => {
         if (session?.status === "authenticated") {
-            if (session.data.user.userRole === "admin") {
+            if (session.data.user.userRole === "ADMIN") {
                 router.push(`/user/admin/${session.data.user.id}`);
-            } else if (session.data.user.userRole === "photographer") {
+            } else if (session.data.user.userRole === "PHOTOGRAPHER") {
                 router.push(`/user/photographer/${session.data.user.id}`);
-            } else if (session.data.user.userRole === "client") {
+            } else if (session.data.user.userRole === "CLIENT") {
                 router.push(`/user/client/${session.data.user.id}`);
             }
         }
