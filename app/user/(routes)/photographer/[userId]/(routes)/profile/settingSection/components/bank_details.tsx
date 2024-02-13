@@ -26,8 +26,8 @@ import { Input } from "@/components/ui/input";
 import { useEffect } from "react";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50, {
-    message: "Username must be at least 2 characters.",
+  name: z.string().min(2, {message:"Username must be at least 2 characters."}).max(50, {
+    message: "Username must be at less than 50 characters.",
   }),
 });
 
@@ -58,7 +58,7 @@ const BankDetails = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
     },
   });
 
@@ -66,9 +66,9 @@ const BankDetails = () => {
     console.log(values);
   }
 
-  useEffect(() => {
-    form.setValue("username", "test");
-  }, []);
+  // useEffect(() => {
+  //   form.setValue("username", "test");
+  // }, []);
 
   return (
     <Card className="mx-8 md:w-[840px] w-[600px] mt-5">
@@ -89,7 +89,7 @@ const BankDetails = () => {
                 <FormField
                   key={index}
                   control={form.control}
-                  name="username"
+                  name="name"
                   render={(field) => {
                     return (
                       <FormItem>

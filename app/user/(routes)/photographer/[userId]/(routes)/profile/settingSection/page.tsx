@@ -1,11 +1,10 @@
-
-
 import React from "react";
-import axios from "axios";
+// import axios from "axios";
 import Earnings from "./components/earnings";
 import AddCategory from "./components/add_category";
 import BankDetails from "./components/bank_details";
-import Report from ".//report"
+import Report from "./components/report";
+import Faq from "./components/faq";
 
 // const Settings = async() => {
 //     try {
@@ -38,17 +37,18 @@ import Report from ".//report"
 // };
 
 const Settings = () => {
-  return (
-    <div className="items-center">
-      <div className="flex flex-wrap">
-        <Earnings/>
-        <div className="items-center"><AddCategory/></div>
-      </div>
-      <div><BankDetails /></div>
-      <Report />
-    </div>
-    
-  );
+    return (
+        <div className="items-center h-[100%] mb-[100px]">
+            <div className="flex flex-wrap">
+                <Earnings/>
+                <div className="items-center"><AddCategory/></div>
+            </div>
+            <div><BankDetails/></div>
+            <div className="flex "><Report/>
+                <Faq/></div>
+        </div>
+
+    );
 }
 
 
