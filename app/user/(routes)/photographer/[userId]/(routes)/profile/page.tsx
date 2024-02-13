@@ -4,6 +4,7 @@ import ContactSection from "./contactSection/contactSection";
 import FeaturedPhotoSection from "./featuredPhoto/featuredPhotoSection";
 import Hero from "./heroSection/Hero";
 import TestMonialsSection from "./testimonialSection/testimonialSection";
+import PackagesSection from "./packagesSection/packagesSection";
 import { useEffect, useState } from "react";
 
 const PhotographerProfile = () => {
@@ -20,6 +21,7 @@ const PhotographerProfile = () => {
           <Hero />
           <FeaturedPhotoSection />
           <ContactSection />
+          <PackagesSection/>
           <TestMonialsSection />
         </>
       )}
