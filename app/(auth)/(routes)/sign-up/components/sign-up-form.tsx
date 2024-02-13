@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/form"
 
 const SignUpFormSchema = z.object({
-    userRole: z.enum(["photographer", "client"]),
+    userRole: z.enum(["PHOTOGRAPHER", "CLIENT"]),
     email: z.string().email({ message: "Invalid email" }),
     password: z.string().min(8, { message: "Password must be at least 8 characters long" }),
     passwordConfirmation: z.string().min(8, { message: "Password must be at least 8 characters long" }),
@@ -40,7 +40,7 @@ const SignUpForm = () => {
     const form = useForm<z.infer<typeof SignUpFormSchema>>({
         resolver: zodResolver(SignUpFormSchema),
         defaultValues: {
-            userRole: "photographer",
+            userRole: "CLIENT",
             email: "",
             password: "",
             passwordConfirmation: "",
@@ -48,7 +48,7 @@ const SignUpForm = () => {
     });
 
     const onTabsChange = (value: string) => {
-        if (value === "photographer" || value === "client") {
+        if (value === "PHOTOGRAPHER" || value === "CLIENT") {
             form.setValue("userRole", value);
         }
     }
@@ -91,8 +91,8 @@ const SignUpForm = () => {
                             <FormControl>
                                 <Tabs onValueChange={(value) => onTabsChange(value)} defaultValue="photographer">
                                     <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger value="photographer">Photographer</TabsTrigger>
-                                        <TabsTrigger value="client">Client</TabsTrigger>
+                                        <TabsTrigger value="PHOTOGRAPHER">Photographer</TabsTrigger>
+                                        <TabsTrigger value="CLIENT">Client</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                             </FormControl>
