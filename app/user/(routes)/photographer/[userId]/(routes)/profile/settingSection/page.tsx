@@ -38,14 +38,16 @@ import Faq from "./components/faq";
 
 const Settings = () => {
     return (
-        <div className="items-center h-[100%] mb-[100px]">
-            <div className="flex flex-wrap">
+        <div className="items-center h-[100%] mb-[100px] mx-[10%]">
+            <div className="flex flex-wrap justify-between mb-4">
                 <Earnings/>
                 <div className="items-center"><AddCategory/></div>
             </div>
-            <div><BankDetails/></div>
-            <div className="flex "><Report/>
-                <Faq/></div>
+            <div className="mb-4"><BankDetails/></div>
+            <div className="flex justify-between ">
+                <Report/>
+                <Faq/>
+            </div>
         </div>
 
     );

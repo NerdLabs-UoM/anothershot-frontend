@@ -80,7 +80,7 @@ function AddCategory() {
   }
 
   return (
-    <Card className="w-[400px] my-8 mx-8 sm:w-[540px] ">
+    <Card className="w-[400px] my-8 sm:w-[540px] h-[300px]">
       <CardHeader>
         <CardTitle>Select your photography categories</CardTitle>
         <CardDescription>

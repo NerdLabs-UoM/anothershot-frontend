@@ -31,7 +31,7 @@ const data: earnings[] = [
 ];
 const Earnings = () => {
     return (
-        <Card className="w-[400px] mt-8 mx-8">
+        <Card className="w-[400px] mt-8 h-[300px]">
             <CardHeader>
                 <CardTitle className="text-5xl font-['Inter']">Earnings</CardTitle>
             </CardHeader>

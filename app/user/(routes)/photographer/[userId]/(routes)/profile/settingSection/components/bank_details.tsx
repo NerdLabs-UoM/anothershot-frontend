@@ -71,7 +71,7 @@ const BankDetails = () => {
   // }, []);
 
   return (
-    <Card className="mx-8 md:w-[840px] w-[600px] mt-5">
+    <Card className="md:w-[840px] w-[600px] mt-5">
       <CardHeader>
         <CardTitle>Bank Details</CardTitle>
         <CardDescription>
