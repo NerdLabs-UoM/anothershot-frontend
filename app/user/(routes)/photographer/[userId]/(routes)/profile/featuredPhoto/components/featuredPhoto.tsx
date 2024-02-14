@@ -37,11 +37,11 @@ export default function FeaturedPhoto() {
             />
           </div>
 
-          <div className="mt-6 sm:mt-8 md:mt-14 lg:mt-14 xl:mt-12 sm:mb-2 md:mb-2 lg:mb-2 xl:mb-2 ">
+          <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-6 xl:mt-6 md:mb-0 lg:mb-0 xl:-mb-0 ">
             <Image
               src={"/images/front-view-woman-holding-photo-camera 1.png"}
               alt="featured photo 4"
-              className="w-96 sm:w-full h-28 sm:h-auto md:h-auto lg:h-auto xl:h-auto rounded-3xl sm:rounded-none"
+              className="w-96 sm:w-full h-28 sm:h-auto rounded-3xl sm:rounded-none"
               width={500}
               height={500}
             />

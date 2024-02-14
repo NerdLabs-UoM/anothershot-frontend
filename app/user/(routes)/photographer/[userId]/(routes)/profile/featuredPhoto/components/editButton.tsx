@@ -10,6 +10,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import EditPhoto from './editPhoto';
 
 const EditButton = () => {
   return (
@@ -23,12 +24,12 @@ const EditButton = () => {
           <Pencil />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[400px] ">
+      <DialogContent className="sm:max-w-[425px] ">
         <DialogHeader>
           <DialogTitle></DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-
+        <EditPhoto />
         <DialogFooter>
           {/* <Button type="submit">Save changes</Button> */}
         </DialogFooter>
