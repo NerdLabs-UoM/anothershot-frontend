@@ -26,3 +26,64 @@ const PackageList: React.FC = () => {
 };
 
 export default PackageList;
+
+
+
+
+// import { useState } from 'react';
+
+// interface Package {
+//   name: string;
+//   description: string;
+//   // Add more fields as needed
+// }
+
+// const Card: React.FC<Package> = ({ name, description }) => {
+//   return (
+//     <div className="card">
+//       <h2>{name}</h2>
+//       <p>{description}</p>
+//     </div>
+//   );
+// };
+
+// const PackagesPage: React.FC = () => {
+//   const [packages, setPackages] = useState<Package[]>([]);
+
+//   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+//     event.preventDefault();
+//     const formData = new FormData(event.currentTarget);
+//     const newPackage: Package = {
+//       name: formData.get('name') as string,
+//       description: formData.get('description') as string,
+//     };
+//     setPackages([...packages, newPackage]);
+//     console.log('New package added:', newPackage);
+//     // Here you can send the newPackage data to your backend for further processing if needed
+//   };
+
+//   return (
+//     <div>
+//       <form onSubmit={handleFormSubmit}>
+//         <label>
+//           Name:
+//           <input type="text" name="name" />
+//         </label>
+//         <label>
+//           Description:
+//           <textarea name="description" />
+//         </label>
+//         <button type="submit">Add Package</button>
+//       </form>
+//       <div className="card-container">
+//         {packages.map((pkg, index) => (
+//           <Card key={index} {...pkg} />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PackagesPage;
+
+

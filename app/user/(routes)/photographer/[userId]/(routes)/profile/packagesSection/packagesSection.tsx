@@ -1,6 +1,6 @@
 import React from 'react'
 import {PackageCard} from './components/packageCard';
-import PackageList from './components/packageList';
+// import PackageList from './components/packageList';
 import Heading from './components/heading';
 
 const packagesSection = () => {
@@ -49,7 +49,7 @@ const packagesSection = () => {
 
   
 </div>
-    <PackageList/>
+    {/* <PackageList/> */}
     </div>
   )
 }

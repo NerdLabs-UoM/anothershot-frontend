@@ -19,7 +19,7 @@ interface CardProps {
 
 export const PackageCard = ({src , alt ,width ,height ,title1 , title2 , content1 , content2 , content3}:CardProps) => {
   return (
-    // <div className="mt-2 mb-2 p-8 px-6">
+    <div className="mt-2 mb-2 p-8 px-6">
       <div className=" w-96 grid-rows-2 sm:grid-rows-2 sm:grid-cols-1 mt-10 ">
         
         <div className="mt-4 mb-2 px-6 sm:px-10 md:px-12 sm:mt-6 grid grid-row-span-1 grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-2 sm:gap-24 md:gap-24">
@@ -50,6 +50,6 @@ export const PackageCard = ({src , alt ,width ,height ,title1 , title2 , content
           
         </div>
       </div>
-    // </div>
+    </div>
   );
 };
