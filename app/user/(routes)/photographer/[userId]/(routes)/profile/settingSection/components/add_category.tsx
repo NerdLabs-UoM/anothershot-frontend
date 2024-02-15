@@ -80,7 +80,7 @@ function AddCategory() {
   }
 
   return (
-    <Card className="w-[400px] my-8 sm:w-[540px] h-[300px]">
+    <Card className="w-[400px] my-8 sm:w-[540px] h-auto mx-auto">
       <CardHeader>
         <CardTitle>Select your photography categories</CardTitle>
         <CardDescription>
@@ -187,7 +187,7 @@ function AddCategory() {
         </Form>
 
         <Button
-          className="items-end bg-red-600 w-[65px]  bottom-0 right-0 m-4"
+          className=" object-none object-right-bottom bg-red-500"
           type="submit"
         >
           Save
