@@ -10,7 +10,7 @@ import {
 
 const Faq =() =>{
     return(
-        <Card className="border-none w-[450px]">
+        <Card className="border-none w-[450px] mx:auto">
             <CardHeader>
                 <CardTitle className="text-5xl font-['Inter']">FAQ</CardTitle>
             </CardHeader>

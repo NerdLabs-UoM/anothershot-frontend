@@ -1,57 +1,77 @@
-import React from "react";
-// import axios from "axios";
+"use client"
+
+import React,{useState,useEffect} from "react";
 import Earnings from "./components/earnings";
 import AddCategory from "./components/add_category";
 import BankDetails from "./components/bank_details";
 import Report from "./components/report";
 import Faq from "./components/faq";
+import { Payment, columns } from "./components/paymentColumns"
+import { DataTable } from "./components/data-table";
+// import { CalendarDemo } from "./components/calender";
 
-// const Settings = async() => {
-//     try {
-//         const users = await axios.get<paymentDetails[]>(
-//             "http://localhost:8000/api/admin/getallusers"
-//         );
 
-//         const filteredUsers = users.data.map((user) => ({
-//             name: user.clientsName,
-//         }));
-//         // return (
-//         //     <div className="container py-10 mx-auto">
-//         //         <DataTable columns={columns} data={filteredUsers} />
-//         //     </div>
-//         // );
-//         console.log("user karayo tika: ",filteredUsers);
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//     }
 
-//     return (
-//       <div className="items-center">
-//         <div className="flex flex-wrap">
-//           <Earnings/>
-//           <div className="items-center"><AddCategory/></div>
-//         </div>
-//         <div><BankDetails /></div>
-//       </div>
-//     );
-// };
+const getData: Payment[] = [
+    {
+        clientName: "John Doe",
+        invoiceId: "INV-1234",
+        date: "Feb 2,2024",
+        paymentStatus: "Paid",
+        amount: 2500,
+        type: "Album Payment",
+    },
+    {
+        clientName: "Jane Doe",
+        invoiceId: "INV-1235",
+        date: "Jan 4,2024",
+        paymentStatus: "UnPaid",
+        amount: 1000,
+        type: "Booking",
+    },
+    {
+        clientName: "client name3",
+        invoiceId: "INV-1485",
+        date: "Jan 4,2024",
+        paymentStatus: "Pending",
+        amount: 1500,
+        type: "Booking",
+    },
+];
 
-const Settings = () => {
+export default function Settings(){
+    // const [isMobile, setIsMobile] = React.useState(false);
+    const  [filteredUsers, setFilteredUsers] = useState<Payment[]>([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const data = getData;
+            setFilteredUsers(data);
+        };
+        fetchUsers();
+    }, []);
+
+    // useEffect(() => {
+    //     getData().then(data => {
+    //         setFilteredUsers(data);
+    //     });
+    // }, []);
+
+
     return (
         <div className="items-center h-[100%] mb-[100px] mx-[10%]">
-            <div className="flex flex-wrap justify-between mb-4">
-                <Earnings/>
-                <div className="items-center"><AddCategory/></div>
+            <div className="grid md:grid-flow-col sm:gap-[20px] justify-stretch mb-4">
+                <div className="ml-6"><Earnings/></div>
+                <div className="items-center "><AddCategory/></div>
             </div>
             <div className="mb-4"><BankDetails/></div>
-            <div className="flex justify-between ">
+            <div className=""><DataTable columns={columns} data={filteredUsers} /></div>
+            <div className="grid md:grid-flow-col justify-stretch">
                 <Report/>
                 <Faq/>
             </div>
+
         </div>
 
     );
 }
-
-
-export default Settings;

@@ -28,18 +28,19 @@ const data: earnings[] = [
         name: "Fees",
         value: 100
     }
+
 ];
 const Earnings = () => {
     return (
-        <Card className="w-[400px] mt-8 h-[300px]">
+        <Card className="w-[400px] mt-8 h-[300px] mx-auto md:justify-start">
             <CardHeader>
                 <CardTitle className="text-5xl font-['Inter']">Earnings</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-4">
+            <CardContent className="flex flex-col gap-4 ">
                 {data.map((item, index) => (
                     <div key={index} className="grid grid-cols-2">
-                        <div className="text-2xl font-semibold">{item.name}:</div>
-                        <div className="inline-block ml-6 align-middle">{item.value}</div>
+                        <div className="text-2xl font-semibold ">{item.name}:</div>
+                        <div className=" ml-6 align-middle inline-block pt-1">{item.value}</div>
                     </div>
                 ))}
             </CardContent>
