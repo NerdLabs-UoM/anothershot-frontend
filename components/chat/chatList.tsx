@@ -1,23 +1,30 @@
-import { Message, UserData } from "@/app/data";
-import { cn } from "@/lib/utils";
+// import { Message, UserData } from "@/app/data";
+import { useSession } from "next-auth/react";
 import React, { useRef } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import ChatBottombar from "./chatBottomBar";
 import { AnimatePresence, motion } from "framer-motion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ChatBottombar from "./chatBottomBar";
+import { Chat, Message } from "@/app/lib/types";
+import { cn } from "@/app/lib/utils";
 
 interface ChatListProps {
   messages?: Message[];
-  selectedUser: UserData;
+  selectedChat: Chat;
   sendMessage: (newMessage: Message) => void;
   isMobile: boolean;
 }
 
 export function ChatList({
   messages,
-  selectedUser,
+  selectedChat,
   sendMessage,
   isMobile
 }: ChatListProps) {
+
+  const { data: session } = useSession();
+  const [selectedUser, setSelectedUser] = React.useState(selectedChat.users.find(user => user.id !== session?.user.id))
+  const [sessionUser, setSessionUser] = React.useState(selectedChat.users.find(user => user.id === session?.user.id))
+
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -55,29 +62,29 @@ export function ChatList({
               }}
               className={cn(
                 "flex flex-col gap-2 p-4 whitespace-pre-wrap",
-                message.name !== selectedUser.name ? "items-end" : "items-start"
+                message.senderId !== selectedUser?.id ? "items-end" : "items-start"
               )}
             >
               <div className="flex gap-3 items-center">
-                {message.name === selectedUser.name && (
+                {message.senderId === selectedUser?.id && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
-                      src={message.avatar}
-                      alt={message.name}
+                      src={message.sender.image}
+                      alt={message.sender.name}
                       width={6}
                       height={6}
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 )}
-                <span className={`bg-accent p-3 rounded-md max-w-xs ${message.name !== selectedUser.name && 'bg-black text-white'}`}>
+                <span className={`bg-accent p-3 rounded-md max-w-xs ${message.senderId !== selectedUser?.id && 'bg-black text-white'}`}>
                   {message.message}
                 </span>
-                {message.name !== selectedUser.name && (
+                {message.senderId !== selectedUser?.id && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
-                      src={message.avatar}
-                      alt={message.name}
+                      src={sessionUser?.image}
+                      alt={sessionUser?.name}
                       width={6}
                       height={6}
                     />
@@ -89,7 +96,7 @@ export function ChatList({
           ))}
         </AnimatePresence>
       </div>
-      <ChatBottombar sendMessage={sendMessage} isMobile={isMobile} />
+      <ChatBottombar sendMessage={sendMessage} isMobile={isMobile} selectedChat={selectedChat} />
     </div >
   );
 }

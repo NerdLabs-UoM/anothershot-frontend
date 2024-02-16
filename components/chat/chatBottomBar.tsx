@@ -9,24 +9,29 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
-import { buttonVariants } from "../ui/button";
-import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Message, loggedInUserData } from "@/app/data";
-import { Textarea } from "../ui/textarea";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/app/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
 import { EmojiPicker } from "./emojiPicker";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Chat, Message } from "@/app/lib/types";
 
 interface ChatBottombarProps {
     sendMessage: (newMessage: Message) => void;
+    selectedChat: Chat;
     isMobile: boolean;
 }
 
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
 
 export default function ChatBottombar({
-    sendMessage, isMobile,
+    sendMessage, isMobile, selectedChat
 }: ChatBottombarProps) {
+
+    const { data: session } = useSession();
+    const [selectedUser, setSelectedUser] = React.useState(selectedChat.users.find(user => user.id !== session?.user.id))
     const [message, setMessage] = useState("");
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -35,31 +40,37 @@ export default function ChatBottombar({
     };
 
     const handleThumbsUp = () => {
-        const newMessage: Message = {
-            id: message.length + 1,
-            name: loggedInUserData.name,
-            avatar: loggedInUserData.avatar,
-            message: "👍",
-        };
-        sendMessage(newMessage);
-        setMessage("");
+        if (session && selectedUser) {
+            const newMessage: any = {
+                message: "👍",
+                senderId: session.user.id,
+                receiverId: selectedUser.id,
+                chatId: selectedChat.id,
+                attachments: [],
+            };
+            sendMessage(newMessage);
+            setMessage("");
+        }
     };
 
     const handleSend = () => {
         if (message.trim()) {
-            const newMessage: Message = {
-                id: message.length + 1,
-                name: loggedInUserData.name,
-                avatar: loggedInUserData.avatar,
-                message: message.trim(),
-            };
-            sendMessage(newMessage);
-            setMessage("");
-
+            if (session && selectedUser) {
+                const newMessage: any = {
+                    chatId: selectedChat.id,
+                    message: message.trim(),
+                    senderId: session.user.id,
+                    receiverId: selectedUser.id,
+                    attachments: [],
+                };
+                sendMessage(newMessage);
+                setMessage("");
+            }
             if (inputRef.current) {
                 inputRef.current.focus();
             }
         }
+
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {

@@ -1,15 +1,17 @@
 "use client";
 
-import { userData } from "@/app/data";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import {
     ResizableHandle,
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import ChatSidebar from "./chatSideBar";
-import { Chat } from "./chat";
+import { ChatView } from "./chatView";
+import { Chat } from "@/app/lib/types";
 
 interface ChatLayoutProps {
     defaultLayout: number[] | undefined;
@@ -22,8 +24,12 @@ export function ChatLayout({
     defaultCollapsed = false,
     navCollapsedSize,
 }: ChatLayoutProps) {
+
+    const { data: session } = useSession()
+    const [chats, setChats] = useState<Chat[]>([])
     const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-    const [selectedUser, setSelectedUser] = React.useState(userData[0]);
+    const [selectedChat, setSelectedChat] = React.useState<Chat>(chats[0]);
+    const [selectedChatId, setSelectedChatId] = React.useState<string | undefined>(undefined);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -36,6 +42,28 @@ export function ChatLayout({
             window.removeEventListener("resize", checkScreenWidth);
         };
     }, []);
+
+    useEffect(() => {
+        const fetchChats = async () => {
+            try {
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${session?.user.id}`);
+                setChats(res.data);
+                setSelectedChat(res.data[0]);
+            } catch (error) {
+                console.error('Error fetching chats:', error);
+            }
+        };
+    
+        if (session?.user.id) {
+            fetchChats();
+        }
+    }, [session?.user.id]);
+
+    useEffect(() => {
+        if (selectedChatId) {
+            setSelectedChat(chats.find((chat) => chat.id === selectedChatId) as Chat);
+        }
+    }, [selectedChatId, chats]);
 
     return (
         <ResizablePanelGroup
@@ -71,22 +99,24 @@ export function ChatLayout({
             >
                 <ChatSidebar
                     isCollapsed={isCollapsed || isMobile}
-                    links={userData.map((user) => ({
-                        name: user.name,
-                        messages: user.messages ?? [],
-                        avatar: user.avatar,
-                        variant: selectedUser.name === user.name ? "default" : "ghost",
+                    links={chats.map((chat) => ({
+                        id: chat.id,
+                        name: chat.users.find((user) => user.id !== session?.user.id)?.name || "Unknown User",
+                        messages: chat.messages,
+                        avatar: chat.users.find((user) => user.id !== session?.user.id)?.image || "",
+                        variant: selectedChat.users.find((user) => user.id !== session?.user.id)?.name === chat.users.find((user) => user.id !== session?.user.id)?.name ? "default" : "ghost",
                     }))}
+                    setSelectedChatId={setSelectedChatId}
                     isMobile={isMobile}
                 />
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-                <Chat
-                    messages={selectedUser.messages}
-                    selectedUser={selectedUser}
+                {selectedChat && <ChatView
+                    messages={selectedChat.messages}
+                    selectedChat={selectedChat}
                     isMobile={isMobile}
-                />
+                />}
             </ResizablePanel>
         </ResizablePanelGroup>
     );

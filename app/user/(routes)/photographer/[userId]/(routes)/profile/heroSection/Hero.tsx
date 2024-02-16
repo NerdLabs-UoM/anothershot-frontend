@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
@@ -29,6 +29,10 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Settings, PenSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
   username: z
@@ -44,6 +48,16 @@ const formSchema = z.object({
 });
 
 const Hero = () => {
+
+  const session = useSession();
+  const { userId } = useParams();
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  useEffect(() => {
+    if (session.data) {
+      setSessionId(session.data.user.id);
+    }
+  }, [session]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,7 +74,37 @@ const Hero = () => {
     setValues({ name: values.username, description: values.description });
   };
 
-  const photographer: boolean = true;
+  const handleCreateChat = async () => {
+
+    const newChat = {
+      senderId: sessionId,
+      receiverId: userId,
+    };
+
+    try {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/create`, newChat);
+      console.log(res);
+      if (res.data.error) {
+        toast.error(res.data.error);
+      }
+      if (res.status === 201) {
+        toast.success("Chat created successfully");
+        setTimeout(() => {
+          window.location.href = `/user/client/${session.data?.user.id}/inbox`;
+        }, 1000);
+      }
+    } catch (error: any) {
+      if (error.response.data.error) {
+        toast.error(error.response.data.error);
+        setTimeout(() => {
+          window.location.href = `/user/client/${session.data?.user.id}/inbox`;
+        }, 1000);
+      }
+    }
+
+  };
+
+  const photographer: boolean = false;
   return (
     <div className="flex flex-row md:w-11/12 h-[400px] bg-cover bg-no-repeat bg-gradient-to-r from-violet-500 to-fuchsia-500  justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px]">
       <div className="p-5 md:px-0">
@@ -143,11 +187,16 @@ const Hero = () => {
           <div className="text-xs w-4/5 md:text-lg">{values.description}</div>
         </div>
       </div>
-      <div className="flex flex-row align-middle p-0">
+      <div className="flex flex-row align-middle p-0 gap-1">
         {photographer || (
-          <Button variant="destructive" className="rounded-3xl w-4/5" asChild>
-            <Link href="/photographer/Bookings">Book Now</Link>
-          </Button>
+          <>
+            <Button className="rounded-3xl" onClick={() => handleCreateChat()}>
+              Message
+            </Button>
+            <Button className="rounded-3xl" asChild>
+              <Link href="/photographer/Bookings">Book Now</Link>
+            </Button>
+          </>
         )}
         {photographer && (
           <Link href="photographer/prfile/settings" className="pt-2 px-2">

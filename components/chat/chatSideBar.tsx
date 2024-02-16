@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { MoreHorizontal } from "lucide-react";
 // import { SquarePen } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { SetStateAction } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import {
     Tooltip,
@@ -11,22 +11,25 @@ import {
     TooltipTrigger,
     TooltipProvider,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Message } from "@/app/data";
+import { cn } from "@/app/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Message } from "@/app/lib/types";
 
 interface SidebarProps {
     isCollapsed: boolean;
     links: {
-        name: string;
+        id: string;
+        name: string | undefined;
         messages: Message[];
         avatar: string;
         variant: "default" | "ghost";
     }[];
+    setSelectedChatId: React.Dispatch<SetStateAction<string | undefined>>;
     onClick?: () => void;
     isMobile: boolean;
 }
 
-export default function ChatSidebar({ links, isCollapsed, isMobile }: SidebarProps) {
+export default function ChatSidebar({ links, isCollapsed, isMobile, setSelectedChatId }: SidebarProps) {
     return (
         <div
             data-collapsed={isCollapsed}
@@ -66,6 +69,7 @@ export default function ChatSidebar({ links, isCollapsed, isMobile }: SidebarPro
                                             link.variant === "default" &&
                                             "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
                                         )}
+                                        onClick={() => setSelectedChatId(link.id)}
                                     >
                                         <Avatar className="flex justify-center items-center">
                                             <AvatarImage
@@ -98,6 +102,7 @@ export default function ChatSidebar({ links, isCollapsed, isMobile }: SidebarPro
                                 "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white shrink",
                                 "justify-start gap-4"
                             )}
+                            onClick={() => setSelectedChatId(link.id)}
                         >
                             <Avatar className="flex justify-center items-center">
                                 <AvatarImage
@@ -113,8 +118,7 @@ export default function ChatSidebar({ links, isCollapsed, isMobile }: SidebarPro
                                 <span>{link.name}</span>
                                 {link.messages.length > 0 && (
                                     <span className="text-zinc-300 text-xs truncate ">
-                                        {link.messages[link.messages.length - 1].name.split(" ")[0]}
-                                        : {link.messages[link.messages.length - 1].message}
+                                        {link.messages[link.messages.length - 1].message.split(" ")[0]}...
                                     </span>
                                 )}
                             </div>
