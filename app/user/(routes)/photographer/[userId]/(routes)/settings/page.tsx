@@ -9,8 +9,8 @@ import Faq from "./components/faq";
 import { Payment, columns } from "./components/paymentColumns"
 import { DataTable } from "./components/data-table";
 // import { CalendarDemo } from "./components/calender";
-
-
+import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 
 const getData: Payment[] = [
     {
@@ -60,12 +60,18 @@ export default function Settings(){
 
     return (
         <div className="items-center h-[100%] mb-[100px] mx-[10%]">
+            <div className="flex justify-end gap-3 mt-3">
+                <Button className="w-[120px] text-center bg-red-600" type="submit">Delete Account</Button>
+                <Button onClick={() => signOut({
+                    callbackUrl: `${window.location.origin}/sign-in`
+                })}>Log Out</Button>
+            </div>
             <div className="grid md:grid-flow-col sm:gap-[20px] justify-stretch mb-4">
                 <div className="ml-6"><Earnings/></div>
                 <div className="items-center "><AddCategory/></div>
             </div>
             <div className="mb-4"><BankDetails/></div>
-            <div className=""><DataTable columns={columns} data={filteredUsers} /></div>
+            <DataTable columns={columns} data={filteredUsers} />
             <div className="grid md:grid-flow-col justify-stretch">
                 <Report/>
                 <Faq/>

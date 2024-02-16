@@ -33,7 +33,6 @@ const ReportForm = () => {
         },
     });
     const handleSubmit = (val: z.infer<typeof ReportFormSchema>) => {
-        console.log("submitted dewal:", val);
         form.reset();
     }
     return (
@@ -81,7 +80,7 @@ const ReportForm = () => {
                         />
                         <Button
                             type="submit"
-                            className=""
+                            className="w-[100%]"
                         >
                             Submit
                         </Button>

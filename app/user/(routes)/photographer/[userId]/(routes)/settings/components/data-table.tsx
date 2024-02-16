@@ -34,10 +34,12 @@ export function DataTable<TData, TValue>({
     })
 
     return (
-        <div className="rounded-md border md:w-[840px] w-[400px] sm:ml-[85px]">
+        <div className="rounded-md border md:w-[840px] w-[400px] sm:ml-[85px] mx-auto">
+            <div className="py-5 mx-4 text-2xl font-semibold leading-none leading-7 tracking-tight">Payments Summary
+            </div>
             <Table>
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                <TableHeader className="text-xs text-gray-500 bg-gray-100">
+                {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
                             {headerGroup.headers.map((header) => {
                                 return (

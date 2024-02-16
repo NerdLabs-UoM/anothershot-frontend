@@ -29,6 +29,8 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Settings, PenSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
+import {useRouter} from "next/navigation";
 
 const formSchema = z.object({
   username: z
@@ -44,6 +46,7 @@ const formSchema = z.object({
 });
 
 const Hero = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,6 +62,15 @@ const Hero = () => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setValues({ name: values.username, description: values.description });
   };
+
+  const handleNavigation = () => {
+    const path = `settings`
+    if(session?.user?.id ){
+      router.replace(path)
+    }
+  }
+
+  const {data:session} = useSession();
 
   const photographer: boolean = true;
   return (
@@ -132,7 +144,7 @@ const Hero = () => {
                 </DialogContent>
               </Dialog>
 
-              <div className="text-xs font-bold md:text-lg pl-2">4.9</div>
+              <div className="pl-2 text-xs font-bold md:text-lg">4.9</div>
             </div>
           )}
         </div>
@@ -140,19 +152,19 @@ const Hero = () => {
           <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
             {values.name}
           </div>
-          <div className="text-xs w-4/5 md:text-lg">{values.description}</div>
+          <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
         </div>
       </div>
-      <div className="flex flex-row align-middle p-0">
+      <div className="flex flex-row p-0 align-middle">
         {photographer || (
-          <Button variant="destructive" className="rounded-3xl w-4/5" asChild>
+          <Button variant="destructive" className="w-4/5 rounded-3xl" asChild>
             <Link href="/photographer/Bookings">Book Now</Link>
           </Button>
         )}
         {photographer && (
-          <Link href="photographer/prfile/settings" className="pt-2 px-2">
+          <Button onClick={()=>handleNavigation()} className="px-2 pt-2" variant="ghost">
             <Settings />
-          </Link>
+          </Button>
         )}
       </div>
     </div>
