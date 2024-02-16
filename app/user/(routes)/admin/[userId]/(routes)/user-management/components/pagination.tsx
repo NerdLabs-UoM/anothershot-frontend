@@ -27,7 +27,7 @@ const PaginationSection: React.FC<PaginationProps> = ({
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious onClick={handlePrev} className="cursor-pointer"/>
+          <PaginationPrevious onClick={handlePrev} className={`cursor-pointer ${currentPage=== 1?"text-slate-400":""}`}/>
         </PaginationItem>
         <PaginationItem className="inline-flex">
           {Array.from(
@@ -46,7 +46,7 @@ const PaginationSection: React.FC<PaginationProps> = ({
           <PaginationLink isActive={lastPage === currentPage} onClick={() => handleClick(lastPage)} >{lastPage}</PaginationLink>
         </PaginationItem>
         <PaginationItem>
-          <PaginationNext onClick={handleNext} className="cursor-pointer" />
+          <PaginationNext onClick={handleNext} className={`cursor-pointer ${currentPage === lastPage?"text-slate-400":""}`} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

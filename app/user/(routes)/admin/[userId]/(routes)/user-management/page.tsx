@@ -5,6 +5,8 @@ import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { fetchData, fetchLastPage } from "./serviceData";
 import PaginationSection from "./components/pagination";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 interface User {
   id: string;
@@ -53,6 +55,12 @@ const AdminPage = () => {
 
   return (
     <div className="container py-10 ">
+        <div className="justify-end">
+                <Button onClick={() => signOut({
+                    callbackUrl: `${window.location.origin}/sign-in`
+                })}>Sign Out
+                </Button>
+            </div>
         <DataTable columns={columns} data={filteredUsers} />
       <div className="absolute top-[85%] inset-x-0">
         <PaginationSection
