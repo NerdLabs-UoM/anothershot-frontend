@@ -62,7 +62,7 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
   );
   return (
     <div className="flex flex-col ml-3 sm:ml-0">
-      {visibleTestimonials.length > 0 && (
+      {visibleTestimonials.length > 0 ? (
         <Carousel
           className="flex flex-row items-start gap-12 flex-1 self-stretch mb-10 w-[360px] sm:w-[550px] md:w-[700px] lg:w-[920px] xl:w-[1200px]"
           setApi={setApi}
@@ -105,6 +105,8 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
           {window.innerWidth > 779 && <CarouselPrevious />}
           {window.innerWidth > 779 && <CarouselNext />}
         </Carousel>
+      ): (
+        <div className="text-center text-slate-950 mt-4">No testimonials to display.</div>
       )}
     </div>
   );

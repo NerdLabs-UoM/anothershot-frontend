@@ -4,6 +4,7 @@ import CarouselMessages from "./components/CarouselMessages";
 import EditButton from "./components/EditButton";
 import SubmitForm from "./components/SubmitForm";
 
+
 interface TestimonialsData {
   id: string;
   name: string;
@@ -48,7 +49,7 @@ const testimonialsData: TestimonialsData[] = [
 const TestMonialsSection = () => {
   const [testimonials, setTestimonials] = useState(testimonialsData);
   return (
-    <div className="flex flex-col items-center w-full border-y border-transparent py-40">
+    <div className="flex flex-col items-center w-full border-y border-transparent pb-40 pt-32">
       <EditButton
         testimonialsData={testimonials}
         setTestimonialsData={setTestimonials}
