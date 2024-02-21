@@ -69,6 +69,10 @@ const Hero = () => {
     if(userId == session?.user.id) {
       setIsPhotographer(true)
     }
+
+    // if(session?.user.userRole =='PHOTOGRAPHER'){
+    //   setIsPhotographer(true)
+    // }
   },[userId,session])
   const [values, setValues] = useState({
     name: "",
@@ -119,18 +123,19 @@ const Hero = () => {
 
   const photographer: boolean = true;
   return (
-    <div className="flex flex-row md:w-11/12 h-[400] justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] bg-cover bg-no-repeat  bg-white bg-opacity-85 ">
-      <div className="absolute inset-0 -z-10">
+    <div className="flex flex-col sm:flex-row md:w-11/12 h-[350px] md:justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] bg-cover bg-no-repeat  bg-white bg-opacity-85 ">
+      <div className="absolute inset-0 z-[-10] mt-24">
         <Image
           src={coverImageURL}
-          layout="fill"
           objectFit=" justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] cover"
           quality={50}
           alt="cover"
+          width={1920}
+          height={400}
         />
       </div>
 
-      <div className="p-5 md:px-0  ">
+      <div className="p-5 md:px-0">
         <div className="flex pt-10 align-middle px-10">
           <div>
             <Avatar className="relative w-20 h-20">
@@ -236,7 +241,9 @@ const Hero = () => {
               sources: ["local"],
               googleApiKey: "<image_search_google_api_key>",
               showAdvancedOptions: false,
-              cropping: false,
+              cropping: true,
+              croppingCoordinatesMode: 'custom',
+              croppingAspectRatio: 2,
               multiple: false,
               defaultSource: "local",
               resourceType: "image",
@@ -283,7 +290,7 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="flex flex-row align-middle p-0">
+      <div className="flex flex-row align-middle p-0 px-12">
 
         {isPhotographer && 
           <div className="pt-2">
@@ -355,7 +362,7 @@ const Hero = () => {
         )}
         
         {isPhotographer && (
-          <Link href="photographer/prfile/settings" className="pt-2 px-2">
+          <Link href="photographer/prfile/settings" className="relative pt-2 px-2">
             <Settings />
           </Link>
         )}

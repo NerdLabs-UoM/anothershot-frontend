@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, redirect } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
@@ -22,6 +22,13 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import {
   DropdownMenu,
@@ -45,19 +52,32 @@ const sessions: sessionTypes = {
 const Navbar = () => {
   let navigationMenuContent;
   const pathname = usePathname();
-  const isPathAdmin = pathname.startsWith('/admin');
+  const isPathAdmin = pathname.startsWith("/admin");
   const router = useRouter();
-  const {data:session} = useSession()
-  
-  const handleNavigation = () => {
-    const path = `user/photographer/${session?.user.id}/profile`
-    if(session?.user?.id && pathname!=="/"+ path){
-      router.replace(path)
-    }
-  }
-  
-  const userId = session?.user.id
+  const { data: session } = useSession();
 
+  const handleNavigation = () => {
+    const path = `user/photographer/${session?.user.id}/profile`;
+    if (session?.user?.id && pathname == "/" + path) {
+      router.push("");
+    } else if (session?.user?.id && pathname !== "/") {
+      router.push("profile");
+    } else {
+      router.push(path);
+    }
+  };
+  const handleDirection = (dir: string) => {
+    const path = `user/photographer/${session?.user.id}/${dir}`;
+    if (session?.user?.id && pathname == "/" + path) {
+      router.replace("");
+    } else if (session?.user?.id && pathname !== "/") {
+      router.push(`${dir}`);
+    } else {
+      router.push(path);
+    }
+  };
+
+  // const userId = session?.user.id
 
   if (sessions.loged && sessions.client) {
     navigationMenuContent = !isPathAdmin && (
@@ -122,104 +142,160 @@ const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu>
     );
-  } else if (sessions.loged && sessions.Photographer && pathname!="/admin") {
+  } else if (sessions.loged && sessions.Photographer && pathname != "/admin") {
     navigationMenuContent = !isPathAdmin && (
       <NavigationMenu>
-        <NavigationMenuList className="bg-black rounded-t-3xl sm: px-4 py-3 sm:gap-20">
-          <NavigationMenuItem className="px-8 sm:px-6">
-            <Link href="/" legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/"
-                    ? "flex flex-col items-center shadow-lg text-white"
-                    : "flex flex-col items-center text-white"
-                }
-              >
-                <Home className="w-[20px]" />
-                <span className="text-xs">Home</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          
-          <NavigationMenuItem className="px-8 sm:px-6">
+        <NavigationMenuList className="bg-black sm:rounded-t-3xl sm: px-4 py-3  sm:gap-20 shadow-lg border-t">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavigationMenuItem className="px-8 sm:px-6">
+                  <Link href="/" legacyBehavior passHref>
+                    <NavigationMenuLink
+                      className={
+                        pathname == "/"
+                          ? "flex flex-col items-center shadow-lg text-white"
+                          : "flex flex-col items-center text-white"
+                      }
+                    >
+                      <Home className="w-[20px]" />
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              </TooltipTrigger>
+              <TooltipContent >
+                <div>Home</div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger><NavigationMenuItem className="px-8 sm:px-6">
+                  <NavigationMenuLink
+                  onClick={() => {
+                    handleNavigation();
+                  }}
+                    className={
+                      pathname == "/photographer/profile"
+                        ? "flex flex-col items-center shadow-lg"
+                        : "flex flex-col items-center text-white"
+                    }
+                  >
+                    <UserRound className="w-[20px]" />
+                  </NavigationMenuLink>
+              </NavigationMenuItem></TooltipTrigger>
+              <TooltipContent>
+                <div>Profile</div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger> <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
+                
+              
+                  <NavigationMenuLink
+                  onClick={() => {
+                    handleDirection("feed");
+                  }}
+                    className={
+                      pathname == "/Photographer-feed"
+                        ? "flex flex-col items-center shadow-lg"
+                        : "flex flex-col items-center text-white"
+                    }
+                  >
+                    <Blocks className="w-[20px]" />
+                  </NavigationMenuLink>
+               
+              </NavigationMenuItem></TooltipTrigger>
+              <TooltipContent>
+                <div>Feed</div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger><NavigationMenuItem className=" hidden lg:flex px-8 sm:px-6 ">
+              
+                  <NavigationMenuLink
+                  onClick={() => {
+                    handleDirection("albums");
+                  }}
+                    className={
+                      pathname == "/Phorographer-albums"
+                        ? "flex flex-col items-center shadow-lg"
+                        : "flex flex-col items-center text-white"
+                    }
+                  >
+                    <Image className="w-[20px]" />
+                  </NavigationMenuLink>
+                
+              </NavigationMenuItem></TooltipTrigger>
+              <TooltipContent>
+                <div>Albums</div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
+                  
+                    <NavigationMenuLink
+                    onClick={() => {
+                      handleDirection("bookings");
+                    }}
+                      className={
+                        pathname == "/Photographer-bookings"
+                          ? "flex flex-col items-center shadow-lg"
+                          : "flex flex-col items-center text-white"
+                      }
+                    >
+                      <ListEnd className="w-[20px]" />
+                    </NavigationMenuLink>
             
-            <Button variant={null}  onClick={()=>{
-              handleNavigation();
-            }} >
-              <NavigationMenuLink
-                className={
-                  pathname == "/photographer/profile"
-                  ? "flex flex-col items-center shadow-lg"
-                  : "flex flex-col items-center text-white"
-                }
-              >
-                <UserRound className="w-[20px]" />
-                <span className="text-xs">Profile</span>
-              </NavigationMenuLink>
-            </Button>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
-            <Link href={`user/photographer/${session?.user.id}/feed`} legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/Photographer-feed"
-                  ? "flex flex-col items-center shadow-lg"
-                  : "flex flex-col items-center text-white"
-                }
-              >
-                <Blocks className="w-[20px]" />
-                <span className="text-xs">Feed</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem className=" hidden lg:flex px-8 sm:px-6 ">
-            <Link href={`user/photographer/${session?.user.id}/albums`} legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/Phorographer-albums"
-                  ? "flex flex-col items-center shadow-lg"
-                  : "flex flex-col items-center text-white"
-                }
-              >
-                <Image className="w-[20px]" />
-                <span className="text-xs">Albums</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
-            <Link href={`user/photographer/${session?.user.id}/bookings`} legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/Photographer-bookings"
-                  ? "flex flex-col items-center shadow-lg"
-                  : "flex flex-col items-center text-white"
-                }
-              >
-                <ListEnd className="w-[20px]" />
-                <span className="text-xs">Bookings</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="px-8 sm:px-6 :flex">
-            <Link href={`user/photographer/${session?.user.id}/inbox`} legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/inbox"
-                  ? "flex flex-col items-center shadow-lg"
-                  : "flex flex-col items-center text-white"
-                }
-              >
-                <MessageSquareText className="w-[20px]" />
-                <span className="text-xs">Inbox</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
+                </NavigationMenuItem></TooltipTrigger>
+              <TooltipContent>
+                <p>Bookings</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger> <NavigationMenuItem className="px-8 sm:px-6 :flex">
+                
+                  <NavigationMenuLink
+                  onClick={() => {
+                    handleDirection("inbox");
+                  }}
+                    className={
+                      pathname == "/inbox"
+                        ? "flex flex-col items-center shadow-lg"
+                        : "flex flex-col items-center text-white"
+                    }
+                  >
+                    <MessageSquareText className="w-[20px]" />
+                  </NavigationMenuLink>
+             
+              </NavigationMenuItem></TooltipTrigger>
+              <TooltipContent>
+                <p>Inbox</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+
+
           <NavigationMenuItem className="flex lg:hidden px-8 sm:px-6">
             <NavigationMenuLink>
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex flex-col items-center text-slate-500 active:text-white">
                   <Menu className="w-[20px]" />
-                  <span className="text-xs">Menu</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <Link href="/photographer/bookings" legacyBehavior passHref>
@@ -262,8 +338,8 @@ const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu>
     );
-  } else if(pathname!="/admin"){
-    navigationMenuContent =!isPathAdmin && (
+  } else if (pathname != "/admin") {
+    navigationMenuContent = !isPathAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="bg-black rounded-t-3xl sm: px-4 py-3 sm:gap-20">
           <NavigationMenuItem className="px-10">

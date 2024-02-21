@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/Navbar";
 import ContactSection from "./contactSection/contactSection";
 import FeaturedPhotoSection from "./featuredPhoto/featuredPhotoSection";
 import Hero from "./heroSection/Hero";
@@ -18,9 +19,10 @@ const PhotographerProfile = () => {
       {isClient && (
         <>
           <Hero />
-          <FeaturedPhotoSection />
+          {/* <FeaturedPhotoSection />
           <ContactSection />
-          <TestMonialsSection />
+          <TestMonialsSection /> */}
+          <Navbar/>
         </>
       )}
     </div>
