@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import {useSession} from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Check, ChevronsUpDown, Pencil } from "lucide-react";
 import {
@@ -39,13 +40,20 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils";
+import { isEqual } from 'lodash';
 
 interface TestimonialsData {
   id: string;
-  name: string;
-  feedback: string;
-  url: string;
-  visibility: boolean;
+  review: string;
+  rating: number;
+  visibility: 'PUBLIC' | 'PRIVATE';
+  client: {
+    id: string;
+    user: {
+      name: string;
+      image: string | null; 
+    };
+  };
 }
 
 interface EditButtonProps {
@@ -65,23 +73,63 @@ const EditButton: React.FC<EditButtonProps> = ({
   const [value, setValue] = React.useState("");
 
   const handleSubmit = () => {
+    const changedTestimonials = testimonials.filter(testimonial =>
+      testimonial.visibility !== testimonialsData.find(({ id }) => id === testimonial.id)?.visibility
+    );
+    const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
     setTestimonialsData(testimonials);
     toast.success("Testimonials updated successfully!");
+
+    try {
+      axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/photographer/${userId}/profile/testimonials/visibility`, changedTestimonialsIds);
+    } catch (error) {
+      console.error("Error updating testimonials:", error);
+    }
   };
 
   const handleVisibility = () => {
     const items = [...testimonials];
     const testimonial = items.find((testimonial) => value === testimonial.id);
-    testimonial!.visibility = !testimonial?.visibility;
+    testimonial!.visibility = isEqual(testimonial?.visibility, "PUBLIC")?"PRIVATE":"PUBLIC";
     setTestimonials(items);
     setChecked(!checked);
   };
-
   const handleValueChange = (value: string) => {
     const testimonial = testimonials.find(
       (testimonial) => value === testimonial.id
     );
-    testimonial?.visibility ? setChecked(true) : setChecked(false);
+    isEqual(testimonial?.visibility, "PUBLIC") ? setChecked(true) : setChecked(false);
+  };
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < rating) {
+        stars.push(
+          <svg
+            key={i}
+            className="w-3 h-3 text-yellow-300"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 22 20"
+          >
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+        );
+      } else {
+        stars.push(
+          <svg
+            key={i}
+            className="w-3 h-3 text-gray-300"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 22 20"
+          >
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+        );
+      }
+    }
+    return stars;
   };
 
   const renderEditButton = () => {
@@ -126,7 +174,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                     {value
                       ? testimonials.find(
                         (testimonial) => testimonial.id === value
-                      )?.name
+                      )?.client.user.name 
                       : "Select testimonial..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -153,12 +201,10 @@ const EditButton: React.FC<EditButtonProps> = ({
                               <Check
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  testimonial.visibility
-                                    ? "opacity-100"
-                                    : "opacity-0"
+                                  isEqual(testimonial.visibility, "PUBLIC") ? "opacity-100" : "opacity-0"
                                 )}
                               />
-                              {testimonial.name}
+                              {testimonial.client.user.name}
                             </CommandItem>
                           </HoverCardTrigger>
                           <HoverCardContent className="w-[500px]">
@@ -172,17 +218,20 @@ const EditButton: React.FC<EditButtonProps> = ({
                             </div>
                             <div className="flex p-0 items-center gap-10 flex-1">
                               <span className="flex flex-col justify-center items-end gap-3 flex-1 self-stretch text-right text-slate-950 text-xs">
-                                {testimonial.feedback}
+                                {testimonial.review}
                               </span>
                               <Avatar className="w-[70px] h-[70px]" >
-                                <AvatarImage src={testimonial.url} alt="@shadcn" />
+                                <AvatarImage src={testimonial.client.user.image || undefined} alt="@shadcn" />
                                 <AvatarFallback>CN</AvatarFallback>
                               </Avatar>
                             </div>
                             <div>
                               <span className="text-slate-950 text-right font-bold text-xl">
-                                {testimonial.name}
+                                {testimonial.client.user.name}
                               </span>
+                            </div>
+                            <div className="flex items-center gap-2 mt-2">
+                              {renderStars(testimonial.rating)}
                             </div>
                           </HoverCardContent>
                         </HoverCard>

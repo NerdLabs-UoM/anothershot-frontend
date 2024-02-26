@@ -2,6 +2,7 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -13,118 +14,117 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import React, { Component } from "react";
-import {useSession} from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
 
-interface TestimonialsData {
-  id: string;
-  name: string;
-  feedback: string;
-  url: string;
-  visibility: boolean;
-}
-interface SubmitFormProps {
-  testimonialsData: TestimonialsData[];
-  setTestimonialsData: React.Dispatch<React.SetStateAction<TestimonialsData[]>>;
-}
+
+
+// interface Testimonials {
+//   review: string;
+//   rating: number;
+//   clientId: string,
+//   photogrpaherId: string,
+// }
 const formSchema = z.object({
-  feedback: z.string().min(100,"Give your feedback should be between 100-200 characters").max(200, "Give your feedback should be between 100-200 characters"),
-  rate: z.enum(["Amazing", "Excellent", "Good", "Ordinary", "Bad"]),
+  review: z.string().min(100, "Give your feedback should be between 100-200 characters").max(200, "Give your feedback should be between 100-200 characters"),
+  rating: z.number(),
 });
-const SubmitForm: React.FC<SubmitFormProps> = ({
-  setTestimonialsData,
-  testimonialsData,
+const SubmitForm: React.FC = ({
 }) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | 0 >(0);
   const { userId } = useParams();
   const { data: session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      feedback: "",
-      rate: "Excellent",
+      review: "",
+      rating: 0,
     },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    const newTestimonial = {
-      id: uuidv4(),
-      name: "New User",
-      feedback: values.feedback,
-      url: "/images/ellipse.png", 
-      visibility: true,
-    };
-    setTestimonialsData((prevTestimonials) => [
-      ...prevTestimonials,
-      newTestimonial,
-    ]);
-    form.reset();
+  const handleStarClick = (ratingValue: number) => {
+    setSelectedRating(ratingValue);
   };
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const newTestimonial = {
+        review: values.review,
+        rating: selectedRating,
+        clientId: session?.user?.id,
+        photogrpaherId: userId,
+      };
+      const response = await axios.post(`/api/user/photographer/${userId}/testimonial`, newTestimonial);
+      console.log(response.data); 
+    }
+    catch (error) {
+      console.error("Error submitting testimonial", error);
+    }
+    form.reset();
+    setSelectedRating(0); 
+  };
+
   const renderForm = () => {
     if (session?.user?.id === userId) {
       return null;
     }
-  return (<Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-      <FormField
-        control={form.control}
-        name="rate"
-        render={({ field }) => (
-          <FormItem className="flex flex-col items-start ml-0 sm:ml-20 sm:flex-row sm:items-center md:ml-0">
-            <FormLabel className="font-medium text-sm mr-[30px] inline-flex">
-              Rate your Experience
-            </FormLabel>
-            <Select onValueChange={field.onChange}>
+    return (<Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="rating"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start ml-0 sm:ml-20 sm:flex-row sm:items-center md:ml-0">
+              <FormLabel className="font-medium text-sm mr-[30px] inline-flex">
+                Rate your Experience
+              </FormLabel>
               <FormControl>
-                <SelectTrigger className="w-[95px] h-[28px] px-1">
-                  <SelectValue placeholder="Excellent" />
-                </SelectTrigger>
+                <div className="flex items-cente">
+                  {[...Array(5)].map((_, index) => (
+                    <svg
+                      key={index}
+                      className={`w-4 h-4 ${selectedRating && index < selectedRating
+                        ? "text-yellow-300"
+                        : "text-gray-300"
+                        } ms-1 cursor-pointer`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 22 20"
+                      onClick={() => handleStarClick(index + 1)}
+                    >
+                      <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                    </svg>
+                  ))}
+                </div>
               </FormControl>
-              <SelectContent>
-                <SelectItem value="Amazing">Amazing</SelectItem>
-                <SelectItem value="Excellent">Excellent</SelectItem>
-                <SelectItem value="Good">Good</SelectItem>
-                <SelectItem value="Ordinary">Ordinary</SelectItem>
-                <SelectItem value="Bad">Bad</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="feedback"
-        render={({ field }) => (
-          <FormItem className="flex flex-col ml-0 sm:ml-20 md:ml-0">
-            <FormLabel className="font-medium text-sm">Feedback</FormLabel>
-            <FormControl>
-              <Textarea
-                className="h-[80px] w-[346px] sm:w-[537px] md:w-[689px] resize-none"
-                placeholder="Type your feedback here"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <Button
-        type="submit"
-        className="ml-0 sm:ml-20 h-9 w-[346px] sm:h-11 sm:w-[537px] md:w-[530px]"
-      >
-        Submit
-      </Button>
-    </form>
-  </Form>)
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="review"
+          render={({ field }) => (
+            <FormItem className="flex flex-col ml-0 sm:ml-20 md:ml-0">
+              <FormLabel className="font-medium text-sm">Feedback</FormLabel>
+              <FormControl>
+                <Textarea
+                  className="h-[80px] w-[346px] sm:w-[537px] md:w-[689px] resize-none"
+                  placeholder="Type your feedback here"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          className="ml-0 sm:ml-20 h-9 w-[346px] sm:h-11 sm:w-[537px] md:w-[530px]"
+        >
+          Submit
+        </Button>
+      </form>
+    </Form>)
   };
   return (
     <div className="w-[340px] sm:w-[689px]">
