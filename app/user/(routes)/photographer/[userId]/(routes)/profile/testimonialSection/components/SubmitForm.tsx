@@ -17,15 +17,9 @@ import { Textarea } from "@/components/ui/textarea";
 import React, { Component } from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 
-
-// interface Testimonials {
-//   review: string;
-//   rating: number;
-//   clientId: string,
-//   photogrpaherId: string,
-// }
 const formSchema = z.object({
   review: z.string().min(100, "Give your feedback should be between 100-200 characters").max(200, "Give your feedback should be between 100-200 characters"),
   rating: z.number(),
@@ -35,6 +29,7 @@ const SubmitForm: React.FC = ({
   const [selectedRating, setSelectedRating] = React.useState<number | 0 >(0);
   const { userId } = useParams();
   const { data: session } = useSession();
+  const [loading, setLoading] = React.useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,22 +40,30 @@ const SubmitForm: React.FC = ({
   const handleStarClick = (ratingValue: number) => {
     setSelectedRating(ratingValue);
   };
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>, e:any) => {
     try {
-      const newTestimonial = {
-        review: values.review,
-        rating: selectedRating,
-        clientId: session?.user?.id,
-        photogrpaherId: userId,
-      };
-      const response = await axios.post(`/api/user/photographer/${userId}/testimonial`, newTestimonial);
-      console.log(response.data); 
-    }
-    catch (error) {
-      console.error("Error submitting testimonial", error);
+      setLoading(true);
+      if (values) {
+        const response = await axios.post(`http://localhost:8000/api/user/photographer/${userId}/profile/testimonial`, {
+          review: values.review,
+          rating: selectedRating,
+          clientId: session?.user?.id,
+          photographerId:userId,
+        });
+        if (response.status === 200) {
+          setLoading(false);
+          e.target.reset();
+          toast.success("Thank you for your feedback");
+        }
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error("Something went wrong");
+    }finally{
+      setLoading(false);
     }
     form.reset();
-    setSelectedRating(0); 
+    setSelectedRating(0);
   };
 
   const renderForm = () => {

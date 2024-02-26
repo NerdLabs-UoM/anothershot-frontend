@@ -28,7 +28,7 @@ const TestMonialsSection = () => {
       try {
         const response = await axios.get<TestimonialsData[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/user/photographer/${userId}/profile/testimonials`);
         setTestimonials(response.data);
-      } catch (error) {
+      } catch (error:any) {
         console.error('Error fetching testimonials:', error);
       }
     };

@@ -82,7 +82,7 @@ const EditButton: React.FC<EditButtonProps> = ({
 
     try {
       axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/photographer/${userId}/profile/testimonials/visibility`, changedTestimonialsIds);
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error updating testimonials:", error);
     }
   };
