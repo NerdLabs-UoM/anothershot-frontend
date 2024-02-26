@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import axios from "axios";
@@ -51,19 +51,18 @@ interface TestimonialsData {
     id: string;
     user: {
       name: string;
-      image: string | null; 
+      image: string | null;
     };
   };
 }
 
 interface EditButtonProps {
   testimonialsData: TestimonialsData[];
-  setTestimonialsData: React.Dispatch<React.SetStateAction<TestimonialsData[]>>;
+  
 }
 
 const EditButton: React.FC<EditButtonProps> = ({
   testimonialsData,
-  setTestimonialsData,
 }) => {
   const { userId } = useParams();
   const { data: session } = useSession();
@@ -71,26 +70,42 @@ const EditButton: React.FC<EditButtonProps> = ({
   const [checked, setChecked] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    const changedTestimonials = testimonials.filter(testimonial =>
-      testimonial.visibility !== testimonialsData.find(({ id }) => id === testimonial.id)?.visibility
-    );
-    const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
-    setTestimonialsData(testimonials);
-    toast.success("Testimonials updated successfully!");
+  useEffect(() => {
+    setTestimonials(testimonialsData);
+  }, [testimonialsData]);
 
+  const handleSubmit = async () => {
+    setLoading(true);
+    if (testimonials.every(testimonial => testimonial.visibility === testimonial.client.visibility)) {
+      toast("No changes made.");
+      setLoading(false);
+      return;
+    }
     try {
-      axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/photographer/${userId}/profile/testimonials/visibility`, changedTestimonialsIds);
-    } catch (error:any) {
+      const changedTestimonials = testimonials.filter(testimonial =>
+        testimonial.visibility !== testimonial.client.visibility
+      );
+      const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
+      const response = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/photographer/${userId}/profile/testimonials/visibility`,
+        { testimonialId: changedTestimonialsIds }
+      );
+      console.log("Testimonials updated successfully:", response.data);
+      toast.success("Testimonials updated successfully!");
+    } catch (error) {
       console.error("Error updating testimonials:", error);
+      toast.error("Failed to update testimonials");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVisibility = () => {
     const items = [...testimonials];
     const testimonial = items.find((testimonial) => value === testimonial.id);
-    testimonial!.visibility = isEqual(testimonial?.visibility, "PUBLIC")?"PRIVATE":"PUBLIC";
+    testimonial!.visibility = isEqual(testimonial?.visibility, "PUBLIC") ? "PRIVATE" : "PUBLIC";
     setTestimonials(items);
     setChecked(!checked);
   };
@@ -174,7 +189,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                     {value
                       ? testimonials.find(
                         (testimonial) => testimonial.id === value
-                      )?.client.user.name 
+                      )?.client.user.name
                       : "Select testimonial..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>

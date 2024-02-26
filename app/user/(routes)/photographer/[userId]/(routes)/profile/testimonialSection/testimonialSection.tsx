@@ -40,7 +40,6 @@ const TestMonialsSection = () => {
     <div className="flex flex-col items-center w-full border-y border-transparent pb-40 pt-32">
       <EditButton
         testimonialsData={testimonials}
-        setTestimonialsData={setTestimonials}
       />
       <CarouselMessages 
         testimonialsData={testimonials} 
