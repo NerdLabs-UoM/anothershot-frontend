@@ -20,7 +20,6 @@ const PhotographerProfile = () => {
         <>
           <Hero />
           <FeaturedPhotoSection />
-        
           <ContactSection />
           <TestMonialsSection />
         
