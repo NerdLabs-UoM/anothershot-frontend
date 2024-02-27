@@ -36,7 +36,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 
 interface TestimonialsData {
   id: string;
@@ -121,7 +121,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                     <CommandEmpty>No framework found.</CommandEmpty>
                     <CommandGroup>
                       {testimonials.map((testimonial) => (
-                        <HoverCard>
+                        <HoverCard key={testimonial.id}>
                           <HoverCardTrigger asChild>
                             <CommandItem
                               key={testimonial.id}

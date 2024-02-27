@@ -1,12 +1,12 @@
 "use client";
 import {
   Carousel,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  type CarouselApi,
-} from "@/components/ui/carousel";
+} from "@/components/ui/carousel"
 import {
   Avatar,
   AvatarFallback,
