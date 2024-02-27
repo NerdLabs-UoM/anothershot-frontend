@@ -19,9 +19,9 @@ const PhotographerProfile = () => {
       {isClient && (
         <>
           <Hero />
-          {/* <FeaturedPhotoSection />
+          <FeaturedPhotoSection />
           <ContactSection />
-          <TestMonialsSection /> */}
+          <TestMonialsSection />
         </>
       )}
     </div>
