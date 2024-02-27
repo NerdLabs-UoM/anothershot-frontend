@@ -6,9 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter , useParams } from "next/navigation";
 import useFetch from "./fetchData";
 
 import {
@@ -19,8 +18,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -35,16 +32,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings, PenSquare, Camera } from "lucide-react";
 
 import {
-  CldUploadButton,
-  CldImage,
   CldUploadWidgetResults,
   CldUploadWidgetInfo,
   CldUploadWidget,
 } from "next-cloudinary";
 
-import { Settings, PenSquare } from "lucide-react";
+
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -64,8 +59,13 @@ const formSchema = z.object({
 
 
 
-const userId = "65ca65fd9d72ab17fec59a0b";
+
 const Hero = () => {
+  const [values, setValues] = useState({
+    name: "",
+    description:"",
+  });
+
   const {userId} = useParams()
   const {data:session} = useSession();
   const[isPhotographer,setIsPhotographer] = useState(false);
@@ -74,20 +74,13 @@ const Hero = () => {
     if(userId == session?.user.id) {
       setIsPhotographer(true)
     }
-
-    // if(session?.user.userRole =='PHOTOGRAPHER'){
-    //   setIsPhotographer(true)
-    // }
   },[userId,session])
-  const [values, setValues] = useState({
-    name: "",
-    description:"",
-  });
+
+  
   const [profileImage,setProfileImage] = useState('')
   const [coverImageURL,setCoverImageURL] = useState('')
-  const [profilePhoto, setProfilePhoto] = useState<string>();
 
-  const { item, loading, error } = useFetch(
+  const { item } = useFetch(
     `http://localhost:8000/api/photographer/${userId}`
   );
 
@@ -98,12 +91,11 @@ const Hero = () => {
     },[item])
 
 
-  const session = useSession();
-  const { userId } = useParams();
+
   const [sessionId, setSessionId] = useState<string | null>(null);
   useEffect(() => {
-    if (session.data) {
-      setSessionId(session.data.user.id);
+    if (session) {
+      setSessionId(session?.user.id);
     }
   }, [session]);
 
@@ -114,8 +106,6 @@ const Hero = () => {
     },
   });
 
-  
-  
 
   const [isOpen, setIsOpen] = useState(false);
   
@@ -153,21 +143,20 @@ const Hero = () => {
       if (res.status === 201) {
         toast.success("Chat created successfully");
         setTimeout(() => {
-          window.location.href = `/user/client/${session.data?.user.id}/inbox`;
+          window.location.href = `/user/client/${session?.user.id}/inbox`;
         }, 1000);
       }
     } catch (error: any) {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
         setTimeout(() => {
-          window.location.href = `/user/client/${session.data?.user.id}/inbox`;
+          window.location.href = `/user/client/${session?.user.id}/inbox`;
         }, 1000);
       }
     }
 
   };
 
-  const photographer: boolean = false;
   return (
     <div className="flex flex-col sm:flex-row md:w-11/12 h-[350px] md:justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] bg-cover bg-no-repeat  bg-white bg-opacity-85 ">
       <div className="absolute inset-0 z-[-10] mt-48 sm:mt-24">
@@ -274,7 +263,7 @@ const Hero = () => {
               const tags= uploadedResult.tags
               console.log(tags)
               const coverImageURL = {
-                coverPhoto: uploadedResult.secure_url as string,
+                coverPhoto: uploadedResult.secure_url,
               };
               setCoverImageURL(coverImageURL.coverPhoto)
               async function Update() {
@@ -402,7 +391,7 @@ const Hero = () => {
           </div>
         }
         {isPhotographer || (
-          <Button variant="default" onClick={() => handleCreateChat() className="w-4/5 mx-3" asChild>
+          <Button variant="default" onClick={() => handleCreateChat()} className="w-4/5 mx-3" asChild>
             <Link href="/photographer/Bookings">Message</Link>
           </Button>
         )}

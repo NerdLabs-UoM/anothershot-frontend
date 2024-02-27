@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { usePathname, useRouter, redirect } from "next/navigation";
+import { usePathname, useRouter} from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
@@ -37,14 +37,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { boolean } from "zod";
-interface sessionTypes {
-  Photographer: boolean;
-  client: boolean;
-  admin: boolean;
 
-}
+
 
 const Navbar = () => {
 
@@ -73,16 +67,6 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
 
  },[session])
  
-  const handleNavigation = () => {
-    const path = `user/photographer/${session?.user.id}/profile`;
-    if (session?.user?.id && pathname == "/" + path) {
-      router.push("");
-    } else if (session?.user?.id && pathname !== "/") {
-      router.push("profile");
-    } else {
-      router.push(path);
-    }
-  };
   const handleDirection = (dir: string) => {
    if(pathname == `/user/photographer/${session?.user.id}`) {
       router.push(`${session?.user.id}/${dir}`);
