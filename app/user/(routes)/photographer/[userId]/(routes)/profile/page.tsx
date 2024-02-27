@@ -5,6 +5,7 @@ import FeaturedPhotoSection from "./featuredPhoto/featuredPhotoSection";
 import Hero from "./heroSection/Hero";
 import TestMonialsSection from "./testimonialSection/testimonialSection";
 import { useEffect, useState } from "react";
+import EditPhoto from "./featuredPhoto/components/editPhoto";
 
 const PhotographerProfile = () => {
   const [isClient, setIsClient] = useState(false);
@@ -21,6 +22,7 @@ const PhotographerProfile = () => {
           <FeaturedPhotoSection />
           <ContactSection />
           <TestMonialsSection />
+        
         </>
       )}
     </div>
