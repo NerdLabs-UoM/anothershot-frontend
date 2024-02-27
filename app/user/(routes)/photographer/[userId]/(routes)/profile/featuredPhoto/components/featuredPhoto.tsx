@@ -9,15 +9,11 @@ export default function FeaturedPhoto() {
 
   return (
     <div>
-      <Button
-        className="mr-0 sm:mr-0 flex ml-auto sm:ml-auto "
-        variant={"outline"}
-        size={"icon"}
-      >
-        <div>
-          <EditPhoto />
-        </div>
-      </Button>
+      
+        <div className="flex sm:ml-auto justify-end items-end mr-4 mt-6 ">  <EditPhoto />  </div>
+      
+      
+     
       <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10 mr-6 space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg ">
 
         <div className="flex -space-x-4 sm:-space-x-14 ">
