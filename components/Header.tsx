@@ -61,10 +61,10 @@ const Header = () => {
       <div className="flex flex-row justify-between item-center h-24 px-5 sm:px-20 pt-10 ">
         <Logo />
         <div className="flex gap-4">
-          <Search />
+          <Search/>
           <Sheet>
             <SheetTrigger>
-              <BellDot className="fill-black mb-8" />
+              <BellDot className="fill-black mb-8"  />
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>

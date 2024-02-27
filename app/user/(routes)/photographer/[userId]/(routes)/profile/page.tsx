@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/Navbar";
 import ContactSection from "./contactSection/contactSection";
 import FeaturedPhotoSection from "./featuredPhoto/featuredPhotoSection";
 import Hero from "./heroSection/Hero";
