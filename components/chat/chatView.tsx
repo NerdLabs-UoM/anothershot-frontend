@@ -30,6 +30,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
     }, [selectedChat, messages]);
 
     useEffect(() => {
+        const currentSocket = socket.current;
         const handleReceiveMessage = (message: Message) => {
             if (selectedChat.id === message.chatId) {
                 if (session?.user.id !== message.senderId) {
@@ -46,11 +47,11 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
                 }
             }
         };
-        socket.current?.on("receive-msg", handleReceiveMessage);
+        currentSocket?.on("receive-msg", handleReceiveMessage);
         return () => {
-            socket.current?.off("receive-msg", handleReceiveMessage);
+            currentSocket?.off("receive-msg", handleReceiveMessage);
         };
-    }, [socket, selectedChat, session]);
+    }, [socket, selectedChat, session, setSelectedChat]);
 
     const sendMessage = async (newMessage: Message) => {
         try {

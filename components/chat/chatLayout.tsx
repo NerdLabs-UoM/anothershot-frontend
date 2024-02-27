@@ -42,23 +42,9 @@ export function ChatLayout({
         checkScreenWidth();
         window.addEventListener("resize", checkScreenWidth);
         return () => {
-            if (socket.current) {
-                socket.current.emit('disconnect-user', session?.user.id)
-                socket.current.disconnect();
-            }
             window.removeEventListener("resize", checkScreenWidth);
         };
     }, []);
-
-    const fetchChats = async () => {
-        try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${session?.user.id}`);
-            setChats(res.data);
-            setSelectedChat(res.data[0]);
-        } catch (error) {
-            toast.error('Error fetching chats');
-        }
-    }
 
     const fetchSelectedChat = async (chatId: string) => {
         try {
@@ -71,6 +57,15 @@ export function ChatLayout({
     }
 
     useEffect(() => {
+        const fetchChats = async () => {
+            try {
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${session?.user.id}`);
+                setChats(res.data);
+                setSelectedChat(res.data[0]);
+            } catch (error) {
+                toast.error('Error fetching chats');
+            }
+        }
         if (session?.user.id) {
             fetchChats();
             try {
@@ -78,6 +73,13 @@ export function ChatLayout({
                 socket.current.emit('connect-user', session.user.id)
             } catch (error) {
                 toast.error('Error connecting to server');
+            }
+        }
+
+        return () => {
+            if (socket.current) {
+                socket.current.emit('disconnect-user', session?.user.id)
+                socket.current.disconnect();
             }
         }
     }, [session?.user.id]);

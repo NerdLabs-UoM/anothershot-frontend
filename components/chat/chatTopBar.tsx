@@ -21,7 +21,7 @@ export default function ChatTopbar({ selectedChat }: ChatTopbarProps) {
 
     useEffect(() => {
         setSelectedUser(selectedChat.users.find(user => user.id !== session?.user.id))
-    }, [selectedChat])
+    }, [selectedChat, session?.user.id])
 
     return (
         <div className="w-full h-20 flex p-4 justify-between items-center border-b">

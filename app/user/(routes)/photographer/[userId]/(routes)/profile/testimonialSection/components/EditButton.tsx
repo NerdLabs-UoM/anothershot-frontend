@@ -121,7 +121,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                     <CommandEmpty>No framework found.</CommandEmpty>
                     <CommandGroup>
                       {testimonials.map((testimonial) => (
-                        <HoverCard>
+                        <HoverCard key={testimonial.id}>
                           <HoverCardTrigger asChild>
                             <CommandItem
                               key={testimonial.id}
