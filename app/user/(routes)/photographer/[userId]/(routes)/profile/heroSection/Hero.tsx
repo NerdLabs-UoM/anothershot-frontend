@@ -124,10 +124,10 @@ const Hero = () => {
   const photographer: boolean = true;
   return (
     <div className="flex flex-col sm:flex-row md:w-11/12 h-[350px] md:justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] bg-cover bg-no-repeat  bg-white bg-opacity-85 ">
-      <div className="absolute inset-0 z-[-10] mt-24">
+      <div className="absolute inset-0 z-[-10] mt-48 sm:mt-24">
         <Image
           src={coverImageURL}
-          objectFit=" justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] cover"
+          objectFit="justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] cover"
           quality={50}
           alt="cover"
           width={1920}
@@ -140,18 +140,18 @@ const Hero = () => {
           <div>
             <Avatar className="relative w-20 h-20">
               <div className=" z-20 h-30 w-full bg-black opacity-5 hover:opacity-30">
-                {isPhotographer &&<CldUploadWidget
+                {isPhotographer &&
+                <CldUploadWidget
                   onOpen={() => {
-                    
                     console.log(isPhotographer)
                   }}
                   onSuccess={(results: CldUploadWidgetResults) => {
                     const uploadedResult = results.info as CldUploadWidgetInfo;
-                    
                     const profileImageURL = {
                       image: uploadedResult.secure_url,
                     };
                     setProfileImage(profileImageURL.image)
+
                     async function Update() {
                       await axios.put(
                         `http://localhost:8000/api/photographer/${userId}/profile-picture`,
@@ -163,6 +163,7 @@ const Hero = () => {
                   }}
                   options={{
                     tags: ['profile image',`${session?.user.id}`],
+                    publicId: `${item?.id}`,
                     sources: ["local"],
                     googleApiKey: "<image_search_google_api_key>",
                     showAdvancedOptions: false,
@@ -170,7 +171,8 @@ const Hero = () => {
                     multiple: false,
                     defaultSource: "local",
                     resourceType: "image",
-                    folder: `${item?.name}`,
+                    folder: `${item?.id}/${item?.name}`,
+                
                     styles: {
                       palette: {
                         window: "#ffffff",
@@ -186,6 +188,7 @@ const Hero = () => {
                         error: "#cc0000",
                         textDark: "#000000",
                         textLight: "#fcfffd",
+                        theme:"white",
                       },
                     },
                   }}
@@ -238,6 +241,7 @@ const Hero = () => {
               handleRefresh();
             }}
             options={{
+              tags: ['cover image',`${session?.user.id}`],
               sources: ["local"],
               googleApiKey: "<image_search_google_api_key>",
               showAdvancedOptions: false,
@@ -247,6 +251,7 @@ const Hero = () => {
               multiple: false,
               defaultSource: "local",
               resourceType: "image",
+              folder: `${item?.id}/${item?.name}`,
               styles: {
                 palette: {
                   window: "#ffffff",

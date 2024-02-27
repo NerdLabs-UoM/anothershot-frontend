@@ -22,7 +22,6 @@ const PhotographerProfile = () => {
           {/* <FeaturedPhotoSection />
           <ContactSection />
           <TestMonialsSection /> */}
-          <Navbar/>
         </>
       )}
     </div>

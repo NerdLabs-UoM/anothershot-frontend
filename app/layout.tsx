@@ -29,7 +29,6 @@ export default async function RootLayout({
         <AuthProvider >
           <Header />
           {children}
-          <Navbar />
           <ToasterProvider />
         </AuthProvider>
       </body>
