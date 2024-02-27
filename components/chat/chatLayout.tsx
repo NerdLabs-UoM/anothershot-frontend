@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import {
@@ -12,6 +12,8 @@ import { cn } from "@/app/lib/utils";
 import ChatSidebar from "./chatSideBar";
 import { ChatView } from "./chatView";
 import { Chat } from "@/app/lib/types";
+import { Socket, io } from 'socket.io-client';
+import toast from "react-hot-toast";
 
 interface ChatLayoutProps {
     defaultLayout: number[] | undefined;
@@ -25,6 +27,7 @@ export function ChatLayout({
     navCollapsedSize,
 }: ChatLayoutProps) {
 
+    const socket = useRef<Socket>()
     const { data: session } = useSession()
     const [chats, setChats] = useState<Chat[]>([])
     const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
@@ -39,29 +42,49 @@ export function ChatLayout({
         checkScreenWidth();
         window.addEventListener("resize", checkScreenWidth);
         return () => {
+            if (socket.current) {
+                socket.current.emit('disconnect-user', session?.user.id)
+                socket.current.disconnect();
+            }
             window.removeEventListener("resize", checkScreenWidth);
         };
     }, []);
 
+    const fetchChats = async () => {
+        try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${session?.user.id}`);
+            setChats(res.data);
+            setSelectedChat(res.data[0]);
+        } catch (error) {
+            toast.error('Error fetching chats');
+        }
+    }
+
+    const fetchSelectedChat = async (chatId: string) => {
+        try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/selected/${chatId}`);
+            setSelectedChat(res.data);
+            setSelectedChatId(chatId);
+        } catch (error) {
+            toast.error('Error fetching chat');
+        }
+    }
+
     useEffect(() => {
-        const fetchChats = async () => {
-            try {
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${session?.user.id}`);
-                setChats(res.data);
-                setSelectedChat(res.data[0]);
-            } catch (error) {
-                console.error('Error fetching chats:', error);
-            }
-        };
-    
         if (session?.user.id) {
             fetchChats();
+            try {
+                socket.current = io(`http://localhost:8001`)
+                socket.current.emit('connect-user', session.user.id)
+            } catch (error) {
+                toast.error('Error connecting to server');
+            }
         }
     }, [session?.user.id]);
 
     useEffect(() => {
         if (selectedChatId) {
-            setSelectedChat(chats.find((chat) => chat.id === selectedChatId) as Chat);
+            fetchSelectedChat(selectedChatId);
         }
     }, [selectedChatId, chats]);
 
@@ -113,11 +136,14 @@ export function ChatLayout({
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
                 {selectedChat && <ChatView
+                    socket={socket}
                     messages={selectedChat.messages}
                     selectedChat={selectedChat}
+                    setSelectedChat={setSelectedChat}
                     isMobile={isMobile}
                 />}
             </ResizablePanel>
         </ResizablePanelGroup>
     );
 }
+

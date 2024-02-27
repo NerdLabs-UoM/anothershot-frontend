@@ -1,32 +1,58 @@
 // import { Message, UserData } from "@/app/data";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Chat, Message } from "@/app/lib/types";
 import ChatTopbar from "./chatTopBar";
 import { ChatList } from "./chatList";
+import { Socket } from "socket.io-client";
+import { useSession } from "next-auth/react";
 
 interface ChatProps {
     messages?: Message[];
     selectedChat: Chat;
     isMobile: boolean;
+    socket: React.MutableRefObject<Socket | undefined>
+    setSelectedChat: React.Dispatch<React.SetStateAction<Chat>>;
 }
 
-export function ChatView({ messages, selectedChat, isMobile }: ChatProps) {
+export function ChatView({ messages, selectedChat, isMobile, socket, setSelectedChat }: ChatProps) {
 
     const [tempSelectedChat, setTempSelectedChat] = React.useState<Chat>(selectedChat);
     const [messagesState, setMessages] = React.useState<Message[]>(
         messages ?? []
     );
+    const { data: session } = useSession()
 
     useEffect(() => {
         setTempSelectedChat(selectedChat);
         setMessages(messages ?? []);
     }, [selectedChat, messages]);
 
-    //send to db
+    useEffect(() => {
+        const handleReceiveMessage = (message: Message) => {
+            if (selectedChat.id === message.chatId) {
+                if (session?.user.id !== message.senderId) {
+                    setSelectedChat((prev) => {
+                        if (prev.id === message.chatId) {
+                            return {
+                                ...prev,
+                                messages: [...prev.messages, message],
+                            };
+                        } else {
+                            return prev;
+                        }
+                    });
+                }
+            }
+        };
+        socket.current?.on("receive-msg", handleReceiveMessage);
+        return () => {
+            socket.current?.off("receive-msg", handleReceiveMessage);
+        };
+    }, [socket, selectedChat, session]);
+
     const sendMessage = async (newMessage: Message) => {
-        setMessages([...messagesState, newMessage]);
         try {
             const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/chat/message/send`,
@@ -39,7 +65,23 @@ export function ChatView({ messages, selectedChat, isMobile }: ChatProps) {
                 }
             );
             if (response.status === 201) {
-                //success
+                socket.current?.emit("send-message", {
+                    senderId: newMessage.senderId,
+                    receiverId: newMessage.receiverId,
+                    message: newMessage.message,
+                    chatId: tempSelectedChat.id,
+                    attachments: newMessage.attachments,
+                });
+                setSelectedChat((prev) => {
+                    if (prev.id === newMessage.chatId) {
+                        return {
+                            ...prev,
+                            messages: [...prev.messages, newMessage],
+                        };
+                    } else {
+                        return prev;
+                    }
+                });
             }
         } catch (error) {
             toast.error("Failed to send message");

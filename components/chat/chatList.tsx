@@ -1,4 +1,3 @@
-// import { Message, UserData } from "@/app/data";
 import { useSession } from "next-auth/react";
 import React, { useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -69,8 +68,8 @@ export function ChatList({
                 {message.senderId === selectedUser?.id && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
-                      src={message.sender.image}
-                      alt={message.sender.name}
+                      src={selectedUser.image}
+                      alt={selectedUser.image}
                       width={6}
                       height={6}
                     />
