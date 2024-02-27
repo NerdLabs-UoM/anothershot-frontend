@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
-import SignInForm from "./components/sign-in-form";
+import SignInForm from "@/components/auth/sign-in-form";
 import Google from "@/components/icons/Google";
 
 const SignInPage = () => {

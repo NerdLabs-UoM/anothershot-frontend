@@ -1,10 +1,21 @@
 import Image from "next/image";
 import React from "react";
+import { Button } from "@/components/ui/button";
+import EditPhoto from './editPhoto';
+import { Pencil } from "lucide-react";
+
 
 export default function FeaturedPhoto() {
+
   return (
     <div>
+      
+        <div className="flex sm:ml-auto justify-end items-end mr-4 mt-6 ">  <EditPhoto />  </div>
+      
+      
+     
       <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10 mr-6 space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg ">
+
         <div className="flex -space-x-4 sm:-space-x-14 ">
           <div className="flex sm:mt-8 md:mt-6 lg:mt-4 sm:mb-14">
             <Image
@@ -37,18 +48,18 @@ export default function FeaturedPhoto() {
             />
           </div>
 
-          <div className="mt-6 sm:mt-8 md:mt-14 lg:mt-14 xl:mt-12 sm:mb-2 md:mb-2 lg:mb-2 xl:mb-2 ">
+          <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-8 xl:mt-10 md:mb-0 lg:mb-0 xl:mb-0 ">
             <Image
               src={"/images/front-view-woman-holding-photo-camera 1.png"}
               alt="featured photo 4"
-              className="w-96 sm:w-full h-28 sm:h-auto md:h-auto lg:h-auto xl:h-auto rounded-3xl sm:rounded-none"
+              className="w-96 sm:w-full h-28 sm:h-auto rounded-3xl sm:rounded-none"
               width={500}
               height={500}
             />
           </div>
         </div>
       </div>
-                 
     </div>
+
   );
 }
