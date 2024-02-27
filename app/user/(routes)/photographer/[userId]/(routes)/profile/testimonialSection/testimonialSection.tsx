@@ -13,8 +13,8 @@ interface TestimonialsData {
   visibility: 'PUBLIC' | 'PRIVATE';
   client: {
     id: string;
+    name: string;
     user: {
-      name: string;
       image: string | null; 
     };
   };
@@ -26,7 +26,7 @@ const TestMonialsSection = () => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await axios.get<TestimonialsData[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/user/photographer/${userId}/profile/testimonials`);
+        const response = await axios.get<TestimonialsData[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials`);
         setTestimonials(response.data);
       } catch (error:any) {
         console.error('Error fetching testimonials:', error);

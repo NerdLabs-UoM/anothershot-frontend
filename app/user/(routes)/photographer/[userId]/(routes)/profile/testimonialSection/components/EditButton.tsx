@@ -49,8 +49,8 @@ interface TestimonialsData {
   visibility: 'PUBLIC' | 'PRIVATE';
   client: {
     id: string;
+    name: string;
     user: {
-      name: string;
       image: string | null;
     };
   };
@@ -84,7 +84,7 @@ const EditButton: React.FC<EditButtonProps> = ({
       );
       const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
       const response = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/user/photographer/${userId}/profile/testimonials/visibility`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials/visibility`,
         { testimonialId: changedTestimonialsIds }
       );
       console.log("Testimonials updated successfully:", response.data);
@@ -184,7 +184,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                     {value
                       ? testimonials.find(
                         (testimonial) => testimonial.id === value
-                      )?.client.user.name
+                      )?.client.name
                       : "Select testimonial..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -214,7 +214,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                                   isEqual(testimonial.visibility, "PUBLIC") ? "opacity-100" : "opacity-0"
                                 )}
                               />
-                              {testimonial.client.user.name}
+                              {testimonial.client.name}
                             </CommandItem>
                           </HoverCardTrigger>
                           <HoverCardContent className="w-[500px]">
@@ -237,7 +237,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                             </div>
                             <div>
                               <span className="text-slate-950 text-right font-bold text-xl">
-                                {testimonial.client.user.name}
+                                {testimonial.client.name}
                               </span>
                             </div>
                             <div className="flex items-center gap-2 mt-2">
