@@ -18,6 +18,10 @@ export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode,
+
+
+// ...
+
 }) {
   return (
     <html lang="en">
@@ -25,7 +29,6 @@ export default async function RootLayout({
         <AuthProvider >
           <Header />
           {children}
-          <Navbar/>
           <ToasterProvider />
         </AuthProvider>
       </body>
