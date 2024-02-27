@@ -78,14 +78,9 @@ const EditButton: React.FC<EditButtonProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (testimonials.every(testimonial => testimonial.visibility === testimonial.client.visibility)) {
-      toast("No changes made.");
-      setLoading(false);
-      return;
-    }
     try {
       const changedTestimonials = testimonials.filter(testimonial =>
-        testimonial.visibility !== testimonial.client.visibility
+        testimonial.visibility !== testimonialsData.visibility
       );
       const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
       const response = await axios.patch(
