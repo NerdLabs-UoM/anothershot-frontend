@@ -117,7 +117,7 @@ const Hero = () => {
     setValues({ name: values.name, description: values.bio });
     async function Update() {
       await axios.put(
-        `http://localhost:8000/api/photographer/${userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`,
         values
       );
     }
@@ -189,7 +189,7 @@ const Hero = () => {
 
                       async function Update() {
                         await axios.put(
-                          `http://localhost:8000/api/photographer/${userId}/profile-picture`,
+                          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile-picture`,
                           profileImageURL
                         );
                       }
@@ -267,7 +267,7 @@ const Hero = () => {
                 setCoverImageURL(coverImageURL.coverPhoto);
                 async function Update() {
                   await axios.put(
-                    `http://localhost:8000/api/photographer/${userId}/cover-photo`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/cover-photo`,
                     coverImageURL
                   );
                 }
