@@ -273,9 +273,8 @@ export interface Address {
 }
 
 export interface SocialMedia {
-  id?: string;
-  contactDetails?: ContactDetails;
-  contactDetailsId?: string;
+   // contactDetails: ContactDetails;
+  // contactDetailsId: string;
   facebook?: string | null;
   instagram?: string | null;
   twitter?: string | null;
