@@ -84,7 +84,7 @@ export interface Session {
 
 export interface User {
   id: string;
-  name: string;
+  userName: string;
   email: string;
   emailVerified?: Date | null;
   password: string;
@@ -93,7 +93,6 @@ export interface User {
   accounts: Account[];
   sessions: Session[];
   photographer?: Photographer | null;
-  photographerId?: string | null;
   client?: Client | null;
   admin?: Admin | null;
   chats: Chat[];
@@ -108,6 +107,7 @@ export interface Photographer {
   id: string;
   user: User;
   userId: string;
+  name: string;
   coverPhoto?: string | null;
   bio?: string | null;
   featured: string[];
@@ -129,7 +129,7 @@ export interface Client {
   id: string;
   user: User;
   name: string;
-  userId: string;
+  userId: string;  
   testimonial: Testimonial[];
   Booking: Booking[];
   Report: Report[];
@@ -140,6 +140,7 @@ export interface Client {
 export interface Admin {
   id: string;
   user: User;
+  name: string;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -252,7 +253,7 @@ export interface ContactDetails {
   photographer: Photographer;
   photographerId: string;
   phoneNum1: string;
-  phoneNum2: string | null;
+  phoneNum2?: string | null;
   email: string;
   address?: Address | null;
   socialMedia?: SocialMedia | null;

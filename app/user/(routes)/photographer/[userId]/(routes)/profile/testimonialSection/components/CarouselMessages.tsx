@@ -14,36 +14,39 @@ import {
 } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Testimonial } from "@/app/lib/types";
 
 
-interface TestimonialsData {
-  id: string;
-  review: string;
-  rating: number;
-  visibility: 'PUBLIC' | 'PRIVATE';
-  client: {
-    id: string;
-    name: string;
-    user: {
-      image: string | null; 
-    };
-  };
-}
+// interface TestimonialsData {
+//   id: string;
+//   review: string;
+//   rating: number;
+//   visibility: 'PUBLIC' | 'PRIVATE';
+//   client: {
+//     id: string;
+//     name: string;
+//     user: {
+//       image: string | null; 
+//     };
+//   };
+// }
 interface CarouselMessagesProps {
-  testimonialsData: TestimonialsData[];
+  testimonialsData: Testimonial[];
 }
 
 const CarouselMessages: React.FC<CarouselMessagesProps> = ({
   testimonialsData,
 }) => {
-  const [testimonials, setTestimonials] = useState(testimonialsData);
+
+  const [visibleTestimonials, setVisibleTestimonials] = useState<Testimonial[]>(testimonialsData);
+  console.log(testimonialsData);
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const updateWindowWidth = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -53,6 +56,7 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
       window.removeEventListener("resize", updateWindowWidth);
     };
   }, []);
+
   React.useEffect(() => {
     if (!api) {
       return;
@@ -63,9 +67,15 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
-  const visibleTestimonials = testimonialsData.filter(
-    (testimonial) => testimonial.visibility === "PUBLIC"
-  );
+
+  useEffect(() => {
+    const visibleTestimonials = testimonialsData.filter(
+      (testimonial) => testimonial.visibility === "PUBLIC"
+    );
+    console.log(visibleTestimonials);
+    setVisibleTestimonials(visibleTestimonials);
+  }, [testimonialsData]);
+
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
@@ -145,7 +155,7 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
           {window.innerWidth > 779 && <CarouselPrevious />}
           {window.innerWidth > 779 && <CarouselNext />}
         </Carousel>
-      ): (
+      ) : (
         <div className="text-center text-slate-950 mt-4">No testimonials to display.</div>
       )}
     </div>
