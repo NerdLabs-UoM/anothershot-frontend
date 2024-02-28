@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form"
 
 const SignUpFormSchema = z.object({
+    userName: z.string().min(2, { message: "Username must be at least 2 characters long" }).max(15, { message: "Username must be at most 15 characters long" }),
     userRole: z.enum(["PHOTOGRAPHER", "CLIENT"]),
     email: z.string().email({ message: "Invalid email" }),
     password: z.string().min(8, { message: "Password must be at least 8 characters long" }),
@@ -40,6 +41,7 @@ const SignUpForm = () => {
     const form = useForm<z.infer<typeof SignUpFormSchema>>({
         resolver: zodResolver(SignUpFormSchema),
         defaultValues: {
+            userName: "",
             userRole: "CLIENT",
             email: "",
             password: "",
@@ -60,7 +62,7 @@ const SignUpForm = () => {
                 const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
                     email: values.email,
                     password: values.password,
-                    name: values.email.split('@')[0],
+                    userName: values.userName,
                     userRole: values.userRole,
                 });
 
@@ -89,12 +91,25 @@ const SignUpForm = () => {
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <Tabs onValueChange={(value) => onTabsChange(value)} defaultValue="photographer">
+                                <Tabs onValueChange={(value) => onTabsChange(value)} defaultValue="CLIENT">
                                     <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger value="PHOTOGRAPHER">Photographer</TabsTrigger>
                                         <TabsTrigger value="CLIENT">Client</TabsTrigger>
+                                        <TabsTrigger value="PHOTOGRAPHER">Photographer</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="userName"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel >Username</FormLabel>
+                            <FormControl>
+                                <Input {...field} placeholder="username" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -147,7 +162,7 @@ const SignUpForm = () => {
                     Sign Up
                 </Button>
             </form>
-        </Form>
+        </Form >
     );
 }
 
