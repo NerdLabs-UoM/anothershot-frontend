@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 import { useParams } from "next/navigation";
 
 const Admin = () => {
@@ -10,6 +12,11 @@ const Admin = () => {
         <div>
             <h1>Admin Page</h1>
             <div>{userId}</div>
+            <div>
+                <Button onClick={() => signOut({
+                    callbackUrl: `${window.location.origin}/sign-in`
+                })}>Sign Out</Button>
+            </div>
         </div>
     );
 }
