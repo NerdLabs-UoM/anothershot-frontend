@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { PackageCard } from './components/packageCard';
-import Heading from './components/heading';
-import AddCard from './components/addCard';
 import { Package } from '@/app/lib/types';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import EditPackages from './components/editPackages';
 import PackageEditForm from './components/packageForm';
 
 const packagesSection = () => {

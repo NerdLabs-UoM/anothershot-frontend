@@ -36,7 +36,7 @@ import Image from 'next/image'
 import SubmitForm from "../../testimonialSection/components/SubmitForm";
 import { Package } from "@/app/lib/types";
 import { useEffect, useState } from "react";
-import { values } from "lodash";
+// import { values } from "lodash";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
@@ -104,7 +104,24 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
     }
 
     const handleCreatePackage = async () => {
-    }
+        if (!session?.user?.id) return;
+    
+        const data = {
+            photographerId: session.user.id,
+            name: form.getValues("name"),
+            description: form.getValues("description"),
+            price: form.getValues("price")
+        };
+    
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
+            toast.success("Package created successfully.");
+            // Optionally, you can perform additional actions after successfully creating the package, such as updating the UI or fetching updated data.
+        } catch (error) {
+            toast.error("An error occurred. Please try again.");
+        }
+    };
+    
 
     const handleDeletePackage = async () => {
 
@@ -225,7 +242,9 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
                             </form>
                         </Form>
                         <DialogFooter>
-                            <Button variant={'destructive'} onClick={() => handleDeletePackage()}>Delete</Button>
+                        {!isNew && (
+                  <Button variant={'destructive'} onClick={() => handleDeletePackage()}>Delete</Button>
+    )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset()
                                 setIsNew(false)
