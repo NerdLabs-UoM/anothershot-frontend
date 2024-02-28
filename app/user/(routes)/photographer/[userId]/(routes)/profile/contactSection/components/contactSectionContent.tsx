@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { Instagram } from "lucide-react";
@@ -10,7 +10,7 @@ import { Music2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EditButton from "./editButton";
 
-interface Props {
+interface ContactDetails {
   phone1: string;
   phone2: string;
   email: string;
@@ -19,14 +19,20 @@ interface Props {
   addressL3: string;
 }
 
-const ContactSectionContent = ({
-  phone1,
-  phone2,
-  email,
-  addressL1,
-  addressL2,
-  addressL3,
-}: Props) => {
+const ContactSectionContent = () => {
+
+  const [contactDets, setContactDets] = useState<ContactDetails>();
+
+  useEffect(() => {
+    const fetchContactDetails = async () => {
+      // const data = await fetchData(1);
+      // setContactDets(data);
+    };
+    fetchContactDetails();
+  }, []);
+
+
+
   return (
     <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:mr-2 border-y-0 sm:border-y-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
       <div className="flex flex-row  sm:flex sm:flex-row  sm:justify-between">
@@ -46,9 +52,9 @@ const ContactSectionContent = ({
             <Phone />
           </div>
           <div className="ml-0 sm:ml-0 mt-0 sm:mt-2 flex flex-col justify-center sm:justify-start md:items-center items-center sm:items-center">
-            <h4 className="mb-2 sm:mb-0 ">{phone1}</h4>
-            <h4 className="mb-2 sm:mb-0">{phone2}</h4>
-            <h4 className="mb-2 sm:mb-0">{email}</h4>
+            <h4 className="mb-2 sm:mb-0 ">{contactDets?.phone1}</h4>
+            <h4 className="mb-2 sm:mb-0">{contactDets?.phone2}</h4>
+            <h4 className="mb-2 sm:mb-0">{contactDets?.email}</h4>
           </div>
         </div>
 
@@ -59,9 +65,9 @@ const ContactSectionContent = ({
           </div>
 
           <div className="ml-0 sm:ml-0 mt-0 sm:mt-0 flex flex-col justify-center sm:justify-start items-center sm:items-center">
-            <h4>{addressL1}</h4>
-            <h4>{addressL2}</h4>
-            <h4>{addressL3}</h4>
+            <h4>{contactDets?.addressL1}</h4>
+            <h4>{contactDets?.addressL2}</h4>
+            <h4>{contactDets?.addressL3}</h4>
           </div>
         </div>
 
