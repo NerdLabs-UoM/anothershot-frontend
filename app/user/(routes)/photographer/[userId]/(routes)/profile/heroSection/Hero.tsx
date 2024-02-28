@@ -56,7 +56,7 @@ const Hero = () => {
   const { data: session } = useSession();
   const [isPhotographer, setIsPhotographer] = useState(false);
   const [profileImage, setProfileImage] = useState("");
-  const [coverImageURL, setCoverImageURL] = useState("");
+  const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1708486003/oooolhqi3vcrtcqhhy3b.jpg");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [values, setValues] = useState({
     name: "",
@@ -85,12 +85,18 @@ const Hero = () => {
   }, [userId, session]);
 
   useEffect(() => {
-    setValues({
-      name: photographer ? photographer.name || "Photographer" : "",
-      description: photographer ? photographer.bio || "" : "",
-    });
+    if(photographer){
+      setValues({
+        name: photographer.name,
+        description: photographer.bio ?? "",
+      });
+      
+    }
     setProfileImage(photographer?.user.image ?? "");
-    setCoverImageURL(photographer?.coverPhoto ?? "");
+      if(coverImageURL!=null){
+        setCoverImageURL(photographer?.coverPhoto ?? "");
+      }
+
   }, [photographer]);
 
   useEffect(() => {
@@ -200,7 +206,7 @@ const Hero = () => {
                       multiple: false,
                       defaultSource: "local",
                       resourceType: "image",
-                      folder: `${photographer?.userId}/profile`,
+                      folder: `${photographer?.userId}/${photographer?.name}/profile`,
                       styles: {
                         palette: {
                           window: "#ffffff",
@@ -243,7 +249,7 @@ const Hero = () => {
                 alt="@shadcn"
                 className="absolute"
               />
-              <AvatarFallback></AvatarFallback>
+      
             </Avatar>
           </div>
 
@@ -279,7 +285,7 @@ const Hero = () => {
                 multiple: false,
                 defaultSource: "local",
                 resourceType: "image",
-                folder: `${photographer?.userId}/${photographer?.name}`,
+                folder: `${photographer?.userId}/${photographer?.name}/cover-image`,
                 styles: {
                   palette: {
                     window: "#ffffff",
