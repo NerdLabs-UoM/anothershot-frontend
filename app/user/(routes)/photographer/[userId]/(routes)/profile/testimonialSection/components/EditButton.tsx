@@ -193,7 +193,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                             <CommandItem
                               key={testimonial.id}
                               value={testimonial.id}
-                              onSelect={(currentValue) => {
+                              onSelect={(currentValue: string) => {
                                 setValue(
                                   currentValue === value ? "" : currentValue
                                 );

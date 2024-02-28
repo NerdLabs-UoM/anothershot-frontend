@@ -84,7 +84,6 @@ export interface Session {
 
 export interface User {
   id: string;
-  name: string;
   email: string;
   emailVerified?: Date | null;
   password: string;
@@ -108,6 +107,7 @@ export interface Photographer {
   id: string;
   user: User;
   userId: string;
+  name: string;
   coverPhoto?: string | null;
   bio?: string | null;
   featured: string[];
@@ -129,6 +129,7 @@ export interface Client {
   id: string;
   user: User;
   userId: string;
+  name: string;
   testimonial: Testimonial[];
   Booking: Booking[];
   Report: Report[];
