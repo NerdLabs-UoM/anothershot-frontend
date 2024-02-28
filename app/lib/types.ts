@@ -128,6 +128,7 @@ export interface Photographer {
 export interface Client {
   id: string;
   user: User;
+  name: string;
   userId: string;
   testimonial: Testimonial[];
   Booking: Booking[];
@@ -235,13 +236,13 @@ export interface Report {
 
 export interface Package {
   id: string;
-  photographer: Photographer;
-  photographerId: string;
+  photographer?: Photographer;
+  photographerId?: string;
   name: string;
   description: string;
   coverPhotos: string[];
-  price: number;
-  Booking: Booking[];
+  price: string;
+  Booking?: Booking[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -249,41 +250,38 @@ export interface Package {
 export interface ContactDetails {
   id: string;
   photographer: Photographer;
-  photographerId?: string;
+  photographerId: string;
   phoneNum1: string;
-  phoneNum2: string;
+  phoneNum2: string | null;
   email: string;
   address?: Address | null;
   socialMedia?: SocialMedia | null;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Address {
-  id?: string;
-  contactDetails?: ContactDetails;
-  contactDetailsId?: string;
+  // id: string;
+  // contactDetails: ContactDetails;
+  // contactDetailsId: string;
   street: string;
   city: string;
   state: string;
   country: string;
   zip: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  // createdAt: Date;
+  // updatedAt: Date;
 }
 
 export interface SocialMedia {
-  id?: string;
-  contactDetails?: ContactDetails;
-  contactDetailsId?: string;
+   // contactDetails: ContactDetails;
+  // contactDetailsId: string;
   facebook?: string | null;
   instagram?: string | null;
   twitter?: string | null;
   linkedin?: string | null;
   youtube?: string | null;
   tiktok?: string | null;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 export interface Testimonial {
