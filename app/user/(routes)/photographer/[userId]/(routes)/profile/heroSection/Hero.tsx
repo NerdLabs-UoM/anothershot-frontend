@@ -207,7 +207,6 @@ const Hero = () => {
                     defaultSource: "local",
                     resourceType: "image",
                     folder: `${item?.id}/${item?.name}`,
-                
                     styles: {
                       palette: {
                         window: "#ffffff",

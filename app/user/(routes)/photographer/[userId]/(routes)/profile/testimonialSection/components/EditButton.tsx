@@ -80,7 +80,7 @@ const EditButton: React.FC<EditButtonProps> = ({
     setLoading(true);
     try {
       const changedTestimonials = testimonials.filter(testimonial =>
-        testimonial.visibility !== testimonialsData.visibility
+        testimonial.visibility !== testimonialsData.find(testimonialData => testimonialData.id === testimonial.id)?.visibility
       );
       const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
       const response = await axios.patch(
