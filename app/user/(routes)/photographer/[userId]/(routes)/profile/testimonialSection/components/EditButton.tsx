@@ -41,24 +41,10 @@ import {
 } from "@/components/ui/avatar"
 import { isEqual } from 'lodash';
 import { cn } from "@/app/lib/utils";
-
-interface TestimonialsData {
-  id: string;
-  review: string;
-  rating: number;
-  visibility: 'PUBLIC' | 'PRIVATE';
-  client: {
-    id: string;
-    name: string;
-    user: {
-      image: string | null;
-    };
-  };
-}
+import { Testimonial } from "@/app/lib/types";
 
 interface EditButtonProps {
-  testimonialsData: TestimonialsData[];
-  
+  testimonialsData: Testimonial[];
 }
 
 const EditButton: React.FC<EditButtonProps> = ({
@@ -66,7 +52,7 @@ const EditButton: React.FC<EditButtonProps> = ({
 }) => {
   const { userId } = useParams();
   const { data: session } = useSession();
-  const [testimonials, setTestimonials] = useState(testimonialsData);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(testimonialsData);
   const [checked, setChecked] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -78,6 +64,7 @@ const EditButton: React.FC<EditButtonProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
+
     try {
       const changedTestimonials = testimonials.filter(testimonial =>
         testimonial.visibility !== testimonialsData.find(testimonialData => testimonialData.id === testimonial.id)?.visibility
@@ -99,17 +86,23 @@ const EditButton: React.FC<EditButtonProps> = ({
 
   const handleVisibility = () => {
     const items = [...testimonials];
-    const testimonial = items.find((testimonial) => value === testimonial.id);
-    testimonial!.visibility = isEqual(testimonial?.visibility, "PUBLIC") ? "PRIVATE" : "PUBLIC";
-    setTestimonials(items);
+    const updatedItems = items.map(item => {
+      if (item.id === value) {
+        item.visibility = isEqual(item.visibility, "PUBLIC") ? "PRIVATE" : "PUBLIC";
+      }
+      return item;
+    });
+    setTestimonials(updatedItems);
     setChecked(!checked);
   };
+
   const handleValueChange = (value: string) => {
     const testimonial = testimonials.find(
       (testimonial) => value === testimonial.id
     );
     isEqual(testimonial?.visibility, "PUBLIC") ? setChecked(true) : setChecked(false);
   };
+
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {

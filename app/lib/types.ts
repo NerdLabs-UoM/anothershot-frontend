@@ -251,7 +251,7 @@ export interface ContactDetails {
   photographer: Photographer;
   photographerId?: string;
   phoneNum1: string;
-  phoneNum2: string;
+  phoneNum2?: string | null;
   email: string;
   address?: Address | null;
   socialMedia?: SocialMedia | null;
@@ -273,9 +273,8 @@ export interface Address {
 }
 
 export interface SocialMedia {
-  id?: string;
-  contactDetails?: ContactDetails;
-  contactDetailsId?: string;
+  // contactDetails: ContactDetails;
+  // contactDetailsId: string;
   facebook?: string | null;
   instagram?: string | null;
   twitter?: string | null;
