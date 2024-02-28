@@ -7,9 +7,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useRouter , useParams } from "next/navigation";
-import useFetch from "./fetchData";
-
+import { useRouter, useParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import {
   Form,
   FormControl,
@@ -30,19 +27,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings, PenSquare, Camera } from "lucide-react";
-
 import {
   CldUploadWidgetResults,
   CldUploadWidgetInfo,
   CldUploadWidget,
 } from "next-cloudinary";
-
-
 import { useSession } from "next-auth/react";
-
 import axios from "axios";
 import toast from "react-hot-toast";
-
+import { Photographer } from "@/app/lib/types";
 
 const formSchema = z.object({
   name: z
@@ -57,42 +50,49 @@ const formSchema = z.object({
     .max(500),
 });
 
-
-
-
 const Hero = () => {
+  const [photographer, setPhotographer] = useState<Photographer>();
+  const { userId } = useParams();
+  const { data: session } = useSession();
+  const [isPhotographer, setIsPhotographer] = useState(false);
+  const [profileImage, setProfileImage] = useState("");
+  const [coverImageURL, setCoverImageURL] = useState("");
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [values, setValues] = useState({
     name: "",
-    description:"",
+    description: "",
   });
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const handleRefresh = () => {
+    router.refresh();
+  };
 
-  const {userId} = useParams()
-  const {data:session} = useSession();
-  const[isPhotographer,setIsPhotographer] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get<Photographer>(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
+      );
+      setPhotographer(res.data);
+    };
+    fetchData();
+  }, []);
 
-  useEffect(()=>{
-    if(userId == session?.user.id) {
-      setIsPhotographer(true)
+  useEffect(() => {
+    if (userId == session?.user.id) {
+      setIsPhotographer(true);
     }
-  },[userId,session])
+  }, [userId, session]);
 
-  
-  const [profileImage,setProfileImage] = useState('')
-  const [coverImageURL,setCoverImageURL] = useState('')
+  useEffect(() => {
+    setValues({
+      name: photographer ? photographer.name || "Photographer" : "",
+      description: photographer ? photographer.bio || "" : "",
+    });
+    setProfileImage(photographer?.user.image ?? "");
+    setCoverImageURL(photographer?.coverPhoto ?? "");
+  }, [photographer]);
 
-  const { item } = useFetch(
-    `http://localhost:8000/api/photographer/${userId}`
-  );
-
-    useEffect(()=>{
-      setValues({name:item?.name as string, description:item?.bio as string});
-      setProfileImage(item?.user.image as string);
-      setCoverImageURL(item?.coverPhoto as string);
-    },[item])
-
-
-
-  const [sessionId, setSessionId] = useState<string | null>(null);
   useEffect(() => {
     if (session) {
       setSessionId(session?.user.id);
@@ -105,14 +105,6 @@ const Hero = () => {
       name: "",
     },
   });
-
-
-  const [isOpen, setIsOpen] = useState(false);
-  
-  const router = useRouter();
-  const handleRefresh = () => {
-    router.refresh();
-  };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setIsOpen(false);
@@ -128,14 +120,16 @@ const Hero = () => {
   };
 
   const handleCreateChat = async () => {
-
     const newChat = {
       senderId: sessionId,
       receiverId: userId,
     };
 
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/create`, newChat);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/chat/create`,
+        newChat
+      );
       console.log(res);
       if (res.data.error) {
         toast.error(res.data.error);
@@ -154,7 +148,6 @@ const Hero = () => {
         }, 1000);
       }
     }
-
   };
 
   return (
@@ -175,73 +168,75 @@ const Hero = () => {
           <div>
             <Avatar className="relative w-20 h-20">
               <div className=" z-20 h-30 w-full bg-black opacity-5 hover:opacity-30">
-                {isPhotographer &&
-                <CldUploadWidget
-                  onOpen={() => {
-                    console.log(isPhotographer)
-                  }}
-                  onSuccess={(results: CldUploadWidgetResults) => {
-                    const uploadedResult = results.info as CldUploadWidgetInfo;
-                    const profileImageURL = {
-                      image: uploadedResult.secure_url,
-                    };
-                    setProfileImage(profileImageURL.image)
+                {isPhotographer && (
+                  <CldUploadWidget
+                    onOpen={() => {
+                      console.log(isPhotographer);
+                    }}
+                    onSuccess={(results: CldUploadWidgetResults) => {
+                      const uploadedResult =
+                        results.info as CldUploadWidgetInfo;
+                      const profileImageURL = {
+                        image: uploadedResult.secure_url,
+                      };
+                      setProfileImage(profileImageURL.image);
 
-                    async function Update() {
-                      await axios.put(
-                        `http://localhost:8000/api/photographer/${userId}/profile-picture`,
-                        profileImageURL
-                      );
-                    }
-                    Update();
-                    handleRefresh();
-                  }}
-                  options={{
-                    tags: ['profile image',`${session?.user.id}`],
-                    publicId: `${item?.id}`,
-                    sources: ["local"],
-                    googleApiKey: "<image_search_google_api_key>",
-                    showAdvancedOptions: false,
-                    cropping: true,
-                    multiple: false,
-                    defaultSource: "local",
-                    resourceType: "image",
-                    folder: `${item?.id}/${item?.name}`,
-                    styles: {
-                      palette: {
-                        window: "#ffffff",
-                        sourceBg: "#f4f4f5",
-                        windowBorder: "#90a0b3",
-                        tabIcon: "#000000",
-                        inactiveTabIcon: "#555a5f",
-                        menuIcons: "#555a5f",
-                        link: "#000000",
-                        action: "#000000",
-                        inProgress: "#464646",
-                        complete: "#000000",
-                        error: "#cc0000",
-                        textDark: "#000000",
-                        textLight: "#fcfffd",
-                        theme:"white",
+                      async function Update() {
+                        await axios.put(
+                          `http://localhost:8000/api/photographer/${userId}/profile-picture`,
+                          profileImageURL
+                        );
+                      }
+                      Update();
+                      handleRefresh();
+                    }}
+                    options={{
+                      tags: ["profile image", `${session?.user.id}`],
+                      publicId: `${photographer?.userId}`,
+                      sources: ["local"],
+                      googleApiKey: "<image_search_google_api_key>",
+                      showAdvancedOptions: false,
+                      cropping: true,
+                      multiple: false,
+                      defaultSource: "local",
+                      resourceType: "image",
+                      folder: `${photographer?.userId}/profile`,
+                      styles: {
+                        palette: {
+                          window: "#ffffff",
+                          sourceBg: "#f4f4f5",
+                          windowBorder: "#90a0b3",
+                          tabIcon: "#000000",
+                          inactiveTabIcon: "#555a5f",
+                          menuIcons: "#555a5f",
+                          link: "#000000",
+                          action: "#000000",
+                          inProgress: "#464646",
+                          complete: "#000000",
+                          error: "#cc0000",
+                          textDark: "#000000",
+                          textLight: "#fcfffd",
+                          theme: "white",
+                        },
                       },
-                    },
-                  }}
-                  uploadPreset="t2z7iiq4"
-                >
-                  {({ open }) => {
-                    return (
-                      <Button
-                        variant="default"
-                        className="rounded-full mt-5 ml-3"
-                        onClick={() => {
-                          open();
-                        }}
-                      >
-                        <Camera />
-                      </Button>
-                    );
-                  }}
-                </CldUploadWidget>}
+                    }}
+                    uploadPreset="t2z7iiq4"
+                  >
+                    {({ open }) => {
+                      return (
+                        <Button
+                          variant="default"
+                          className="rounded-full mt-5 ml-3"
+                          onClick={() => {
+                            open();
+                          }}
+                        >
+                          <Camera />
+                        </Button>
+                      );
+                    }}
+                  </CldUploadWidget>
+                )}
               </div>
               <AvatarImage
                 src={profileImage}
@@ -252,74 +247,74 @@ const Hero = () => {
             </Avatar>
           </div>
 
-          {isPhotographer&&<CldUploadWidget
-            onOpen={() => {
-              
-            }}
-            onSuccess={(results: CldUploadWidgetResults) => {
-              const uploadedResult = results.info as CldUploadWidgetInfo;
+          {isPhotographer && (
+            <CldUploadWidget
+              onOpen={() => {}}
+              onSuccess={(results: CldUploadWidgetResults) => {
+                const uploadedResult = results.info as CldUploadWidgetInfo;
 
-              const tags= uploadedResult.tags
-              console.log(tags)
-              const coverImageURL = {
-                coverPhoto: uploadedResult.secure_url,
-              };
-              setCoverImageURL(coverImageURL.coverPhoto)
-              async function Update() {
-                await axios.put(
-                  `http://localhost:8000/api/photographer/${userId}/cover-photo`,
-                  coverImageURL
-                );
-              }
-              Update();
-              handleRefresh();
-            }}
-            options={{
-              tags: ['cover image',`${session?.user.id}`],
-              sources: ["local"],
-              googleApiKey: "<image_search_google_api_key>",
-              showAdvancedOptions: false,
-              cropping: true,
-              croppingCoordinatesMode: 'custom',
-              croppingAspectRatio: 2,
-              multiple: false,
-              defaultSource: "local",
-              resourceType: "image",
-              folder: `${item?.id}/${item?.name}`,
-              styles: {
-                palette: {
-                  window: "#ffffff",
-                  sourceBg: "#f4f4f5",
-                  windowBorder: "#90a0b3",
-                  tabIcon: "#000000",
-                  inactiveTabIcon: "#555a5f",
-                  menuIcons: "#555a5f",
-                  link: "#000000",
-                  action: "#000000",
-                  inProgress: "#464646",
-                  complete: "#000000",
-                  error: "#cc0000",
-                  textDark: "#000000",
-                  textLight: "#fcfffd",
+                const tags = uploadedResult.tags;
+                console.log(tags);
+                const coverImageURL = {
+                  coverPhoto: uploadedResult.secure_url,
+                };
+                setCoverImageURL(coverImageURL.coverPhoto);
+                async function Update() {
+                  await axios.put(
+                    `http://localhost:8000/api/photographer/${userId}/cover-photo`,
+                    coverImageURL
+                  );
+                }
+                Update();
+                handleRefresh();
+              }}
+              options={{
+                tags: ["cover image", `${session?.user.id}`],
+                sources: ["local"],
+                googleApiKey: "<image_search_google_api_key>",
+                showAdvancedOptions: false,
+                cropping: true,
+                croppingCoordinatesMode: "custom",
+                croppingAspectRatio: 2,
+                multiple: false,
+                defaultSource: "local",
+                resourceType: "image",
+                folder: `${photographer?.userId}/${photographer?.name}`,
+                styles: {
+                  palette: {
+                    window: "#ffffff",
+                    sourceBg: "#f4f4f5",
+                    windowBorder: "#90a0b3",
+                    tabIcon: "#000000",
+                    inactiveTabIcon: "#555a5f",
+                    menuIcons: "#555a5f",
+                    link: "#000000",
+                    action: "#000000",
+                    inProgress: "#464646",
+                    complete: "#000000",
+                    error: "#cc0000",
+                    textDark: "#000000",
+                    textLight: "#fcfffd",
+                  },
                 },
-              },
-            }}
-            uploadPreset="t2z7iiq4"
-          >
-            {({ open }) => {
-              return (
-                <Button
-                  variant="default"
-                  className="rounded-full mt-5 ml-5"
-                  onClick={() => {
-                    open();
-                  }}
-                >
-                  Edit Cover Photo
-                </Button>
-              );
-            }}
-          </CldUploadWidget>}
+              }}
+              uploadPreset="t2z7iiq4"
+            >
+              {({ open }) => {
+                return (
+                  <Button
+                    variant="default"
+                    className="rounded-full mt-5 ml-5"
+                    onClick={() => {
+                      open();
+                    }}
+                  >
+                    Edit Cover Photo
+                  </Button>
+                );
+              }}
+            </CldUploadWidget>
+          )}
         </div>
         <div className="pt-5 px-10">
           <div className="text-2xl  font-bold max-w-3/5 md:text-3xl">
@@ -330,8 +325,7 @@ const Hero = () => {
       </div>
 
       <div className="flex flex-row align-middle p-0 px-12">
-
-        {isPhotographer && 
+        {isPhotographer && (
           <div className="pt-2">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger>
@@ -388,9 +382,14 @@ const Hero = () => {
               </DialogContent>
             </Dialog>
           </div>
-        }
+        )}
         {isPhotographer || (
-          <Button variant="default" onClick={() => handleCreateChat()} className="w-4/5 mx-3" asChild>
+          <Button
+            variant="default"
+            onClick={() => handleCreateChat()}
+            className="w-4/5 mx-3"
+            asChild
+          >
             <Link href="/photographer/Bookings">Message</Link>
           </Button>
         )}
@@ -398,11 +397,13 @@ const Hero = () => {
           <Button variant="destructive" className="w-4/5" asChild>
             <Link href="/photographer/Bookings">Book Now</Link>
           </Button>
-
         )}
-        
+
         {isPhotographer && (
-          <Link href="photographer/prfile/settings" className="relative pt-2 px-2">
+          <Link
+            href="photographer/prfile/settings"
+            className="relative pt-2 px-2"
+          >
             <Settings />
           </Link>
         )}
