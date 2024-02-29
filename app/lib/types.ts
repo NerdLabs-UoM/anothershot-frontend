@@ -6,7 +6,11 @@ export type ReportStatus = 'PENDING' | 'RESOLVED' | 'DISMISSED';
 
 export type TestimonialVisibility = 'PUBLIC' | 'PRIVATE';
 
-export type PhotographerCategory =
+export type PaymentStatus = 'PENDING' | 'PAID' | 'UNPAID';
+
+export type PaymentType = 'BOOKING' | 'ALBUM PAYMENT';
+
+export type PhotographerCategory = 
   | 'WEDDING'
   | 'PORTRAIT'
   | 'LANDSCAPE'
@@ -329,3 +333,12 @@ export interface AlbumImage {
   caption: string;
 }
 
+export interface PaymentArray {
+  id: string;
+  clientName: string;
+  invoiceId: string;
+  date: Date;
+  paymentStatus: PaymentStatus;
+  amount: number;
+  type: PaymentType;
+}

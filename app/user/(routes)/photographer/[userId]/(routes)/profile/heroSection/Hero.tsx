@@ -170,10 +170,10 @@ const Hero = () => {
       </div>
 
       <div className="p-5 md:px-0">
-        <div className="flex pt-10 align-middle px-10">
+        <div className="flex px-10 pt-10 align-middle">
           <div>
             <Avatar className="relative w-20 h-20">
-              <div className=" z-20 h-30 w-full bg-black opacity-5 hover:opacity-30">
+              <div className="z-20 w-full bg-black h-30 opacity-5 hover:opacity-30">
                 {isPhotographer && (
                   <CldUploadWidget
                     onOpen={() => {
@@ -232,7 +232,7 @@ const Hero = () => {
                       return (
                         <Button
                           variant="default"
-                          className="rounded-full mt-5 ml-3"
+                          className="mt-5 ml-3 rounded-full"
                           onClick={() => {
                             open();
                           }}
@@ -310,7 +310,7 @@ const Hero = () => {
                 return (
                   <Button
                     variant="default"
-                    className="rounded-full mt-5 ml-5"
+                    className="mt-5 ml-5 rounded-full"
                     onClick={() => {
                       open();
                     }}
@@ -322,15 +322,15 @@ const Hero = () => {
             </CldUploadWidget>
           )}
         </div>
-        <div className="pt-5 px-10">
-          <div className="text-2xl  font-bold max-w-3/5 md:text-3xl">
+        <div className="px-10 pt-5">
+          <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
             {values.name}
           </div>
-          <div className="text-xs  w-4/5 md:text-lg">{values.description}</div>
+          <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
         </div>
       </div>
 
-      <div className="flex flex-row align-middle p-0 px-12">
+      <div className="flex flex-row p-0 px-12 align-middle">
         {isPhotographer && (
           <div className="pt-2">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -407,8 +407,8 @@ const Hero = () => {
 
         {isPhotographer && (
           <Link
-            href="photographer/prfile/settings"
-            className="relative pt-2 px-2"
+            href="settings"
+            className="relative px-2 pt-2"
           >
             <Settings />
           </Link>
