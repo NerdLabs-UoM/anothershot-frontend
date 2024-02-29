@@ -48,7 +48,6 @@ const Client = () => {
         }
     }
 
-
     return (
         <div>
             <div>Client</div>
@@ -70,7 +69,7 @@ const Client = () => {
                             className="w-[200px] justify-between"
                         >
                             {value
-                                ? photographers.find((photographer) => photographer.userId === value)?.user.name
+                                ? photographers.find((photographer) => photographer.userId === value)?.name
                                 : "Select photographer..."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -95,7 +94,7 @@ const Client = () => {
                                                 value === photographer.userId ? "opacity-100" : "opacity-0"
                                             )}
                                         />
-                                        {photographer.user.name}
+                                        {photographer.name}
                                     </CommandItem>
                                 ))}
                             </CommandGroup>
