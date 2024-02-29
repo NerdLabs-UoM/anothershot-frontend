@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, BellDot } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/sheet";
 
 import Logo from "@/public/Logo";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 interface Notifications {
   id: any;
@@ -55,12 +58,22 @@ const NotificationData: Notifications[] = [
 ];
 
 const Header = () => {
+  const {data:session} = useSession()
+  const[loggedIn,setIsLoggedIn] = useState<boolean>(false)
+  useEffect(() =>{
+    if(session){
+      setIsLoggedIn(true)
+    }
+  },[session])
   const router = useRouter();
   return (
     <div>
       <div className="flex flex-row justify-between item-center h-24 px-5 sm:px-20 pt-10 ">
         <Logo />
         <div className="flex gap-4">
+       {loggedIn&&<Button variant="ghost" className ="h-auto mb-7" onClick={() => signOut({
+                    callbackUrl: `${window.location.origin}/sign-in`
+                })}>Sign Out</Button>}
           <Search/>
           <Sheet>
             <SheetTrigger>
