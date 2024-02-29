@@ -22,20 +22,24 @@ const packagesSection = () => {
   }, [])
 
   return (
-    <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 border-y-0 sm:border-y-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
-      <div className="flex flex-row  sm:flex sm:flex-row  sm:justify-between">
-        <h1 className="flex text-4xl font-bold mb-0 ml-24 sm:ml-0">Packages</h1>
+    <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
+      <div className="flex flex-row sm:flex sm:flex-row  sm:justify-between">
+        <h1 className="flex text-4xl font-bold mb-0 ml-24 sm:ml-6">Packages</h1>
         <PackageEditForm packages={packageList} />
       </div>
+      <div className='flex flex-wrap'>
       {packageList.map((packageItem) => (
-        <PackageCard
-          src={packageItem.coverPhotos[0]}
+        
+          <PackageCard 
+          src={"/groom-putting-ring-bride-s-finger 1.png"}
           name={packageItem.name}
           description={packageItem.description}
           price={packageItem.price}
           key={packageItem.id}
         />
+       
       ))}
+       </div>
     </div>
   )
 }

@@ -115,7 +115,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
             toast.success("Package created successfully.");
-            // Optionally, you can perform additional actions after successfully creating the package, such as updating the UI or fetching updated data.
+            // Optionally, perform additional actions after successfully creating the package, such as updating the UI or fetching updated data.
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
