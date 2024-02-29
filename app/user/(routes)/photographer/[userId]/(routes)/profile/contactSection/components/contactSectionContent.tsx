@@ -7,27 +7,23 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import ContactForm from "./contactForm";
 import { ContactDetails } from "@/app/lib/types";
-import { Session } from "inspector";
 import { useSession } from "next-auth/react";
 
 const ContactSectionContent = () => {
-
-  const { userId } = useParams()
-  const [contactDets, setContactDets] = useState<ContactDetails | undefined>(undefined)
-
+  const { userId } = useParams();
+  const [contactDets, setContactDets] = useState<ContactDetails | undefined>(undefined);
 
   useEffect(() => {
     const fetchContactDets = async () => {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/contactdetails/${userId}`);
-      setContactDets(res.data)
-    }
-    fetchContactDets()
-  }, [])
+      setContactDets(res.data);
+    };
+    fetchContactDets();
+  }, [userId]); // Add userId to the dependency array
 
   const handleDirect = (url: string) => {
     window.open(url, "_blank");
-  }
-
+  };
   if (contactDets)
     return (
       <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 border-y-0 sm:border-y-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">        <div className="flex flex-row  sm:flex sm:flex-row  sm:justify-between">
