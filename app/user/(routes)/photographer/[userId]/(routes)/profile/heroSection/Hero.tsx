@@ -407,7 +407,7 @@ const Hero = () => {
 
         {isPhotographer && (
           <Link
-            href="settings"
+            href="profile/settings"
             className="relative px-2 pt-2"
           >
             <Settings />

@@ -8,6 +8,7 @@ import {
     CardHeader,
     CardTitle,
     CardDescription,
+    CardFooter,
 } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -41,14 +42,18 @@ import {
     fetchCategories,
     updateCategories,
     fetchUserId,
-} from "@/app/user/(routes)/photographer/[userId]/(routes)/settings/serviceData";
+} from "../serviceData";
 import toast from "react-hot-toast";
-
+import { ScrollArea } from "@/components/ui/scroll-area";
 const FormSchema = z.object({
     category: z.string({
         required_error: "Please select a category.",
     }),
 });
+
+const tags = Array.from({ length: 50 }).map(
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`
+  )
 
 function AddCategory() {
     const [categories, setCategories] = useState<Record<string, string>>({});
@@ -58,8 +63,6 @@ function AddCategory() {
     useEffect(() => {
         const fetchCategory = async () => {
             const data = await fetchCategories();
-            console.log("data");
-
             setCategories(data);
         };
         fetchCategory();
@@ -67,10 +70,12 @@ function AddCategory() {
         const fetchId = async () => {
             const data = await fetchUserId(userId);
             setSelectedCategories(data);
+            // return data;
         };
         fetchId();
     }, [userId]);
 
+    
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     });
@@ -137,60 +142,62 @@ function AddCategory() {
                                             <PopoverContent className="w-[200px] p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Search category..." />
-                                                    <CommandEmpty>
-                                                        No category found.
-                                                    </CommandEmpty>
-                                                    <CommandGroup>
-                                                        {categoriesArray.map(
-                                                            (category) => {
-                                                                return (
-                                                                    !category.selected && (
-                                                                        <CommandItem
-                                                                            value={
-                                                                                category.label
-                                                                            }
-                                                                            key={
-                                                                                category.label
-                                                                            }
-                                                                            onSelect={() => {
-                                                                                form.setValue(
-                                                                                    "category",
+                                                    <ScrollArea className="border rounded-md h-72" >
+                                                        <CommandEmpty>
+                                                            No category found.
+                                                        </CommandEmpty>
+                                                        <CommandGroup>
+                                                                {categoriesArray.map(
+                                                                (category) => {
+                                                                    return (
+                                                                        !category.selected && (
+                                                                            <CommandItem
+                                                                                value={
                                                                                     category.label
-                                                                                );
-                                                                                category.selected =
-                                                                                    true;
-                                                                                setSelectedCategories(
-                                                                                    (
-                                                                                        prevCategories
-                                                                                    ) => [
-                                                                                        ...prevCategories,
-                                                                                        category.label,
-                                                                                    ]
-                                                                                );
-                                                                            }}
-                                                                            className="hover:bg-gray-200"
-                                                                            disabled={selectedCategories.includes(
-                                                                                category.label
-                                                                            )}
-                                                                        >
-                                                                            <Check
-                                                                                className={cn(
-                                                                                    "mr-2 h-4 w-4",
-                                                                                    category.label ===
-                                                                                        field.value
-                                                                                        ? "opacity-100"
-                                                                                        : "opacity-0"
+                                                                                }
+                                                                                key={
+                                                                                    category.label
+                                                                                }
+                                                                                onSelect={() => {
+                                                                                    form.setValue(
+                                                                                        "category",
+                                                                                        category.label
+                                                                                    );
+                                                                                    category.selected =
+                                                                                        true;
+                                                                                    setSelectedCategories(
+                                                                                        (
+                                                                                            prevCategories
+                                                                                        ) => [
+                                                                                            ...prevCategories,
+                                                                                            category.label,
+                                                                                        ]
+                                                                                    );
+                                                                                }}
+                                                                                className="hover:bg-gray-200"
+                                                                                disabled={selectedCategories.includes(
+                                                                                    category.label
                                                                                 )}
-                                                                            />
-                                                                            {
-                                                                                category.label
-                                                                            }
-                                                                        </CommandItem>
-                                                                    )
-                                                                );
-                                                            }
-                                                        )}
-                                                    </CommandGroup>
+                                                                            >
+                                                                                <Check
+                                                                                    className={cn(
+                                                                                        "mr-2 h-4 w-4",
+                                                                                        category.label ===
+                                                                                            field.value
+                                                                                            ? "opacity-100"
+                                                                                            : "opacity-0"
+                                                                                    )}
+                                                                                />
+                                                                                {
+                                                                                    category.label
+                                                                                }
+                                                                            </CommandItem>
+                                                                        )
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </CommandGroup>
+                                                    </ScrollArea>
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
