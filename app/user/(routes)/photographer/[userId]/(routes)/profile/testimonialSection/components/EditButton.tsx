@@ -39,8 +39,9 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { isEqual } from 'lodash';
+import { isEqual, set } from 'lodash';
 import { cn } from "@/app/lib/utils";
+import Image from "next/image";
 import { Testimonial } from "@/app/lib/types";
 
 interface EditButtonProps {
@@ -53,6 +54,7 @@ const EditButton: React.FC<EditButtonProps> = ({
   const { userId } = useParams();
   const { data: session } = useSession();
   const [testimonials, setTestimonials] = useState<Testimonial[]>(testimonialsData);
+  const [currentTestimonials, setCurrentTestimonials] = useState<Testimonial[]>([]);
   const [checked, setChecked] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -62,14 +64,32 @@ const EditButton: React.FC<EditButtonProps> = ({
     setTestimonials(testimonialsData);
   }, [testimonialsData]);
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    const currentTestimonials = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials`);
+        console.log(response.data);
+        setCurrentTestimonials(response.data);
+      } catch (error: any) {
+        console.error('Error fetching testimonials:', error);
+      }
+    };
+
+    currentTestimonials();
+  }, [userId]);
+
+  const handleSubmit = async () => { 
     setLoading(true);
 
     try {
+      console.log("Testimonials:", testimonials);
+      console.log("Current Testimonials:", currentTestimonials);
       const changedTestimonials = testimonials.filter(testimonial =>
-        testimonial.visibility !== testimonialsData.find(testimonialData => testimonialData.id === testimonial.id)?.visibility
+        testimonial.visibility !== currentTestimonials.find(testimonialData => testimonialData.id === testimonial.id)?.visibility
       );
       const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
+      console.log("Changed Testimonials IDs:", changedTestimonialsIds);
+      
       const response = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials/visibility`,
         { testimonialId: changedTestimonialsIds }
@@ -212,7 +232,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                           </HoverCardTrigger>
                           <HoverCardContent className="w-[500px]">
                             <div>
-                              <img
+                              <Image
                                 src="/images/com.png"
                                 alt="Description of the image"
                                 width={20}

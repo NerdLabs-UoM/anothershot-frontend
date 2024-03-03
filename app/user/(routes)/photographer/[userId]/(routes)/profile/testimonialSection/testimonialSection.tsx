@@ -7,20 +7,6 @@ import EditButton from "./components/EditButton";
 import SubmitForm from "./components/SubmitForm";
 import { Testimonial } from "@/app/lib/types";
 
-// interface TestimonialsData {
-//   id: string;
-//   review: string;
-//   rating: number;
-//   visibility: 'PUBLIC' | 'PRIVATE';
-//   client: {
-//     id: string;
-//     name: string;
-//     user: {
-//       image: string | null; 
-//     };
-//   };
-// }
-
 const TestMonialsSection = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const { userId } = useParams();
