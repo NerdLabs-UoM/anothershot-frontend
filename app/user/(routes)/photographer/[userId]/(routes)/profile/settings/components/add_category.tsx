@@ -1,14 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
     CardDescription,
-    CardFooter,
 } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -38,25 +36,27 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { useParams } from "next/navigation";
+import toast from "react-hot-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { PhotographerCategory } from "@/app/lib/types";
 import {
     fetchCategories,
     updateCategories,
     fetchUserId,
 } from "../serviceData";
-import toast from "react-hot-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 const FormSchema = z.object({
     category: z.string({
         required_error: "Please select a category.",
     }),
 });
 
-const tags = Array.from({ length: 50 }).map(
-    (_, i, a) => `v1.2.0-beta.${a.length - i}`
-  )
+// const tags = Array.from({ length: 50 }).map(
+//     (_, i, a) => `v1.2.0-beta.${a.length - i}`
+//   )
 
 function AddCategory() {
-    const [categories, setCategories] = useState<Record<string, string>>({});
+    const [categories, setCategories] = useState< PhotographerCategory[] | undefined>();
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const { userId } = useParams();
 
@@ -75,7 +75,6 @@ function AddCategory() {
         fetchId();
     }, [userId]);
 
-    
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     });
@@ -89,10 +88,15 @@ function AddCategory() {
         }
     }
 
-    const categoriesArray = Object.keys(categories).map((key) => ({
-        label: key,
+    if (categories === undefined) {
+        // Categories are still being fetched, display loading state or spinner
+        return <div>Loading...</div>;
+    }
+
+    const categoriesArray = categories?.map((key, value) => ({
+        label: value,
         selected: false,
-    }));
+      }));
     return (
         <Card className="w-[350px] my-8 lg:w-[540px] h-auto mx-auto">
             <CardHeader>
@@ -130,10 +134,10 @@ function AddCategory() {
                                                     >
                                                         {field.value
                                                             ? categoriesArray.find(
-                                                                  (category) =>
-                                                                      category.label ===
-                                                                      field.value
-                                                              )?.label
+                                                                (category) =>
+                                                                    category.label ===
+                                                                    String(field.value)
+                                                            )?.label
                                                             : "Select Category"}
                                                         <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                                                     </Button>
@@ -146,8 +150,8 @@ function AddCategory() {
                                                         <CommandEmpty>
                                                             No category found.
                                                         </CommandEmpty>
-                                                        <CommandGroup>
-                                                                {categoriesArray.map(
+                                                         <CommandGroup>
+                                                                {categoriesArray?.map(
                                                                 (category) => {
                                                                     return (
                                                                         !category.selected && (
@@ -196,7 +200,7 @@ function AddCategory() {
                                                                     );
                                                                 }
                                                             )}
-                                                        </CommandGroup>
+                                                        </CommandGroup> 
                                                     </ScrollArea>
                                                 </Command>
                                             </PopoverContent>
@@ -210,7 +214,7 @@ function AddCategory() {
                             <FormLabel className="items-end text-md">
                                 List
                             </FormLabel>
-                            {selectedCategories.map((category, index) => (
+                            {selectedCategories?.map((category, index) => (
                                 <Card
                                     key={index}
                                     className="flex object-fill w-auto gap-3 ml-3 text-sm"
@@ -223,17 +227,13 @@ function AddCategory() {
                                         height={8}
                                         className="mr-2 cursor-pointer"
                                         onClick={() => {
-                                            const data: string[] =
-                                                selectedCategories.splice(
+                                            const data: string[] = [...selectedCategories];
+                                                data.splice(
                                                     index,
                                                     1
                                                 );
-                                            const arr: string[] =
-                                                selectedCategories.filter(
-                                                    (category) =>
-                                                        category !== data[0]
-                                                );
-                                            setSelectedCategories(arr);
+                                            
+                                            setSelectedCategories(data);
                                         }}
                                     />
                                 </Card>
