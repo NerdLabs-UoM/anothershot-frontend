@@ -31,7 +31,7 @@ interface PackageEditFormProps {
 }
 
 
-const addCoverPhotos : React.FC<PackageEditFormProps> = ({ packageId }) => {
+const AddCoverPhotos : React.FC<PackageEditFormProps> = ({ packageId }) => {
     const [photographer, setPhotographer] = useState<Photographer>();
     const { userId } = useParams();
     const { data: session } = useSession();
@@ -63,7 +63,7 @@ const addCoverPhotos : React.FC<PackageEditFormProps> = ({ packageId }) => {
             setPhotographer(res.data);
         };
         fetchData();
-    }, []);
+    });
 
     useEffect(() => {
         if (userId == session?.user.id) {
@@ -185,4 +185,4 @@ const addCoverPhotos : React.FC<PackageEditFormProps> = ({ packageId }) => {
     );
 }
 
-export default addCoverPhotos;
+export default AddCoverPhotos;
