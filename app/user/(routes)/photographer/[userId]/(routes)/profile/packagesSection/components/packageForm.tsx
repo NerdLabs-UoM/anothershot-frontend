@@ -1,3 +1,4 @@
+"use client";
 import {
     Form,
     FormField,
@@ -39,6 +40,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import {
+    CldUploadWidgetResults,
+    CldUploadWidgetInfo,
+    CldUploadWidget,
+} from "next-cloudinary";
+import { useParams , useRouter } from "next/navigation";
+
+import { Photographer } from "@/app/lib/types";
+
 
 interface PackageEditFormProps {
     packages: Package[];
@@ -46,18 +56,35 @@ interface PackageEditFormProps {
 
 const formSchema = z.object({
     packageId: z.string(),
-    name: z.string(),
-    description: z.string(),
+    name: z
+        .string()
+        .min(2, {
+            message: "Username must be at least 2 characters long",
+        })
+        .max(50),
+    description: z
+        .string()
+        .min(2, {
+            message: "Username must be at least 2 characters long",
+        })
+        .max(200),
     price: z.string(),
+    coverPhoto: z.string()
 });
 
 const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
 
     const { data: session } = useSession()
-
+    const [isPhotographer, setIsPhotographer] = useState(true);
     const [packageList, setPackageList] = useState<Package[]>(packages)
     const [selectedPackageId, setSelectedPackageId] = useState<string>("")
     const [isNew, setIsNew] = useState<boolean>(false)
+    const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1708486003/oooolhqi3vcrtcqhhy3b.jpg");
+    const { userId } = useParams();
+    const [photographer, setPhotographer] = useState<Photographer>();
+    const router = useRouter();const handleRefresh = () => {
+        router.refresh();
+      };
 
     useEffect(() => {
         setPackageList(packages)
@@ -71,6 +98,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
             name: "",
             description: "",
             price: "",
+            coverPhoto: ""
         }
     });
 
@@ -104,14 +132,14 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
 
     const handleCreatePackage = async () => {
         if (!session?.user?.id) return;
-    
+
         const data = {
             photographerId: session.user.id,
             name: form.getValues("name"),
             description: form.getValues("description"),
             price: form.getValues("price")
         };
-    
+
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
             toast.success("Package created successfully.");
@@ -120,7 +148,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
             toast.error("An error occurred. Please try again.");
         }
     };
-    
+
 
     const handleDeletePackage = async () => {
 
@@ -137,6 +165,8 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
             toast.error("An error occurred. Please try again.")
         }
     }
+
+    
 
     return (
         <main>
@@ -237,13 +267,13 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
                                         </FormItem>
                                     )}
                                 />
-
+                                
                             </form>
                         </Form>
                         <DialogFooter>
-                        {!isNew && (
-                  <Button variant={'destructive'} onClick={() => handleDeletePackage()}>Delete</Button>
-    )}
+                            {!isNew && (
+                                <Button variant={'destructive'} onClick={() => handleDeletePackage()}>Delete</Button>
+                            )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset()
                                 setIsNew(false)

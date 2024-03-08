@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import PackageEditForm from './components/packageForm';
+import { useSession } from "next-auth/react";
 
 const PackagesSection = () => {
   const [packageList, setPackageList] = useState<Package[]>([]);
@@ -34,6 +35,7 @@ const PackagesSection = () => {
             description={packageItem.description}
             price={packageItem.price}
             key={packageItem.id}
+            packageId={packageItem.id}
           />
         ))}
       </div>
@@ -42,3 +44,7 @@ const PackagesSection = () => {
 }
 
 export default PackagesSection;
+function setIsPhotographer(arg0: boolean) {
+  throw new Error('Function not implemented.');
+}
+
