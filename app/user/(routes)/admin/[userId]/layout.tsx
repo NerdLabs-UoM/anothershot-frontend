@@ -1,9 +1,7 @@
 "use client"
 
-import Navbar from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
 import AdminHeader from "@/components/adminHeader";
+
 
 type UserLayoutProps = {
     children: React.ReactNode;
@@ -11,9 +9,10 @@ type UserLayoutProps = {
 
 const UserLayout = (props: UserLayoutProps) => {
     return (
-        <>
+        <div className="container py-10">
+            <AdminHeader/>
             {props.children}
-        </>
+        </div>
     );
 }
 

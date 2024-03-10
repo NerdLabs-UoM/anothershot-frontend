@@ -6,6 +6,8 @@ export type ReportStatus = 'PENDING' | 'RESOLVED' | 'DISMISSED';
 
 export type TestimonialVisibility = 'PUBLIC' | 'PRIVATE';
 
+export type Suspended = 'SUSPENDED' | 'NOT_SUSPENDED';
+
 export type PhotographerCategory =
   | 'WEDDING'
   | 'PORTRAIT'
@@ -101,6 +103,7 @@ export interface User {
   messagesReceived: Message[];
   createdAt: Date;
   updatedAt: Date;
+  suspended: Suspended;
 }
 
 export interface Photographer {

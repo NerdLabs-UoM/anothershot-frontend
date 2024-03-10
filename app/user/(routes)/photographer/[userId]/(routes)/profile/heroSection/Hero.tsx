@@ -25,13 +25,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar , AvatarImage } from "@/components/ui/avatar";
 import { Settings, PenSquare, Camera } from "lucide-react";
+
 import {
   CldUploadWidgetResults,
   CldUploadWidgetInfo,
   CldUploadWidget,
 } from "next-cloudinary";
+
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -70,13 +72,18 @@ const Hero = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get<Photographer>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
-      );
-      setPhotographer(res.data);
+      try{
+        const res = await axios.get<Photographer>(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
+        );
+        setPhotographer(res.data);
+      }
+      catch (err) {
+        console.error(err);
+      }
     };
     fetchData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (userId == session?.user.id) {
@@ -180,6 +187,7 @@ const Hero = () => {
                       console.log(isPhotographer);
                     }}
                     onSuccess={(results: CldUploadWidgetResults) => {
+                      console.log(results);
                       const uploadedResult =
                         results.info as CldUploadWidgetInfo;
                       const profileImageURL = {
@@ -198,7 +206,6 @@ const Hero = () => {
                     }}
                     options={{
                       tags: ["profile image", `${session?.user.id}`],
-                      publicId: `${photographer?.userId}`,
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",
                       showAdvancedOptions: false,
@@ -259,67 +266,68 @@ const Hero = () => {
               onSuccess={(results: CldUploadWidgetResults) => {
                 const uploadedResult = results.info as CldUploadWidgetInfo;
 
-              const tags= uploadedResult.tags
-              console.log(tags)
-              const coverImageURL = {
-                coverPhoto: uploadedResult.secure_url,
-              };
-              setCoverImageURL(coverImageURL.coverPhoto)
-              async function Update() {
-                await axios.put(
-                  `http://localhost:8000/api/photographer/${userId}/cover-photo`,
-                  coverImageURL
-                );
-              }
-              Update();
-              handleRefresh();
-            }}
-            options={{
-              tags: ['cover image',`${session?.user.id}`],
-              sources: ["local"],
-              googleApiKey: "<image_search_google_api_key>",
-              showAdvancedOptions: false,
-              cropping: true,
-              croppingCoordinatesMode: 'custom',
-              croppingAspectRatio: 2,
-              multiple: false,
-              defaultSource: "local",
-              resourceType: "image",
-              folder: `${item?.id}/${item?.name}`,
-              styles: {
-                palette: {
-                  window: "#ffffff",
-                  sourceBg: "#f4f4f5",
-                  windowBorder: "#90a0b3",
-                  tabIcon: "#000000",
-                  inactiveTabIcon: "#555a5f",
-                  menuIcons: "#555a5f",
-                  link: "#000000",
-                  action: "#000000",
-                  inProgress: "#464646",
-                  complete: "#000000",
-                  error: "#cc0000",
-                  textDark: "#000000",
-                  textLight: "#fcfffd",
+                const tags = uploadedResult.tags;
+                console.log(tags);
+                const coverImageURL = {
+                  coverPhoto: uploadedResult.secure_url,
+                };
+                setCoverImageURL(coverImageURL.coverPhoto);
+                async function Update() {
+                  await axios.put(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/cover-photo`,
+                    coverImageURL
+                  );
+                }
+                Update();
+                handleRefresh();
+              }}
+              options={{
+                tags: ["cover image", `${session?.user.id}`],
+                sources: ["local"],
+                googleApiKey: "<image_search_google_api_key>",
+                showAdvancedOptions: false,
+                cropping: true,
+                croppingCoordinatesMode: "custom",
+                croppingAspectRatio: 2,
+                multiple: false,
+                defaultSource: "local",
+                resourceType: "image",
+                folder: `${photographer?.userId}/${photographer?.name}/cover-image`,
+                styles: {
+                  palette: {
+                    window: "#ffffff",
+                    sourceBg: "#f4f4f5",
+                    windowBorder: "#90a0b3",
+                    tabIcon: "#000000",
+                    inactiveTabIcon: "#555a5f",
+                    menuIcons: "#555a5f",
+                    link: "#000000",
+                    action: "#000000",
+                    inProgress: "#464646",
+                    complete: "#000000",
+                    error: "#cc0000",
+                    textDark: "#000000",
+                    textLight: "#fcfffd",
+                  },
                 },
-              },
-            }}
-            uploadPreset="t2z7iiq4"
-          >
-            {({ open }) => {
-              return (
-                <Button
-                  variant="default"
-                  className="rounded-full mt-5 ml-5"
-                  onClick={() => {
-                    open();
-                  }}
-                >
-                  Edit Cover Photo
-                </Button>
-              );
-            }}
-          </CldUploadWidget>}
+              }}
+              uploadPreset="t2z7iiq4"
+            >
+              {({ open }) => {
+                return (
+                  <Button
+                    variant="default"
+                    className="rounded-full mt-5 ml-5"
+                    onClick={() => {
+                      open();
+                    }}
+                  >
+                    Edit Cover Photo
+                  </Button>
+                );
+              }}
+            </CldUploadWidget>
+          )}
         </div>
         <div className="pt-5 px-10">
           <div className="text-2xl  font-bold max-w-3/5 md:text-3xl">
