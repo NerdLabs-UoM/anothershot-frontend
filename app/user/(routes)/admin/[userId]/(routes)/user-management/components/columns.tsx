@@ -7,6 +7,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 
 import { UserDetail } from "./userDetail";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 type UserManagement = {
   id: string;
@@ -79,14 +81,17 @@ export const columns: ColumnDef<UserManagement>[] = [
     cell: "No Reports",
   },
   {
+    
     id: "actions",
     cell: ({ row }) => (
       <Button variant="secondary" onClick={() => handleView(row.original.id)}>
-        View
+       <Link href ={`user-management/${row.original.id}/profile`}> View</Link> 
       </Button>
     ),
   },
+  
 ];
+
 
 const handleView = (id: string) => {
   console.log(`View button clicked for user with ID: ${id}`);
