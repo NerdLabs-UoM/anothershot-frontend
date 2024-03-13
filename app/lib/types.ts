@@ -6,57 +6,66 @@ export type ReportStatus = 'PENDING' | 'RESOLVED' | 'DISMISSED';
 
 export type TestimonialVisibility = 'PUBLIC' | 'PRIVATE';
 
+
+export type Suspended = 'SUSPENDED' | 'NOT_SUSPENDED';
+
+export type PaymentStatus = 'PENDING' | 'PAID' | 'UNPAID';
+
+export type PaymentType = 'BOOKING' | 'ALBUM PAYMENT';
+
+
 export type PhotographerCategory =
-  | 'WEDDING'
-  | 'PORTRAIT'
-  | 'LANDSCAPE'
-  | 'EVENT'
-  | 'PRODUCT'
-  | 'FASHION'
-  | 'FOOD'
-  | 'SPORT'
-  | 'ARCHITECTURE'
-  | 'WILDLIFE'
-  | 'TRAVEL'
-  | 'DOCUMENTARY'
-  | 'STREET'
-  | 'FAMILY'
-  | 'NEWBORN'
-  | 'MATERNITY'
-  | 'PET'
-  | 'BIRTHDAY'
-  | 'BABY_SHOWER'
-  | 'ENGAGEMENT'
-  | 'ANNIVERSARY'
-  | 'GRADUATION'
-  | 'PROM'
-  | 'BACHELOR'
-  | 'BACHELORETTE'
-  | 'REUNION'
-  | 'RETIREMENT'
-  | 'FUNERAL'
-  | 'MEMORIAL'
-  | 'RELIGIOUS'
-  | 'CULTURAL'
-  | 'POLITICAL'
-  | 'MILITARY'
-  | 'CHARITY'
-  | 'FESTIVAL'
-  | 'FAIR'
-  | 'CONCERT'
-  | 'CONFERENCE'
-  | 'EXPO'
-  | 'CONVENTION'
-  | 'SEMINAR'
-  | 'WORKSHOP'
-  | 'RETREAT'
-  | 'SUMMIT'
-  | 'TRADE_SHOW'
-  | 'MEETUP'
-  | 'RALLY'
-  | 'PROTEST'
-  | 'MARCH'
-  | 'PARADE';
+| 'WEDDING'
+| 'PORTRAIT'
+| 'LANDSCAPE'
+| 'EVENT'
+| 'PRODUCT'
+| 'FASHION'
+| 'FOOD'
+| 'SPORT'
+| 'ARCHITECTURE'
+| 'WILDLIFE'
+| 'TRAVEL'
+| 'DOCUMENTARY'
+| 'STREET'
+| 'FAMILY'
+| 'NEWBORN'
+| 'MATERNITY'
+| 'PET'
+| 'BIRTHDAY'
+| 'BABY_SHOWER'
+| 'ENGAGEMENT'
+| 'ANNIVERSARY'
+| 'GRADUATION'
+| 'PROM'
+| 'BACHELOR'
+| 'BACHELORETTE'
+| 'REUNION'
+| 'RETIREMENT'
+| 'FUNERAL'
+| 'MEMORIAL'
+| 'RELIGIOUS'
+| 'CULTURAL'
+| 'POLITICAL'
+| 'MILITARY'
+| 'CHARITY'
+| 'FESTIVAL'
+| 'FAIR'
+| 'CONCERT'
+| 'CONFERENCE'
+| 'EXPO'
+| 'CONVENTION'
+| 'SEMINAR'
+| 'WORKSHOP'
+| 'RETREAT'
+| 'SUMMIT'
+| 'TRADE_SHOW'
+| 'MEETUP'
+| 'RALLY'
+| 'PROTEST'
+| 'MARCH'
+| 'PARADE';
+
 
 export interface Account {
   id: string;
@@ -101,6 +110,7 @@ export interface User {
   messagesReceived: Message[];
   createdAt: Date;
   updatedAt: Date;
+  suspended: Suspended;
 }
 
 export interface Photographer {
@@ -329,3 +339,12 @@ export interface AlbumImage {
   caption: string;
 }
 
+export interface PaymentArray {
+  id: string;
+  clientName: string;
+  invoiceId: string;
+  date: Date;
+  paymentStatus: PaymentStatus;
+  amount: number;
+  type: PaymentType;
+}

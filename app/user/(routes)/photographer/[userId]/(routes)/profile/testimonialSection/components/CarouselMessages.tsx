@@ -18,19 +18,7 @@ import React, { useEffect, useState } from "react";
 import { Testimonial } from "@/app/lib/types";
 
 
-// interface TestimonialsData {
-//   id: string;
-//   review: string;
-//   rating: number;
-//   visibility: 'PUBLIC' | 'PRIVATE';
-//   client: {
-//     id: string;
-//     name: string;
-//     user: {
-//       image: string | null; 
-//     };
-//   };
-// }
+
 interface CarouselMessagesProps {
   testimonialsData: Testimonial[];
 }

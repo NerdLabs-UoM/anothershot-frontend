@@ -25,13 +25,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar , AvatarImage } from "@/components/ui/avatar";
 import { Settings, PenSquare, Camera } from "lucide-react";
+
 import {
   CldUploadWidgetResults,
   CldUploadWidgetInfo,
   CldUploadWidget,
 } from "next-cloudinary";
+
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -70,13 +72,18 @@ const Hero = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get<Photographer>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
-      );
-      setPhotographer(res.data);
+      try{
+        const res = await axios.get<Photographer>(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
+        );
+        setPhotographer(res.data);
+      }
+      catch (err) {
+        console.error(err);
+      }
     };
     fetchData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (userId == session?.user.id) {
@@ -170,16 +177,17 @@ const Hero = () => {
       </div>
 
       <div className="p-5 md:px-0">
-        <div className="flex pt-10 align-middle px-10">
+        <div className="flex px-10 pt-10 align-middle">
           <div>
             <Avatar className="relative w-20 h-20">
-              <div className=" z-20 h-30 w-full bg-black opacity-5 hover:opacity-30">
+              <div className="z-20 w-full bg-black h-30 opacity-5 hover:opacity-30">
                 {isPhotographer && (
                   <CldUploadWidget
                     onOpen={() => {
                       console.log(isPhotographer);
                     }}
                     onSuccess={(results: CldUploadWidgetResults) => {
+                      console.log(results);
                       const uploadedResult =
                         results.info as CldUploadWidgetInfo;
                       const profileImageURL = {
@@ -198,7 +206,6 @@ const Hero = () => {
                     }}
                     options={{
                       tags: ["profile image", `${session?.user.id}`],
-                      publicId: `${photographer?.userId}`,
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",
                       showAdvancedOptions: false,
@@ -232,7 +239,7 @@ const Hero = () => {
                       return (
                         <Button
                           variant="default"
-                          className="rounded-full mt-5 ml-3"
+                          className="mt-5 ml-3 rounded-full"
                           onClick={() => {
                             open();
                           }}
@@ -310,7 +317,7 @@ const Hero = () => {
                 return (
                   <Button
                     variant="default"
-                    className="rounded-full mt-5 ml-5"
+                    className="mt-5 ml-5 rounded-full"
                     onClick={() => {
                       open();
                     }}
@@ -322,15 +329,15 @@ const Hero = () => {
             </CldUploadWidget>
           )}
         </div>
-        <div className="pt-5 px-10">
-          <div className="text-2xl  font-bold max-w-3/5 md:text-3xl">
+        <div className="px-10 pt-5">
+          <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
             {values.name}
           </div>
-          <div className="text-xs  w-4/5 md:text-lg">{values.description}</div>
+          <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
         </div>
       </div>
 
-      <div className="flex flex-row align-middle p-0 px-12">
+      <div className="flex flex-row p-0 px-12 align-middle">
         {isPhotographer && (
           <div className="pt-2">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -406,8 +413,8 @@ const Hero = () => {
 
         {isPhotographer && (
           <Link
-            href="photographer/prfile/settings"
-            className="relative pt-2 px-2"
+            href="profile/settings"
+            className="relative px-2 pt-2"
           >
             <Settings />
           </Link>
