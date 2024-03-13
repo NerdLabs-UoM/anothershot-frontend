@@ -1,4 +1,7 @@
+"use client"
+
 import {
+    Camera,
     FileImage,
     Mic,
     Paperclip,
@@ -11,23 +14,30 @@ import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/app/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { EmojiPicker } from "./emojiPicker";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Chat, Message } from "@/app/lib/types";
+import { Attachment, Chat, Message } from "@/app/lib/types";
+import { CldUploadWidget, CldUploadWidgetResults } from "next-cloudinary";
+import { result } from "lodash";
+import { url } from "inspector";
 
 interface ChatBottombarProps {
     sendMessage: (newMessage: Message) => void;
     selectedChat: Chat;
     isMobile: boolean;
+    cloudinaryOptions: any;
 }
 
-export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
+export const BottombarIcons = [{ icon: Paperclip }];
 
 export default function ChatBottombar({
-    sendMessage, isMobile, selectedChat
+    sendMessage,
+    isMobile,
+    selectedChat,
+    cloudinaryOptions,
 }: ChatBottombarProps) {
 
     const { data: session } = useSession();
@@ -53,6 +63,26 @@ export default function ChatBottombar({
         }
     };
 
+    const handleAttachmentSend = (url: string) => {
+        console.log(url)
+        const newAttachment: Attachment = {
+            url: url,
+            type: "image",
+        };
+        if (session && selectedUser) {
+            const newMessage: any = {
+                chatId: selectedChat.id,
+                message: message.trim(),
+                senderId: session.user.id,
+                receiverId: selectedUser.id,
+                attachments: [newAttachment],
+            };
+            sendMessage(newMessage);
+            setMessage("");
+            console.log(newMessage)
+        }
+    }
+
     const handleSend = () => {
         if (message.trim()) {
             if (session && selectedUser) {
@@ -70,7 +100,6 @@ export default function ChatBottombar({
                 inputRef.current.focus();
             }
         }
-
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -88,81 +117,35 @@ export default function ChatBottombar({
     return (
         <div className="p-2 flex justify-between w-full items-center gap-2">
             <div className="flex">
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Link
-                            href="#"
-                            className={cn(
-                                buttonVariants({ variant: "ghost", size: "icon" }),
-                                "h-9 w-9",
-                                "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                            )}
-                        >
-                            <PlusCircle size={20} className="text-muted-foreground" />
-                        </Link>
-                    </PopoverTrigger>
-                    <PopoverContent
-                        side="top"
-                        className="w-full p-2">
-                        {message.trim() || isMobile ? (
-                            <div className="flex gap-2">
-                                <Link
-                                    href="#"
-                                    className={cn(
-                                        buttonVariants({ variant: "ghost", size: "icon" }),
-                                        "h-9 w-9",
-                                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                                    )}
-                                >
-                                    <Mic size={20} className="text-muted-foreground" />
-                                </Link>
-                                {BottombarIcons.map((icon, index) => (
-                                    <Link
-                                        key={index}
-                                        href="#"
-                                        className={cn(
-                                            buttonVariants({ variant: "ghost", size: "icon" }),
-                                            "h-9 w-9",
-                                            "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                                        )}
-                                    >
-                                        <icon.icon size={20} className="text-muted-foreground" />
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <Link
-                                href="#"
-                                className={cn(
-                                    buttonVariants({ variant: "ghost", size: "icon" }),
-                                    "h-9 w-9",
-                                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                                )}
-                            >
-                                <Mic size={20} className="text-muted-foreground" />
-                            </Link>
-                        )}
-                    </PopoverContent>
-                </Popover>
-                {!message.trim() && !isMobile && (
-                    <div className="flex">
-                        {BottombarIcons.map((icon, index) => (
-                            <Link
-                                key={index}
-                                href="#"
-                                className={cn(
-                                    buttonVariants({ variant: "ghost", size: "icon" }),
-                                    "h-9 w-9",
-                                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                                )}
-                            >
-                                <icon.icon size={20} className="text-muted-foreground" />
-                            </Link>
-                        ))}
-                    </div>
-                )}
-            </div>
 
+                <CldUploadWidget
+                    onOpen={() => { }}
+                    onPublicId={(result) => {
+
+                    }}
+                    onSuccess={(results: CldUploadWidgetResults) => {
+                        handleAttachmentSend(results.info?.secure_url)
+                    }}
+                    options={cloudinaryOptions}
+                    uploadPreset="o7oeqnou"
+                >
+                    {({ open }) => {
+                        return (
+                            <Button
+                                onClick={() => {
+                                    open();
+                                }}
+                                className={cn(
+                                    buttonVariants({ variant: "ghost" }),
+                                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                                )}
+                            >
+                                <Paperclip size={20} />
+                            </Button>
+                        );
+                    }}
+                </CldUploadWidget>
+            </div>
             <AnimatePresence initial={false}>
                 <motion.div
                     key="input"

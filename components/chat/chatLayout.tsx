@@ -61,7 +61,7 @@ export function ChatLayout({
             try {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${session?.user.id}`);
                 setChats(res.data);
-                setSelectedChat(res.data[0]);
+                // setSelectedChat(res.data[0]);
             } catch (error) {
                 toast.error('Error fetching chats');
             }
@@ -126,10 +126,10 @@ export function ChatLayout({
                     isCollapsed={isCollapsed || isMobile}
                     links={chats.map((chat) => ({
                         id: chat.id,
-                        name: chat.users.find((user) => user.id !== session?.user.id)?.name || "Unknown User",
+                        name: chat.users.find((user) => user.id !== session?.user.id)?.userName || "Unknown User",
                         messages: chat.messages,
                         avatar: chat.users.find((user) => user.id !== session?.user.id)?.image || "",
-                        variant: selectedChat.users.find((user) => user.id !== session?.user.id)?.name === chat.users.find((user) => user.id !== session?.user.id)?.name ? "default" : "ghost",
+                        variant: selectedChat?.users.find((user) => user.id !== session?.user.id)?.userName === chat.users.find((user) => user.id !== session?.user.id)?.userName ? "default" : "ghost",
                     }))}
                     setSelectedChatId={setSelectedChatId}
                     isMobile={isMobile}
@@ -139,11 +139,16 @@ export function ChatLayout({
             <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
                 {selectedChat && <ChatView
                     socket={socket}
-                    messages={selectedChat.messages}
+                    messages={selectedChat?.messages}
                     selectedChat={selectedChat}
                     setSelectedChat={setSelectedChat}
                     isMobile={isMobile}
                 />}
+                {!selectedChat && (
+                    <div className="w-full h-full flex justify-center items-center">
+                        <p className="text-zinc-300 text-lg">Click on a chat to start messaging</p>
+                    </div>
+                )}
             </ResizablePanel>
         </ResizablePanelGroup>
     );

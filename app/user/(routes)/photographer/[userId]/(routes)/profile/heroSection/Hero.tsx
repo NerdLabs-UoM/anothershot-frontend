@@ -85,17 +85,17 @@ const Hero = () => {
   }, [userId, session]);
 
   useEffect(() => {
-    if(photographer){
+    if (photographer) {
       setValues({
         name: photographer.name,
         description: photographer.bio ?? "",
       });
-      
+
     }
     setProfileImage(photographer?.user.image ?? "");
-      if(coverImageURL!=null){
-        setCoverImageURL(photographer?.coverPhoto ?? "");
-      }
+    if (coverImageURL != null) {
+      setCoverImageURL(photographer?.coverPhoto ?? "");
+    }
 
   }, [photographer]);
 
@@ -249,13 +249,13 @@ const Hero = () => {
                 alt="@shadcn"
                 className="absolute"
               />
-      
+
             </Avatar>
           </div>
 
           {isPhotographer && (
             <CldUploadWidget
-              onOpen={() => {}}
+              onOpen={() => { }}
               onSuccess={(results: CldUploadWidgetResults) => {
                 const uploadedResult = results.info as CldUploadWidgetInfo;
 
@@ -389,17 +389,16 @@ const Hero = () => {
             </Dialog>
           </div>
         )}
-        {isPhotographer || (
+        {!isPhotographer && (
           <Button
             variant="default"
             onClick={() => handleCreateChat()}
             className="w-4/5 mx-3"
-            asChild
           >
-            <Link href="/photographer/Bookings">Message</Link>
+            Message
           </Button>
         )}
-        {isPhotographer || (
+        {!isPhotographer && (
           <Button variant="destructive" className="w-4/5" asChild>
             <Link href="/photographer/Bookings">Book Now</Link>
           </Button>
