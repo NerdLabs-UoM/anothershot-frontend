@@ -252,7 +252,7 @@ export interface Package {
   name: string;
   description: string;
   coverPhotos: string[];
-  price: number;
+  price: string;
   Booking: Booking[];
   createdAt: Date;
   updatedAt: Date;
