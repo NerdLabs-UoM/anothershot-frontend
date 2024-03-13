@@ -42,7 +42,7 @@ import { PhotographerCategory } from "@/app/lib/types";
 import {
     fetchCategories,
     updateCategories,
-    fetchUserId,
+    fetchCategoryById,
 } from "../serviceData";
 
 const FormSchema = z.object({
@@ -51,29 +51,31 @@ const FormSchema = z.object({
     }),
 });
 
-// const tags = Array.from({ length: 50 }).map(
-//     (_, i, a) => `v1.2.0-beta.${a.length - i}`
-//   )
-
 function AddCategory() {
-    const [categories, setCategories] = useState< PhotographerCategory[] | undefined>();
+    const [categories, setCategories] = useState< PhotographerCategory[]>([]);
+    const [categoryList,setCategoryList] = useState<{label:string,value:PhotographerCategory}[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [categoriesArray, setCategoriesArray] = useState<{ label: string; selected: boolean }[]>([]);
     const { userId } = useParams();
 
     useEffect(() => {
         const fetchCategory = async () => {
-            const data = await fetchCategories();
-            setCategories(data);
+                const data = await fetchCategories();
+                setCategoryList(Object.entries(data).map(([key,value])=>({label:key.toLowerCase().charAt(0).toUpperCase()+key.toLowerCase().slice(1),value})));
         };
         fetchCategory();
 
-        const fetchId = async () => {
-            const data = await fetchUserId(userId);
+        const fetchCatById = async () => {
+            const data = await fetchCategoryById(userId);
             setSelectedCategories(data);
-            // return data;
         };
-        fetchId();
+        fetchCatById();
+
     }, [userId]);
+
+    useEffect(() => {
+        setCategoriesArray(categoryList.map(category => ({ label: category.label, selected: false })));
+    }, [categoryList]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -85,18 +87,14 @@ function AddCategory() {
             toast.success("Categories updated successfully");
         } catch (e) {
             toast.error("Error updating categories");
+            console.log("eerror",e);
         }
     }
 
-    if (categories === undefined) {
-        // Categories are still being fetched, display loading state or spinner
-        return <div>Loading...</div>;
-    }
 
-    const categoriesArray = categories?.map((key, value) => ({
-        label: value,
-        selected: false,
-      }));
+    
+
+
     return (
         <Card className="w-[350px] my-8 lg:w-[540px] h-auto mx-auto">
             <CardHeader>

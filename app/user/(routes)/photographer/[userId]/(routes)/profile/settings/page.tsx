@@ -74,7 +74,7 @@ export default function Settings() {
                 <div className="md:mb-0 md:mr-4">
                     <Earnings />
                 </div>
-                {/* <AddCategory /> */}
+                 <AddCategory />
             </div>
             <div className="lg:mx-[4%]">
                 <BankDetails />

@@ -4,7 +4,6 @@ import axios from 'axios'
 import {BankDetails, Photographer, PhotographerCategory, Report} from "@/app/lib/types";
 
 
-
 export const fetchCategories = async() => {
     try {
         const res = await axios.get<PhotographerCategory[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/getallcategories`);
@@ -17,8 +16,9 @@ export const fetchCategories = async() => {
 
 export const updateCategories = async (selectedCategories:string[]  ,userId:string|string[]) => {
     try{
+        const uppercaseCategories = selectedCategories.map(category => category.toUpperCase());
         await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/categories`, {
-            category: selectedCategories,
+            category: uppercaseCategories,
         });
     }catch(e){
         console.log("Error updating photographer categories");
@@ -26,10 +26,11 @@ export const updateCategories = async (selectedCategories:string[]  ,userId:stri
     }
 }
 
-export const fetchUserId = async(userId:string|string[]) => {
+export const fetchCategoryById = async(userId:string|string[]) => {
     try {
         const res = await axios.get<Photographer>(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`);
-        return res.data.category;
+        const sentenceCaseData = res.data.category.map(category => category.charAt(0).toUpperCase() + category.slice(1).toLowerCase());
+        return sentenceCaseData;
 
     }catch(e){
         console.log("Error fetching user id");

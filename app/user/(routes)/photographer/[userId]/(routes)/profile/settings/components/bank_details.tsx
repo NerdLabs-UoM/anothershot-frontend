@@ -68,6 +68,18 @@ const BankDetails = () => {
     const { userId } = useParams();
     const [bankDets, setBankDets] = useState<BankDetails | undefined>(undefined);
 
+
+    const form = useForm<z.infer<typeof bankFormSchema>>({
+        resolver: zodResolver(bankFormSchema),
+        defaultValues: {
+            bankName: bankDets?.bankName || "",
+            accountName: bankDets?.accountName || "" ,
+            accountBranch: bankDets?.accountBranch || "",
+            accountNumber: bankDets?.accountNumber || "",
+            accountBranchCode: bankDets?.accountBranchCode || "",
+        },
+    });
+    
     useEffect(()=>{
         const fetchBankDetail = async () =>{
             const data = await fetchBankDetails(userId);
@@ -75,7 +87,7 @@ const BankDetails = () => {
         }
 
         fetchBankDetail();
-    },[])
+    },[userId])
 
     useEffect(()=>{
         if (bankDets){
@@ -87,18 +99,9 @@ const BankDetails = () => {
                 accountBranchCode: bankDets.accountBranchCode || "",
             })
         }
-    },[bankDets])
+    },[bankDets,form])
     
-    const form = useForm<z.infer<typeof bankFormSchema>>({
-        resolver: zodResolver(bankFormSchema),
-        defaultValues: {
-            bankName: bankDets?.bankName || "",
-            accountName: bankDets?.accountName || "" ,
-            accountBranch: bankDets?.accountBranch || "",
-            accountNumber: bankDets?.accountNumber || "",
-            accountBranchCode: bankDets?.accountBranchCode || "",
-        },
-    });
+    
 
     function handleSubmit(values: z.infer<typeof bankFormSchema>) {
         try{
