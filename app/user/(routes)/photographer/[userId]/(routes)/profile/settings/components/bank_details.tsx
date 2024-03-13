@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
@@ -22,62 +22,99 @@ import {
     CardDescription,
 } from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
+import { useParams } from "next/navigation";
+import { updateBankDetails,fetchBankDetails } from "../serviceData";
+import toast from "react-hot-toast";
+import { BankDetails } from "@/app/lib/types";
+
 
 const bankFormSchema = z.object({
-    bankname: z.string().min(1,{message: "Bank name is required"}),
-    holdername: z.string().min(1,{message: "Account holder name is required"}),
-    branchname: z.string().min(1,{message: "Branch name is required"}),
-    accountno: z.string().regex(/^\d{8,18}$/,{message:"Account number must be between 8 to 18 digits"}),
-    branchcode: z.string().regex(/^[0-9]\d{1,5}$/, { message: "Branch code must be less than 6 digits and required" }),
+    bankName: z.string().min(1,{message: "Bank name is required"}),
+    accountName: z.string().min(1,{message: "Account holder name is required"}),
+    accountBranch: z.string().min(1,{message: "Branch name is required"}),
+    accountNumber: z.string().regex(/^\d{8,18}$/,{message:"Account number must be between 8 to 18 digits"}),
+    accountBranchCode: z.string().regex(/^[0-9]\d{1,5}$/, { message: "Branch code must be less than 6 digits and required" }),
 });
 
 const BankDetailsProps = [
     {
-        name: "bankname",
+        name: "bankName",
         label: "Bank Name",
         placeholder: "bank name",
     },
     {
-        name: "holdername",
+        name: "accountName",
         label: "Owner's Name",
         placeholder: "account holders name",
     },
     {
-        name: "branchname",
+        name: "accountBranch",
         label: "Branch Name",
         placeholder: "branch name",
     },
     {
-        name: "accountno",
+        name: "accountNumber",
         label: "Account No",
         placeholder: "account number",
     },
     {
-        name: "branchcode",
+        name: "accountBranchCode",
         label: "Branch Code",
         placeholder: "branch code",
     },
 ];
 
 const BankDetails = () => {
+    const { userId } = useParams();
+    const [bankDets, setBankDets] = useState<BankDetails | undefined>(undefined);
+
+
     const form = useForm<z.infer<typeof bankFormSchema>>({
         resolver: zodResolver(bankFormSchema),
         defaultValues: {
-            bankname: '',
-            holdername: '',
-            branchname: '',
-            accountno: '',
-            branchcode: '',
+            bankName: bankDets?.bankName || "",
+            accountName: bankDets?.accountName || "" ,
+            accountBranch: bankDets?.accountBranch || "",
+            accountNumber: bankDets?.accountNumber || "",
+            accountBranchCode: bankDets?.accountBranchCode || "",
         },
     });
+    
+    useEffect(()=>{
+        const fetchBankDetail = async () =>{
+            const data = await fetchBankDetails(userId);
+            setBankDets(data);
+        }
+
+        fetchBankDetail();
+    },[userId])
+
+    useEffect(()=>{
+        if (bankDets){
+            form.reset({
+                bankName: bankDets.bankName || "",
+                accountName: bankDets.accountName || "",
+                accountBranch: bankDets.accountBranch || "",
+                accountNumber: bankDets.accountNumber || "",
+                accountBranchCode: bankDets.accountBranchCode || "",
+            })
+        }
+    },[bankDets,form])
+    
+    
 
     function handleSubmit(values: z.infer<typeof bankFormSchema>) {
-        console.log("submitted ewwa bank eke :", values);
-        form.reset();
+        try{
+            updateBankDetails(values ,userId)
+            toast.success("Bank details Successfully updated");
+        }catch(e){
+            toast.error("Error sending Bank Details");
+        }
     }
+    
 
     return (
-        <Card className="flex flex-wrap mx-auto sm:w-[350px] md:w-[700px] lg:w-[920px] mb-5">
+        <Card className="flex flex-wrap mx-auto sm:w-[300px] md:w-[700px] lg:w-[920px] mb-5">
             <CardHeader>
                 <CardTitle>Bank Details</CardTitle>
                 <CardDescription>
@@ -94,7 +131,7 @@ const BankDetails = () => {
                             <FormField
                                 key={index}
                                 control={form.control}
-                                name={item.name as "bankname" | "holdername" | "branchname" | "accountno" | "branchcode"}
+                                name={item.name as "bankName" | "accountName" | "accountBranch" | "accountNumber" | "accountBranchCode"}
                                 render={({field}) => (
                                     <FormItem>
                                         <div className="grid gap-2 md:grid-cols-2 ">
