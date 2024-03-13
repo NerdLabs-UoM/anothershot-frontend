@@ -167,8 +167,8 @@ export interface Chat {
 }
 
 export interface Message {
-  id: string;
-  chat: Chat;
+  id?: string;
+  chat?: Chat;
   chatId: string;
   sender: User;
   senderId: string;
@@ -181,10 +181,10 @@ export interface Message {
 }
 
 export interface Attachment {
-  id: string;
-  message: Message;
-  messageId: string;
-  type: string;
+  id?: string;
+  message?: Message;
+  messageId?: string;
+  type?: string;
   url: string;
 }
 
