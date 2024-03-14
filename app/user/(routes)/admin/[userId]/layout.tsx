@@ -9,7 +9,7 @@ type UserLayoutProps = {
 
 const UserLayout = (props: UserLayoutProps) => {
     return (
-        <div className="container py-10">
+        <div className=" py-5 flex flex-col items-center ">
             <AdminHeader/>
             {props.children}
         </div>
