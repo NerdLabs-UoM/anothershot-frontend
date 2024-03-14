@@ -1,5 +1,5 @@
 // import { Message, UserData } from "@/app/data";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Chat, Message } from "@/app/lib/types";
@@ -7,7 +7,6 @@ import ChatTopbar from "./chatTopBar";
 import { ChatList } from "./chatList";
 import { Socket } from "socket.io-client";
 import { useSession } from "next-auth/react";
-import { CldUploadWidgetInfo } from "next-cloudinary";
 
 interface ChatProps {
     messages?: Message[];

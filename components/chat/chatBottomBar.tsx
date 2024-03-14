@@ -1,28 +1,20 @@
 "use client"
 
 import {
-    Camera,
-    FileImage,
-    Mic,
     Paperclip,
-    PlusCircle,
     SendHorizontal,
-    Smile,
     ThumbsUp,
 } from "lucide-react";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+import { CldUploadWidget, CldUploadWidgetResults } from "next-cloudinary";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/app/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { EmojiPicker } from "./emojiPicker";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Attachment, Chat, Message } from "@/app/lib/types";
-import { CldUploadWidget, CldUploadWidgetResults } from "next-cloudinary";
-import { result } from "lodash";
-import { url } from "inspector";
 
 interface ChatBottombarProps {
     sendMessage: (newMessage: Message) => void;
@@ -64,7 +56,6 @@ export default function ChatBottombar({
     };
 
     const handleAttachmentSend = (url: string) => {
-        console.log(url)
         const newAttachment: Attachment = {
             url: url,
             type: "image",
@@ -79,7 +70,6 @@ export default function ChatBottombar({
             };
             sendMessage(newMessage);
             setMessage("");
-            console.log(newMessage)
         }
     }
 
