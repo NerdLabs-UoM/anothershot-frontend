@@ -13,7 +13,7 @@ interface ChatProps {
     selectedChat: Chat;
     isMobile: boolean;
     socket: React.MutableRefObject<Socket | undefined>
-    setSelectedChat: React.Dispatch<React.SetStateAction<Chat>>;
+    setSelectedChat: React.Dispatch<React.SetStateAction<Chat | undefined>>;
 }
 
 export function ChatView({ messages, selectedChat, isMobile, socket, setSelectedChat }: ChatProps) {
@@ -33,7 +33,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
             if (selectedChat.id === message.chatId) {
                 if (session?.user.id !== message.senderId) {
                     setSelectedChat((prev) => {
-                        if (prev.id === message.chatId) {
+                        if (prev && prev.id === message.chatId) {
                             return {
                                 ...prev,
                                 messages: [...prev.messages, message],
@@ -104,7 +104,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
                     attachments: newMessage.attachments,
                 });
                 setSelectedChat((prev) => {
-                    if (prev.id === newMessage.chatId) {
+                    if (prev && prev.id === newMessage.chatId) {
                         return {
                             ...prev,
                             messages: [...prev.messages, newMessage],
