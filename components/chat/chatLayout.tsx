@@ -33,7 +33,7 @@ export function ChatLayout({
     const { data: session } = useSession()
     const [chats, setChats] = useState<Chat[]>([])
     const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-    const [selectedChat, setSelectedChat] = React.useState<Chat>(chats[0]);
+    const [selectedChat, setSelectedChat] = React.useState<Chat | undefined >(undefined);
     const [selectedChatId, setSelectedChatId] = React.useState<string | undefined>(undefined);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -52,12 +52,14 @@ export function ChatLayout({
         const currentSocket = socket.current;
         const handleReceiveNewChat = (chat: Chat) => {
             if (chat.users.find(user => user.id === session?.user.id)) {
-                setChats(prev => [...prev, chat])
+                setChats(prev => [...prev, chat]) 
             }
         }
         const handleDeleteChat = (chatId: string) => {
             if (chatId === selectedChatId) {
                 toast.error('Someone has deleted this chat. Redirecting to another chat')
+                setSelectedChat(undefined);
+                setSelectedChatId(undefined);
                 setTimeout(() => {
                     router.refresh()
                 }, 5000);
@@ -114,7 +116,7 @@ export function ChatLayout({
         if (selectedChatId) {
             fetchSelectedChat(selectedChatId);
         }
-    }, [selectedChatId, chats]);
+    }, [selectedChatId]);
 
     return (
         <ResizablePanelGroup
