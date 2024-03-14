@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react'
 import { useSession } from 'next-auth/react';
 import { Trash2, Info } from 'lucide-react';
-import Link from 'next/link';
-import { cn } from '@/app/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button, buttonVariants } from '@/components/ui/button';
-import { Chat } from '@/app/lib/types';
-import axios from 'axios';
 import toast from 'react-hot-toast';
+import axios from 'axios';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button';
+import { Chat } from '@/app/lib/types';
 import {
     AlertDialog,
     AlertDialogAction,
