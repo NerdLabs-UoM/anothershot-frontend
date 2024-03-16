@@ -94,7 +94,7 @@ export interface User {
   emailVerified?: Date | null;
   password: string;
   userRole: UserRole;
-  image: string;
+  image?: string | null;
   accounts: Account[];
   sessions: Session[];
   photographer?: Photographer | null;
@@ -106,6 +106,10 @@ export interface User {
   messagesReceived: Message[];
   createdAt: Date;
   updatedAt: Date;
+  likedFeedImages: FeedImage[];
+  likedFeedImagesIds: string[];
+  savedFeedImages: FeedImage[];
+  savedFeedImagesIds: string[];
 }
 
 export interface Photographer {
@@ -309,8 +313,14 @@ export interface FeedImage {
   id: string;
   photographer: Photographer;
   photographerId: string;
-  image: string;
-  caption: string;
+  imageUrl: string;
+  likes: User[];
+  likedUserIds: string[];
+  saves: User[];
+  savedUserIds: string[];
+  likeCount: number;
+  saveCount: number;
+  caption?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
