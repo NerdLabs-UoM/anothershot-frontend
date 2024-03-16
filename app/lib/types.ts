@@ -15,56 +15,56 @@ export type PaymentType = 'BOOKING' | 'ALBUM PAYMENT';
 
 
 export type PhotographerCategory =
-| 'WEDDING'
-| 'PORTRAIT'
-| 'LANDSCAPE'
-| 'EVENT'
-| 'PRODUCT'
-| 'FASHION'
-| 'FOOD'
-| 'SPORT'
-| 'ARCHITECTURE'
-| 'WILDLIFE'
-| 'TRAVEL'
-| 'DOCUMENTARY'
-| 'STREET'
-| 'FAMILY'
-| 'NEWBORN'
-| 'MATERNITY'
-| 'PET'
-| 'BIRTHDAY'
-| 'BABY_SHOWER'
-| 'ENGAGEMENT'
-| 'ANNIVERSARY'
-| 'GRADUATION'
-| 'PROM'
-| 'BACHELOR'
-| 'BACHELORETTE'
-| 'REUNION'
-| 'RETIREMENT'
-| 'FUNERAL'
-| 'MEMORIAL'
-| 'RELIGIOUS'
-| 'CULTURAL'
-| 'POLITICAL'
-| 'MILITARY'
-| 'CHARITY'
-| 'FESTIVAL'
-| 'FAIR'
-| 'CONCERT'
-| 'CONFERENCE'
-| 'EXPO'
-| 'CONVENTION'
-| 'SEMINAR'
-| 'WORKSHOP'
-| 'RETREAT'
-| 'SUMMIT'
-| 'TRADE_SHOW'
-| 'MEETUP'
-| 'RALLY'
-| 'PROTEST'
-| 'MARCH'
-| 'PARADE';
+  | 'WEDDING'
+  | 'PORTRAIT'
+  | 'LANDSCAPE'
+  | 'EVENT'
+  | 'PRODUCT'
+  | 'FASHION'
+  | 'FOOD'
+  | 'SPORT'
+  | 'ARCHITECTURE'
+  | 'WILDLIFE'
+  | 'TRAVEL'
+  | 'DOCUMENTARY'
+  | 'STREET'
+  | 'FAMILY'
+  | 'NEWBORN'
+  | 'MATERNITY'
+  | 'PET'
+  | 'BIRTHDAY'
+  | 'BABY_SHOWER'
+  | 'ENGAGEMENT'
+  | 'ANNIVERSARY'
+  | 'GRADUATION'
+  | 'PROM'
+  | 'BACHELOR'
+  | 'BACHELORETTE'
+  | 'REUNION'
+  | 'RETIREMENT'
+  | 'FUNERAL'
+  | 'MEMORIAL'
+  | 'RELIGIOUS'
+  | 'CULTURAL'
+  | 'POLITICAL'
+  | 'MILITARY'
+  | 'CHARITY'
+  | 'FESTIVAL'
+  | 'FAIR'
+  | 'CONCERT'
+  | 'CONFERENCE'
+  | 'EXPO'
+  | 'CONVENTION'
+  | 'SEMINAR'
+  | 'WORKSHOP'
+  | 'RETREAT'
+  | 'SUMMIT'
+  | 'TRADE_SHOW'
+  | 'MEETUP'
+  | 'RALLY'
+  | 'PROTEST'
+  | 'MARCH'
+  | 'PARADE';
 
 
 export interface Account {
@@ -199,12 +199,21 @@ export interface Booking {
   package: Package;
   packageId: string;
   payment?: string | null;
-  date: Date;
-  start?: Date | null;
-  end?: Date | null;
+  event: Event;
   status: BookingStatus;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  description?: string;
+  start?: Date;
+  end?: Date;
+  allDay?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface BankDetails {
