@@ -211,7 +211,7 @@ const FeedComponent = () => {
                   <span className="text-white text-sm sm:text-xs lg:text-sm">{formatCount(feedImage.saveCount)}</span>
                 </div>
               </div>
-              <div className="ml-2">
+              <div className="ml-4">
                 <div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
