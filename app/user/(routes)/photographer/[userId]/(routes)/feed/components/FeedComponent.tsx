@@ -47,7 +47,6 @@ const FeedComponent = () => {
     const fetchFeedImages = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed`);
-        console.log(response.data);
         setFeedImages(response.data);
       } catch (error: any) {
         toast.error('Error fetching feed images:', error);
@@ -65,7 +64,6 @@ const FeedComponent = () => {
         userId: session?.user?.id,
         like: !isLiked
       });
-      console.log(response.data);
       setFeedImages((prevFeedImage) => {
         return prevFeedImage.map((image) => {
           if (image.id === id) {
@@ -89,7 +87,6 @@ const FeedComponent = () => {
         userId: session?.user?.id,
         save: !isSaved
       });
-      console.log(response.data);
       setFeedImages((prevFeedImage) => {
         return prevFeedImage.map((image) => {
           if (image.id === id) {
@@ -126,7 +123,6 @@ const FeedComponent = () => {
         feedId: id,
         caption: caption,
       });
-      console.log(response.data);
       setFeedImages((prevFeedImage) => {
         return prevFeedImage.map((image) => {
           if (image.id === id) {
