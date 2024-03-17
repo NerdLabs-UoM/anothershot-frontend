@@ -24,6 +24,7 @@ import { FeedImage } from "@/app/lib/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 const formatCount = (count : number) => {
   if (count < 1000) {
@@ -49,7 +50,7 @@ const FeedComponent = () => {
         console.log(response.data);
         setFeedImages(response.data);
       } catch (error: any) {
-        console.error('Error fetching feed images:', error);
+        toast.error('Error fetching feed images:', error);
       }
     };
 
@@ -78,7 +79,7 @@ const FeedComponent = () => {
         });
       });
     } catch (error: any) {
-      console.error('Error liking feed image:', error);
+      toast.error('Error liking feed image:', error);
     }
   }
   const handleSave = async (id: string, isSaved: boolean) => {
@@ -102,7 +103,7 @@ const FeedComponent = () => {
         });
       });
     } catch (error: any) {
-      console.error('Error saving feed image:', error);
+      toast.error('Error saving feed image:', error);
     }
   }
 
@@ -115,8 +116,8 @@ const FeedComponent = () => {
         },
       });
       setFeedImages(prevFeedImages => prevFeedImages.filter(image => image.id !== id));
-    } catch (error) {
-      console.error('Error deleting feed image:', error);
+    } catch (error: any) {
+      toast.error('Error deleting feed image:', error);
     }
   };
   const addCaption = async (id: string, caption: string) => {
@@ -138,7 +139,7 @@ const FeedComponent = () => {
         });
       });
     } catch (error: any) {
-      console.error('Error adding caption to feed image:', error);
+      toast.error('Error adding caption to feed image:', error);
     }
   }
   const renderOptions = () => {
