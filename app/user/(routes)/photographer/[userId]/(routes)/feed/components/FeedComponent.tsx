@@ -144,7 +144,7 @@ const FeedComponent = () => {
   const renderOptions = () => {
     if (session?.user?.id === userId) {
       return (
-        <MoreVertical size={32} color="#ffffff" className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+        <MoreVertical size={32} color="#ffffff" className="sm:w-5 sm:h-5 lg:w-7 lg:h-7" />
       );
     }
     return null;
@@ -211,7 +211,7 @@ const FeedComponent = () => {
                   <span className="text-white text-sm sm:text-xs lg:text-sm">{formatCount(feedImage.saveCount)}</span>
                 </div>
               </div>
-              <div className="ml-4">
+              <div className="ml-2 sm:ml-1 lg:ml-4 ">
                 <div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
