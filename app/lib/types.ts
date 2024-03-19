@@ -256,15 +256,15 @@ export interface Report {
 
 export interface Package {
   id: string;
-  photographer: Photographer;
+  photographer?: Photographer;
   photographerId: string;
   name: string;
   description: string;
   coverPhotos: string[];
-  price: number;
-  Booking: Booking[];
-  createdAt: Date;
-  updatedAt: Date;
+  price: string;
+  Booking?: Booking[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ContactDetails {
