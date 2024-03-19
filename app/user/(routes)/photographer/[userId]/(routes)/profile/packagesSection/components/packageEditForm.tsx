@@ -36,7 +36,6 @@ import Image from 'next/image'
 import SubmitForm from "../../testimonialSection/components/SubmitForm";
 import { Package } from "@/app/lib/types";
 import { useEffect, useState } from "react";
-// import { values } from "lodash";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
@@ -45,11 +44,15 @@ import {
     CldUploadWidgetInfo,
     CldUploadWidget,
 } from "next-cloudinary";
-import { useParams , useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Photographer } from "@/app/lib/types";
+import React from "react";
 
 interface PackageEditFormProps {
     packages: Package[];
+    packageProp: React.Dispatch<React.SetStateAction<Package[]>>;
+
+
 }
 const formSchema = z.object({
     packageId: z.string(),
@@ -68,22 +71,17 @@ const formSchema = z.object({
     price: z.string(),
     coverPhoto: z.string()
 });
-const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
+const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp }) => {
     const { data: session } = useSession()
     const [isPhotographer, setIsPhotographer] = useState(true);
-    const [packageList, setPackageList] = useState<Package[]>(packages)
     const [selectedPackageId, setSelectedPackageId] = useState<string>("")
     const [isNew, setIsNew] = useState<boolean>(false)
     const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1708486003/oooolhqi3vcrtcqhhy3b.jpg");
     const { userId } = useParams();
     const [photographer, setPhotographer] = useState<Photographer>();
-    const router = useRouter();const handleRefresh = () => {
+    const router = useRouter(); const handleRefresh = () => {
         router.refresh();
-      };
-    useEffect(() => {
-        setPackageList(packages)
-    }, [packages])
-    console.log(packageList)
+    };
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -95,7 +93,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
     });
 
     const handlePackageChange = (value: string) => {
-        const selectedPackage = packageList.find((packageItem) => packageItem.id === value)
+        const selectedPackage = packages.find((packageItem) => packageItem.id === value)
         if (selectedPackage) {
             form.setValue("name", selectedPackage.name)
             form.setValue("description", selectedPackage.description)
@@ -113,28 +111,43 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
         }
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data)
+            const updatedPackage: Package = response.data;
+
+            // Update the package list state by replacing the old package with the updated one
+            packageProp(prevPackageList => prevPackageList.map(packageItem =>
+                packageItem.id === selectedPackageId ? updatedPackage : packageItem
+            ));
             toast.success("Package details updated successfully.")
         }
         catch (error) {
             toast.error("An error occurred. Please try again.")
         }
     }
+
     const handleCreatePackage = async () => {
         if (!session?.user?.id) return;
+
         const data = {
             photographerId: session.user.id,
             name: form.getValues("name"),
             description: form.getValues("description"),
-            price: form.getValues("price")
+            coverPhotos: [],
+            price: form.getValues("price"),
         };
+
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
+            const newPackage: Package = response.data; // Assuming the response contains the newly created package
+
+            // Update the package list state by adding the new package
+            packageProp(prevPackageList => [...prevPackageList, newPackage]);
+
             toast.success("Package created successfully.");
-            // Optionally, perform additional actions after successfully creating the package, such as updating the UI or fetching updated data.
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
     };
+
 
     const handleDeletePackage = async () => {
         if (session?.user?.id === undefined) return
@@ -144,13 +157,15 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
         }
         try {
             const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data })
+            packageProp(prevPackageList => prevPackageList.filter(packageItem => packageItem.id !== selectedPackageId));
+
             toast.success("Package deleted successfully.")
         }
         catch (error) {
             toast.error("An error occurred. Please try again.")
         }
     }
-    
+
     return (
         <main>
             <div className="w-full pr-10">
@@ -188,7 +203,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
                                                 </FormControl>
                                                 <SelectContent >
                                                     <SelectGroup>
-                                                        {packageList.map((packageItem) => (
+                                                        {packages.map((packageItem) => (
                                                             <SelectItem key={packageItem.id} value={packageItem.id}>
                                                                 <SelectLabel>{packageItem.name}</SelectLabel>
                                                             </SelectItem>
@@ -226,8 +241,10 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
                                                 <Input
                                                     type="description"
                                                     placeholder="package description"
+                                                    maxLength={100} // Set the maximum character limit
                                                     {...field}
                                                 />
+
                                             </FormControl>
                                         </FormItem>
                                     )}
@@ -248,7 +265,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages }) => {
                                         </FormItem>
                                     )}
                                 />
-                                
+
                             </form>
                         </Form>
                         <DialogFooter>
