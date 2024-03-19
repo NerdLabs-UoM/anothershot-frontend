@@ -6,9 +6,10 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import ContactForm from "./contactForm";
-import { ContactDetails } from "@/lib/types";
+import { ContactDetails } from "@/app/lib/types";
 import { Session } from "inspector";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const ContactSectionContent = () => {
 
@@ -16,13 +17,18 @@ const ContactSectionContent = () => {
   const [contactDets, setContactDets] = useState<ContactDetails | undefined>(undefined)
 
 
-  useEffect(() => {
-    const fetchContactDets = async () => {
+ useEffect(() => {
+  const fetchContactDets = async () => {
+    try {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/contactdetails/${userId}`);
-      setContactDets(res.data)
+      setContactDets(res.data);
+    } catch (err) {
+      toast.error("An error occurred. Please try again.");
     }
-    fetchContactDets()
-  }, [])
+  };
+  fetchContactDets();
+}, [userId]); // Include userId in the dependency array
+
 
   const handleDirect = (url: string) => {
     window.open(url, "_blank");

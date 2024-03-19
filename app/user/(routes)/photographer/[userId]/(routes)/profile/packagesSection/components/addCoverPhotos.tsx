@@ -26,10 +26,13 @@ const formSchema = z.object({
 });
 interface PackageEditFormProps {
     packageId: string;
+    setCoverPhoto: React.Dispatch<  //update the cover photo state
+    React.SetStateAction<{
+        url: string;
+    }>>
+     
 }
-
-
-const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId }) => {
+const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPhoto}) => {
     const [photographer, setPhotographer] = useState<Photographer>();
     const { userId } = useParams();
     const { data: session } = useSession();
@@ -42,7 +45,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId }) => {
     const [values, setValues] = useState({
         coverPhoto: "",
     });
-    const [coverPhotos, setCoverPhotos] = useState<string[]>([]);
+    const [coverPhotos, setCoverPhotos] = useState<string[]>([]);  //update the cover photo state
  
      const [imageKey, setImageKey] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
@@ -55,11 +58,15 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId }) => {
             const res = await axios.get<Photographer>(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`
             );
-            setPhotographer(res.data);
-            
-            // setCoverPhotos(res.data.coverPhotos);
-            // console.log(res.data.coverPhotos);
-         
+            try{
+                setPhotographer(res.data);
+
+            }
+            catch (err) {
+                toast.error("Cannot fetch data. Please try again.")
+
+            }
+                 
         };
         fetchData();
     });
@@ -85,14 +92,19 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId }) => {
         setIsOpen(false);
         setValues({ coverPhoto: values.coverPhoto });
         async function Update() {
-            await axios.put(
+            try{ await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/packages/${userId}`,
                 values
-            );
+            );}
+            catch (error) {
+                toast.error("An error occured. Please try again.")
+            } 
         }
+        
         Update();
         handleRefresh();
     };
+    
     return (
         <main>
             <div className="w-full pr-10">
@@ -106,22 +118,24 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId }) => {
                             };
                            
                             const tags = uploadedResult.tags;
-                            console.log(tags);
                             setCoverImageURL(packageImageURL.image);
-                            console.log(coverImageURL);
-                          
+                                                    
                             async function Update() {
                                 const data = {
                                     coverPhotos: [packageImageURL.image]
                                 };
-                                // setCoverPhotos(prevCoverPhotos => [...prevCoverPhotos, packageImageURL.image]);
-                                setCoverPhotos([packageImageURL.image])           
-                                                   
-                                console.log(data);
-                                console.log(packageId);
+                                setCoverPhotos([packageImageURL.image])  //set the coverPhoto url
+                               
+                                setCoverPhoto({url:packageImageURL.image})  //update the cover photo state           
+                              try{
                                 await axios.put(
                                     `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
                                 );
+                              }
+                              catch (error) {
+                                toast.error("An error occured. Please try again.")
+                              }
+                                
                             }
                             Update();
                             handleRefresh();

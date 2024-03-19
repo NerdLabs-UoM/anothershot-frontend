@@ -49,13 +49,13 @@ export default function EditPhoto() {
       <div className="w-full pr-10">
         <Dialog>
           <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
-            <Button 
+            {/* <Button 
               variant={"outline"}
               size={"icon"}
               className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px] "
-            >
+            > */}
               <Pencil />
-            </Button>
+            {/* </Button> */}
           </DialogTrigger>
 
           <div>
