@@ -1,37 +1,80 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import EditPhoto from './editPhoto';
 import { Pencil } from "lucide-react";
-import AddFeaturedPhotos from './addFeaturedPhotos';
 import Photographer from "../../../../page";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useParams } from "next/navigation";
+
+// import EditPhoto from './editPhoto';
+import updateFeaturedPhotos from "./updateFeaturedPhotos";
 
 
 export default function FeaturedPhoto() {
   const [FeaturedPhotos, setFeaturedPhotos] = useState({        //update the cover photo without reload the page
     url: ""
   })
-
+  const {userId} = useParams();
+  const [featuredPhoto, setFeaturedPhoto] = useState<string[]>([]);
   //handleUpdateFeaturePhoto("index:number")
+  const handleUpdateFeaturePhoto = async (index:number) => {
+    try {
+      // Prompt the user to input the new URL for the featured photo
+      const newUrl = prompt("Enter the new URL for the featured photo:");
+      if (!newUrl) return; // If the user cancels or inputs an empty URL, do nothing
+      
+      // Update the state with the new photo URL at the specified index
+      const updatedPhotos = [...featuredPhoto];
+      updatedPhotos[index] = newUrl;
+      setFeaturedPhoto(updatedPhotos);
 
+      // Call the saveFeaturedPhoto function to save the updated photo URL to the database
+      await saveFeaturedPhoto(newUrl, index);
+
+      toast.success("Featured photo updated successfully.");
+    } catch (error) {
+      console.error('Error updating featured photo:', error);
+      toast.error("Error updating featured photo. Please try again.");
+    }
+  };
   //
   //async function img url db save photographer features.[0]
+  const saveFeaturedPhoto = async (photoUrl: string, index: number) => {
+    try {
+      // Send a POST request to save the photo URL
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/featured`, {
+        userId: userId,
+        imageUrl: photoUrl,
+        index: index
+      });
+      // Log success or perform any additional actions
+      console.log(`Photo at index ${index} saved successfully.`);
+    } catch (error) {
+      // Handle errors
+      console.error('Error saving photo:', error);
+      toast.error("Error saving photo. Please try again.");
+    }
+  };
+  // async function saveFeaturedPhotos()
 
   //get all featured photos from db //
-  // useEffect(() => {
-  //   const fetchFeatured = async () => {
-  //     const res = await axios.get(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/featured/${id}`
-  //     );
-  //     const data = res.data;
-  //     try {
-  //       setFeaturedPhotos(res.data);
-  //     } catch (error) {
-  //       toast.error("Cannot fetch data. Please try again.")
-  //     }
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/featured/${userId}`
+        );
+       
+        setFeaturedPhoto(res.data);
+        // console.log(res.data);
+      } catch (error) {
+        toast.error("Cannot fetch data. Please try again.")
 
+      }};
+      fetchFeatured();
+    },[userId]);
       //useEffect and set urls to featuredPhoto Sttate..
 
       return (
@@ -41,7 +84,8 @@ export default function FeaturedPhoto() {
 
             <div className="flex -space-x-4 sm:-space-x-14 ">
               <div >
-//button
+                {/* <updateFeaturedPhotos setFeaturedPhoto={setFeaturedPhoto}/> */}
+
                 <div className="flex sm:mt-8 md:mt-6 lg:mt-4 sm:mb-14">
                   <Image
                     src={"/images/man-with-camera 1.png"}
@@ -65,7 +109,9 @@ export default function FeaturedPhoto() {
                   height={500}
                 />
               </div>
-              <div className="flex justify-start ml-8 relative"><EditPhoto /> </div>
+              <div className="flex justify-start ml-8 relative">
+                {/* <EditPhoto />  */}
+                </div>
 
             </div>
             <div className="flex -space-x-6 sm:-space-x-14 ">
@@ -90,8 +136,16 @@ export default function FeaturedPhoto() {
               </div>
             </div>
           </div>
+          <div>
+          {featuredPhoto.map((photoUrl:string, index:number) => (
+        <div key={index}>
+          <Image src={photoUrl} alt={`Featured Photo ${index}`} width={500} height={500} />
+          <Button onClick={() => saveFeaturedPhoto(photoUrl, index)}>Save </Button>
+        </div>
+      ))}
+          </div>
         </div>
 
       );
-    }
- 
+    
+      }
