@@ -135,14 +135,19 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             price: form.getValues("price"),
         };
 
+        
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
             const newPackage: Package = response.data; // Assuming the response contains the newly created package
 
-            // Update the package list state by adding the new package
-            packageProp(prevPackageList => [...prevPackageList, newPackage]);
-
-            toast.success("Package created successfully.");
+            // Check if the new package already exists in the package list
+            if (packages.some((packages: Package) => packages.name === newPackage.name)) {
+                toast.error("Package already exists.");
+            } else {
+                // Update the package list state by adding the new package
+                packageProp(prevPackageList => [...prevPackageList, newPackage]);
+                toast.success("Package created successfully.");
+            }
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
