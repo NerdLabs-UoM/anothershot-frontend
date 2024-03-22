@@ -15,9 +15,10 @@ const PackagesSection = () => {
   
   useEffect(() => {
     const fetchPackages = async () => {
+      
+      try{
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`);
       const data = response.data;
-      try{
         setPackageList(data);
       }
       catch (error) {

@@ -1,86 +1,27 @@
 "use client";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useSession } from "next-auth/react";
+import { CldUploadWidget, CldUploadWidgetInfo, CldUploadWidgetResults } from 'next-cloudinary';
+import React, { useState } from 'react'
 import toast from "react-hot-toast";
-import {
-    CldUploadWidgetResults,
-    CldUploadWidgetInfo,
-    CldUploadWidget,
-} from "next-cloudinary";
-import { useParams, useRouter } from "next/navigation";
-import { Photographer } from "@/app/lib/types";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
 import { PlusSquare } from "lucide-react";
+import { useSession } from 'next-auth/react';
+import { Photographer } from '@/app/lib/types';
 
-const formSchema = z.object({
-    packageId: z.string(),
-    coverPhoto: z.string()
-});
-interface PackageEditFormProps {
-    packageId: string;
-    setCoverPhoto: React.Dispatch<  //update the cover photo state
+interface FeaturedProps{
+    userId: string;
+    setFeaturedPhoto: React.Dispatch<  //update the cover photo state
     React.SetStateAction<{
         url: string;
     }>> 
 }
-const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPhoto}) => {
-    const [photographer, setPhotographer] = useState<Photographer>();
-    const { userId } = useParams();
+const updateFeaturedPhotos: React.FC<FeaturedProps> = ({setFeaturedPhoto,userId}) => {
     const { data: session } = useSession();
     const [isPhotographer, setIsPhotographer] = useState(true);
-    const [sessionId, setSessionId] = useState<string | null>(null);
-    const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
+    const [photographer, setPhotographer] = useState<Photographer>();
+    const[featuredPhotoURL, setFeaturedPhotoURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
+    
 
-    const [values, setValues] = useState({
-        coverPhoto: "",
-    });
-    const [coverPhotos, setCoverPhotos] = useState<string[]>([]);  //update the cover photo state
- 
-     const [imageKey, setImageKey] = useState(0);
-    const [isOpen, setIsOpen] = useState(false);
-    const router = useRouter();
-    const handleRefresh = () => {
-        router.refresh();
-    };
-    useEffect(() => {
-        const fetchData = async () => {
-           
-            try{
-                const res = await axios.get<Photographer>(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`
-                );
-                setPhotographer(res.data);
-
-            }
-            catch (err) {
-                toast.error("Cannot fetch data. Please try again.")
-
-            }
-                 
-        };
-        fetchData();
-    });
-    useEffect(() => {
-        if (userId == session?.user.id) {
-            setIsPhotographer(true);
-        }
-    }, [userId, session]);
-    useEffect(() => {
-        if (session) {
-            setSessionId(session?.user.id);
-        }
-    }, [session]);
-    useEffect(() => {
-        if (photographer) {
-            setValues({
-                coverPhoto: photographer?.coverPhoto ?? "",
-            });
-        }
-    }, [photographer]);
-
-   
     return (
         <main>
             <div className="w-full pr-10">
@@ -89,23 +30,23 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                         onOpen={() => { }}
                         onSuccess={(results: CldUploadWidgetResults) => {
                             const uploadedResult = results.info as CldUploadWidgetInfo;
-                            const packageImageURL = {
+                            const FeaturedURL = {
                                 image: uploadedResult.secure_url,
                             };
                            
                             const tags = uploadedResult.tags;
-                            setCoverImageURL(packageImageURL.image);
+                            setFeaturedPhotoURL(FeaturedURL.image);
                                                     
                             async function Update() {
                                 const data = {
-                                    coverPhotos: [packageImageURL.image]
+                                    coverPhotos: [FeaturedURL.image]
                                 };
-                                setCoverPhotos([packageImageURL.image])  //set the coverPhoto url
+                                // setFeaturedPhotoURL([FeaturedURL.image])  //set the coverPhoto url
                                
-                                setCoverPhoto({url:packageImageURL.image})  //update the cover photo state           
+                                setFeaturedPhoto({url:FeaturedURL.image})  //update the cover photo state           
                               try{
                                 await axios.put(
-                                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
+                                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/featured`, data
                                 );
                               }
                               catch (error) {
@@ -114,7 +55,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                                 
                             }
                             Update();
-                            handleRefresh();
+                           
                         }}
                         options={{
                             tags: ["cover image", `${session?.user.id}`],
@@ -123,11 +64,11 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                             showAdvancedOptions: false,
                             cropping: true,
                             croppingCoordinatesMode: "custom",
-                            croppingAspectRatio: 1,
+                            croppingAspectRatio: 2,
                             multiple: false,
                             defaultSource: "local",
                             resourceType: "image",
-                            folder: `${photographer?.userId}/${photographer?.name}/coverphotos`,
+                            folder: `${photographer?.userId}/${photographer?.name}/featured`,
                             styles: {
                                 palette: {
                                     window: "#ffffff",
@@ -167,4 +108,5 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
         </main >
     );
 }
-export default AddCoverPhotos;
+
+export default updateFeaturedPhotos

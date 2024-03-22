@@ -33,17 +33,11 @@ import {
 } from "@/components/ui/select"
 import { Pencil } from "lucide-react";
 import Image from 'next/image'
-import SubmitForm from "../../testimonialSection/components/SubmitForm";
 import { Package } from "@/app/lib/types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import {
-    CldUploadWidgetResults,
-    CldUploadWidgetInfo,
-    CldUploadWidget,
-} from "next-cloudinary";
 import { useParams, useRouter } from "next/navigation";
 import { Photographer } from "@/app/lib/types";
 import React from "react";
