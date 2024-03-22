@@ -17,6 +17,7 @@ import {
 } from "next-cloudinary";
 import { useParams, useRouter } from "next/navigation";
 import { Photographer } from "@/app/lib/types";
+import { PlusSquare } from "lucide-react";
 
 
 
@@ -175,14 +176,14 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                         {({ open }) => {
                             return (
                                 <Button
-                                    variant="default"
-                                    className="rounded-md mt-5 ml-5"
-                                    onClick={() => {
-                                        open();
-                                    }}
-                                >
-                                    Upload
-                                </Button>
+                                variant="default"
+                                className="rounded-md mt-2 ml-2 bg-transparent"
+                                onClick={() => {
+                                    open();
+                                }}
+                            >
+                                <PlusSquare style={{ color: 'black' }} />
+                            </Button>
                             );
                         }}
                     </CldUploadWidget>
