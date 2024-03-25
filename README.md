@@ -1,5 +1,5 @@
 
-# AnothersHOT
+# AnotherSHOT
 
 Photographer Booking and Portfolio Showcasing Web App
 
