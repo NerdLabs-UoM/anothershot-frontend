@@ -231,16 +231,16 @@ export interface Earnings {
 }
 
 export interface Report {
-  id: string;
+  id?: string;
   client?: Client | null;
   clientId?: string | null;
   photographer?: Photographer | null;
   photographerId?: string | null;
   subject: string;
   description: string;
-  status: ReportStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  status?: ReportStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Package {
