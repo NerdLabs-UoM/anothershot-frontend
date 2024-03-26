@@ -114,7 +114,7 @@ export default function ChatBottombar({
 
                     }}
                     onSuccess={(results: CldUploadWidgetResults) => {
-                        handleAttachmentSend(results.info?.secure_url)
+                        handleAttachmentSend((results.info as any).secure_url)
                     }}
                     options={cloudinaryOptions}
                     uploadPreset="o7oeqnou"
