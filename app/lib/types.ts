@@ -317,18 +317,18 @@ export interface FeedImage {
 }
 
 export interface Album {
-  id: string;
+  id?: string;
   photographer: Photographer;
   photographerId: string;
   name: string;
   description: string;
   images: AlbumImage[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface AlbumImage {
-  id: string;
+  id?: string;
   album: Album;
   albumId: string;
   image: string;

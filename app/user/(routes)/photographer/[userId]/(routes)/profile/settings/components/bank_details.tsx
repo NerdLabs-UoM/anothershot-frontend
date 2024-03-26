@@ -68,7 +68,6 @@ const BankDetails = () => {
     const { userId } = useParams();
     const [bankDets, setBankDets] = useState<BankDetails | undefined>(undefined);
 
-
     const form = useForm<z.infer<typeof bankFormSchema>>({
         resolver: zodResolver(bankFormSchema),
         defaultValues: {
@@ -85,9 +84,8 @@ const BankDetails = () => {
             const data = await fetchBankDetails(userId);
             setBankDets(data);
         }
-
         fetchBankDetail();
-    },[userId])
+    },[])
 
     useEffect(()=>{
         if (bankDets){
@@ -100,19 +98,17 @@ const BankDetails = () => {
             })
         }
     },[bankDets,form])
-    
-    
 
-    function handleSubmit(values: z.infer<typeof bankFormSchema>) {
+    async function handleSubmit(values: z.infer<typeof bankFormSchema>) {
         try{
-            updateBankDetails(values ,userId)
+            const res = await updateBankDetails(values ,userId)
+            console.log(res)
             toast.success("Bank details Successfully updated");
         }catch(e){
             toast.error("Error sending Bank Details");
         }
     }
     
-
     return (
         <Card className="flex flex-wrap mx-auto sm:w-[300px] md:w-[700px] lg:w-[920px] mb-5">
             <CardHeader>
