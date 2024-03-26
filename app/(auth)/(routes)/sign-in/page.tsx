@@ -13,16 +13,19 @@ const SignInPage = () => {
     const router = useRouter();
 
     const handleGoogleSignIn = async () => {
-        const res = await signIn('google', {
-            callbackUrl: `${window.location.origin}/home`,
-            redirect: false,
-        })
-
-        if (res?.error) {
-            toast.error(res.error);
+        try {
+            await signIn('google')
+                .then(() => {
+                    toast.success("Signed in successfully");
+                })
+                .catch((error) => {
+                    toast.error("Failed to sign in with Google");
+                    router.push("/sign-up");
+                })
+        } catch (error) {
+            toast.error("Failed to sign in with Google");
             router.push("/sign-up");
         }
-
     }
 
     return (
@@ -35,6 +38,9 @@ const SignInPage = () => {
                     <Google />
                     <span className="ml-2">Sign In With Google</span>
                 </Button>
+                <p className="text-zinc-500 font-medium m-4">
+                    Forgot your password? <a className="text-slate-950 cursor-pointer" onClick={() => router.push("/reset-password")}>Reset it here</a>
+                </p>
                 <p className="text-zinc-500 font-medium m-4">
                     Don't have an account? <a className="text-slate-950 cursor-pointer" onClick={() => router.push("/sign-up")}>Sign Up</a>
                 </p>

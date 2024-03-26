@@ -21,7 +21,7 @@ import EditForm from "./components/userEditForm";
 import { date } from "zod";
 import { useSession } from "next-auth/react";
 
-const page=()=> {
+const Page=()=> {
   const {data:session} = useSession();
   const [userData, setUserData] = useState<User>();
   const [details, setDetails] = useState({
@@ -175,4 +175,4 @@ const page=()=> {
   );
 }
 
-export default page;
+export default Page;

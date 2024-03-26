@@ -74,7 +74,7 @@ const FeedComponent = () => {
           <div className="flex flex-start items-center justify-between">
             <div className="pl-0">
             <Button
-              variant="null"
+              variant="default"
               role="heart"
               size="sm"
               className="flex items-center justify-center gap-2"
@@ -93,7 +93,7 @@ const FeedComponent = () => {
           <div className="flex flex-start items-center justify-between">
             <div className="pl-0">
             <Button
-              variant="null"
+              variant="default"
               role="save"
               size="sm"
               className="flex items-center justify-center gap-2"
@@ -114,7 +114,7 @@ const FeedComponent = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="null"
+                    variant="default"
                     role="save"
                     size="sm"
                     className="flex items-center justify-center gap-2"
