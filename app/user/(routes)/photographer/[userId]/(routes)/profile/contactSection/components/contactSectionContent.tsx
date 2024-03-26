@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import ContactForm from "./contactForm";
-import { ContactDetails } from "@/lib/types";
+import { ContactDetails } from "@/app/lib/types";
 import { Session } from "inspector";
 import { useSession } from "next-auth/react";
 

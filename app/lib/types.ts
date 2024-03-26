@@ -6,13 +6,11 @@ export type ReportStatus = 'PENDING' | 'RESOLVED' | 'DISMISSED';
 
 export type TestimonialVisibility = 'PUBLIC' | 'PRIVATE';
 
-
 export type Suspended = 'SUSPENDED' | 'NOT_SUSPENDED';
 
 export type PaymentStatus = 'PENDING' | 'PAID' | 'UNPAID';
 
 export type PaymentType = 'BOOKING' | 'ALBUM PAYMENT';
-
 
 export type PhotographerCategory =
   | 'WEDDING'
@@ -66,54 +64,45 @@ export type PhotographerCategory =
   | 'MARCH'
   | 'PARADE';
 
+  
+  export interface User {
+    id: string;
+    userName: string;
+    email: string;
+    emailVerified: boolean;
+    password: string;
+    userRole: UserRole;
+    image: string;
+    accounts: Account[];
+    photographer?: Photographer | null;
+    client?: Client | null;
+    admin?: Admin | null;
+    chats: Chat[];
+    chatIds: string[];
+    messagesSent: Message[];
+    messagesReceived: Message[];
+    createdAt: Date;
+    updatedAt: Date;
+    suspended: Suspended;
+  }
+  
+  export interface Account {
+    id: string;
+    userId: string;
+    type: string;
+    provider: string;
+    providerAccountId: string;
+    refresh_token?: string | null;
+    access_token?: string | null;
+    expires_at?: number | null;
+    token_type?: string | null;
+    scope?: string | null;
+    id_token?: string | null;
+    session_state?: string | null;
+    user: User;
+  }
 
-export interface Account {
-  id: string;
-  userId: string;
-  type: string;
-  provider: string;
-  providerAccountId: string;
-  refresh_token?: string | null;
-  access_token?: string | null;
-  expires_at?: number | null;
-  token_type?: string | null;
-  scope?: string | null;
-  id_token?: string | null;
-  session_state?: string | null;
-  user: User;
-}
-
-export interface Session {
-  id: string;
-  sessionToken: string;
-  userId: string;
-  expires: Date;
-  user: User;
-}
-
-export interface User {
-  id: string;
-  userName: string;
-  email: string;
-  emailVerified?: Date | null;
-  password: string;
-  userRole: UserRole;
-  image: string;
-  accounts: Account[];
-  sessions: Session[];
-  photographer?: Photographer | null;
-  client?: Client | null;
-  admin?: Admin | null;
-  chats: Chat[];
-  chatIds: string[];
-  messagesSent: Message[];
-  messagesReceived: Message[];
-  createdAt: Date;
-  updatedAt: Date;
-  suspended: Suspended;
-}
-
-export interface Photographer {
+  export interface Photographer {
   id: string;
   user: User;
   userId: string;
@@ -294,8 +283,6 @@ export interface Address {
 }
 
 export interface SocialMedia {
-  // contactDetails: ContactDetails;
-  // contactDetailsId: string;
   facebook?: string | null;
   instagram?: string | null;
   twitter?: string | null;
