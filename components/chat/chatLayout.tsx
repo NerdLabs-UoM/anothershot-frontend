@@ -1,7 +1,10 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { Socket, io } from 'socket.io-client';
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
     ResizableHandle,
@@ -12,8 +15,6 @@ import { cn } from "@/app/lib/utils";
 import ChatSidebar from "./chatSideBar";
 import { ChatView } from "./chatView";
 import { Chat } from "@/app/lib/types";
-import { Socket, io } from 'socket.io-client';
-import toast from "react-hot-toast";
 
 interface ChatLayoutProps {
     defaultLayout: number[] | undefined;
@@ -28,10 +29,11 @@ export function ChatLayout({
 }: ChatLayoutProps) {
 
     const socket = useRef<Socket>()
+    const router = useRouter()
     const { data: session } = useSession()
     const [chats, setChats] = useState<Chat[]>([])
     const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-    const [selectedChat, setSelectedChat] = React.useState<Chat>(chats[0]);
+    const [selectedChat, setSelectedChat] = React.useState<Chat | undefined >(undefined);
     const [selectedChatId, setSelectedChatId] = React.useState<string | undefined>(undefined);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -45,6 +47,32 @@ export function ChatLayout({
             window.removeEventListener("resize", checkScreenWidth);
         };
     }, []);
+
+    useEffect(() => {
+        const currentSocket = socket.current;
+        const handleReceiveNewChat = (chat: Chat) => {
+            if (chat.users.find(user => user.id === session?.user.id)) {
+                setChats(prev => [...prev, chat]) 
+            }
+        }
+        const handleDeleteChat = (chatId: string) => {
+            if (chatId === selectedChatId) {
+                toast.error('Someone has deleted this chat. Redirecting to another chat')
+                setSelectedChat(undefined);
+                setSelectedChatId(undefined);
+                setTimeout(() => {
+                    router.refresh()
+                }, 5000);
+            }
+            setChats(prev => prev.filter(chat => chat.id !== chatId));
+        }
+        currentSocket?.on('new-chat', handleReceiveNewChat);
+        currentSocket?.on('delete-chat', handleDeleteChat);
+        return () => {
+            currentSocket?.off('new-chat', handleReceiveNewChat);
+            currentSocket?.off('delete-chat', handleDeleteChat);
+        }
+    }), [socket, session]
 
     const fetchSelectedChat = async (chatId: string) => {
         try {
@@ -61,21 +89,21 @@ export function ChatLayout({
             try {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${session?.user.id}`);
                 setChats(res.data);
-                setSelectedChat(res.data[0]);
             } catch (error) {
                 toast.error('Error fetching chats');
             }
         }
+        if (session?.user.id) fetchChats();
         if (session?.user.id) {
-            fetchChats();
             try {
-                socket.current = io(`http://localhost:8001`)
-                socket.current.emit('connect-user', session.user.id)
+                socket.current = io(`${process.env.NEXT_PUBLIC_GATEWAY_URL}`)
+                if (socket.current) {
+                    socket.current.emit('connect-user', session.user.id)
+                }
             } catch (error) {
                 toast.error('Error connecting to server');
             }
         }
-
         return () => {
             if (socket.current) {
                 socket.current.emit('disconnect-user', session?.user.id)
@@ -88,7 +116,7 @@ export function ChatLayout({
         if (selectedChatId) {
             fetchSelectedChat(selectedChatId);
         }
-    }, [selectedChatId, chats]);
+    }, [selectedChatId]);
 
     return (
         <ResizablePanelGroup
@@ -126,10 +154,10 @@ export function ChatLayout({
                     isCollapsed={isCollapsed || isMobile}
                     links={chats.map((chat) => ({
                         id: chat.id,
-                        name: chat.users.find((user) => user.id !== session?.user.id)?.name || "Unknown User",
+                        name: chat.users.find((user) => user.id !== session?.user.id)?.userName || "Unknown User",
                         messages: chat.messages,
                         avatar: chat.users.find((user) => user.id !== session?.user.id)?.image || "",
-                        variant: selectedChat.users.find((user) => user.id !== session?.user.id)?.name === chat.users.find((user) => user.id !== session?.user.id)?.name ? "default" : "ghost",
+                        variant: selectedChat?.users.find((user) => user.id !== session?.user.id)?.userName === chat.users.find((user) => user.id !== session?.user.id)?.userName ? "default" : "ghost",
                     }))}
                     setSelectedChatId={setSelectedChatId}
                     isMobile={isMobile}
@@ -139,11 +167,16 @@ export function ChatLayout({
             <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
                 {selectedChat && <ChatView
                     socket={socket}
-                    messages={selectedChat.messages}
+                    messages={selectedChat?.messages}
                     selectedChat={selectedChat}
                     setSelectedChat={setSelectedChat}
                     isMobile={isMobile}
                 />}
+                {!selectedChat && (
+                    <div className="w-full h-full flex justify-center items-center">
+                        <p className="text-zinc-300 text-lg">Click on a chat to start messaging</p>
+                    </div>
+                )}
             </ResizablePanel>
         </ResizablePanelGroup>
     );

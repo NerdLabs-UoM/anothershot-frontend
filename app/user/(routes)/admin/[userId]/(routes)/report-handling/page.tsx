@@ -7,3 +7,4 @@ const ReportHandlingPage = () => {
 }
 
 export default ReportHandlingPage;
+
