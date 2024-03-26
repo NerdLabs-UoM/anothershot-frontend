@@ -11,11 +11,11 @@ import {AlbumImage} from "@/app/lib/types";
 
 interface AlbumImageProp {
     albumId: string | string[];
-    onImageUpdate: (images: string[]) => void;
+    onImageUpdate: (images: AlbumImage[]) => void;
 }
 
 const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
-    const [image, setImage] = useState<string[]>([]);
+    const [image, setImage] = useState<AlbumImage[]>([]);
     const router = useRouter();
     const {userId} = useParams();
     const handleRefresh = () => {
