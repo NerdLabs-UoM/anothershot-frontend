@@ -331,7 +331,6 @@ export interface AlbumImage {
   album: Album;
   albumId: string;
   image: string;
-  caption: string;
 }
 
 export interface PaymentArray {
