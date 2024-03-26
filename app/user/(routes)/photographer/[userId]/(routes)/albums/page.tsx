@@ -85,10 +85,14 @@ const AlbumPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get<Album[]>(
+            const res = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/getalbums`
             );
-            const albumsData = res.data.map(album => [album.name, album.description, album.id]);
+            const albumsData = res.data.map((album: Album) => ({
+                name: album.name,
+                description: album.description,
+                id: album.id
+            }));
             setNewAlbum(albumsData);
 
         };

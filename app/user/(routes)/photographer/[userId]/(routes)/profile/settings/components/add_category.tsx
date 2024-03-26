@@ -66,12 +66,14 @@ function AddCategory() {
         fetchCategory();
 
         const fetchCatById = async () => {
+            console.log("userId",userId);
             const data = await fetchCategoryById(userId);
+            console.log("data",data);
             setSelectedCategories(data);
         };
         fetchCatById();
 
-    }, [userId]);
+    }, []);
 
     useEffect(() => {
         setCategoriesArray(categoryList.map(category => ({ label: category.label, selected: false })));

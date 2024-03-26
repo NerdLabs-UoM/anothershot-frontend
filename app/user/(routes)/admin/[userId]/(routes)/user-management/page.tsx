@@ -52,7 +52,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="">
+    <div className="w-full">
         <DataTable columns={columns} data={filteredUsers} />
       <div className="absolute top-[85%] inset-x-0">
         <PaginationSection

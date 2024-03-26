@@ -40,12 +40,16 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
 
         fetchImages();
     }, []);
+
+
+
     return (
         <div>
             <CldUploadWidget
                 onOpen={() => {
                 }}
                 onSuccess={(results: CldUploadWidgetResults) => {
+                    console.log("results", results);
                     const uploadedResult =
                         results.info as CldUploadWidgetInfo;
                     const imageURL = {
@@ -104,7 +108,7 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
 
                 }}
 
-                uploadPreset="rahuz25t">
+                uploadPreset="o7oeqnou">
                 {({open}) => {
                     return (
                         <Button variant="default" onClick={() => open()}>

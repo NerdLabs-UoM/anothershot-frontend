@@ -231,16 +231,16 @@ export interface Earnings {
 }
 
 export interface Report {
-  id: string;
+  id?: string;
   client?: Client | null;
   clientId?: string | null;
   photographer?: Photographer | null;
   photographerId?: string | null;
   subject: string;
   description: string;
-  status: ReportStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  status?: ReportStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Package {
@@ -317,18 +317,18 @@ export interface FeedImage {
 }
 
 export interface Album {
-  id: string;
+  id?: string;
   photographer: Photographer;
   photographerId: string;
   name: string;
   description: string;
   images: AlbumImage[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface AlbumImage {
-  id: string;
+  id?: string;
   album: Album;
   albumId: string;
   image: string;
