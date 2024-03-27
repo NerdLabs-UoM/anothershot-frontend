@@ -25,13 +25,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar , AvatarImage } from "@/components/ui/avatar";
 import { Settings, PenSquare, Camera } from "lucide-react";
+
 import {
   CldUploadWidgetResults,
   CldUploadWidgetInfo,
   CldUploadWidget,
 } from "next-cloudinary";
+
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -70,13 +72,18 @@ const Hero = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get<Photographer>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
-      );
-      setPhotographer(res.data);
+      try{
+        const res = await axios.get<Photographer>(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
+        );
+        setPhotographer(res.data);
+      }
+      catch (err) {
+        console.error(err);
+      }
     };
     fetchData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (userId == session?.user.id) {
@@ -85,17 +92,17 @@ const Hero = () => {
   }, [userId, session]);
 
   useEffect(() => {
-    if(photographer){
+    if (photographer) {
       setValues({
         name: photographer.name,
         description: photographer.bio ?? "",
       });
-      
+
     }
     setProfileImage(photographer?.user.image ?? "");
-      if(coverImageURL!=null){
-        setCoverImageURL(photographer?.coverPhoto ?? "");
-      }
+    if (coverImageURL != null) {
+      setCoverImageURL(photographer?.coverPhoto ?? "");
+    }
 
   }, [photographer]);
 
@@ -180,6 +187,7 @@ const Hero = () => {
                       console.log(isPhotographer);
                     }}
                     onSuccess={(results: CldUploadWidgetResults) => {
+                      console.log(results);
                       const uploadedResult =
                         results.info as CldUploadWidgetInfo;
                       const profileImageURL = {
@@ -198,7 +206,6 @@ const Hero = () => {
                     }}
                     options={{
                       tags: ["profile image", `${session?.user.id}`],
-                      publicId: `${photographer?.userId}`,
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",
                       showAdvancedOptions: false,
@@ -249,13 +256,13 @@ const Hero = () => {
                 alt="@shadcn"
                 className="absolute"
               />
-      
+
             </Avatar>
           </div>
 
           {isPhotographer && (
             <CldUploadWidget
-              onOpen={() => {}}
+              onOpen={() => { }}
               onSuccess={(results: CldUploadWidgetResults) => {
                 const uploadedResult = results.info as CldUploadWidgetInfo;
 
@@ -389,17 +396,16 @@ const Hero = () => {
             </Dialog>
           </div>
         )}
-        {isPhotographer || (
+        {!isPhotographer && (
           <Button
             variant="default"
             onClick={() => handleCreateChat()}
             className="w-4/5 mx-3"
-            asChild
           >
-            <Link href="/photographer/Bookings">Message</Link>
+            Message
           </Button>
         )}
-        {isPhotographer || (
+        {!isPhotographer && (
           <Button variant="destructive" className="w-4/5" asChild>
             <Link href="/photographer/Bookings">Book Now</Link>
           </Button>

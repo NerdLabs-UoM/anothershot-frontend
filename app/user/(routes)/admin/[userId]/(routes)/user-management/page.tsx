@@ -52,7 +52,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="container py-10 ">
+    <div className="">
         <DataTable columns={columns} data={filteredUsers} />
       <div className="absolute top-[85%] inset-x-0">
         <PaginationSection

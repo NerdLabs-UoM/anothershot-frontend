@@ -1,5 +1,5 @@
 // import { Message, UserData } from "@/app/data";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Chat, Message } from "@/app/lib/types";
@@ -13,15 +13,13 @@ interface ChatProps {
     selectedChat: Chat;
     isMobile: boolean;
     socket: React.MutableRefObject<Socket | undefined>
-    setSelectedChat: React.Dispatch<React.SetStateAction<Chat>>;
+    setSelectedChat: React.Dispatch<React.SetStateAction<Chat | undefined>>;
 }
 
 export function ChatView({ messages, selectedChat, isMobile, socket, setSelectedChat }: ChatProps) {
 
     const [tempSelectedChat, setTempSelectedChat] = React.useState<Chat>(selectedChat);
-    const [messagesState, setMessages] = React.useState<Message[]>(
-        messages ?? []
-    );
+    const [messagesState, setMessages] = React.useState<Message[]>(messages ?? []);
     const { data: session } = useSession()
 
     useEffect(() => {
@@ -35,7 +33,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
             if (selectedChat.id === message.chatId) {
                 if (session?.user.id !== message.senderId) {
                     setSelectedChat((prev) => {
-                        if (prev.id === message.chatId) {
+                        if (prev && prev.id === message.chatId) {
                             return {
                                 ...prev,
                                 messages: [...prev.messages, message],
@@ -52,6 +50,38 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
             currentSocket?.off("receive-msg", handleReceiveMessage);
         };
     }, [socket, selectedChat, session, setSelectedChat]);
+
+    const cloudinaryOptions = {
+        tags: ["attachments"],
+        useAssetFolderAsPublicIdPrefix: true,
+        singleUploadAutoClose: false,
+        sources: ["local"],
+        googleApiKey: "<image_search_google_api_key>",
+        showAdvancedOptions: true,
+        cropping: true,
+        multiple: false,
+        defaultSource: "local",
+        resourceType: "image",
+        folder: `anothershot/${session?.user.id}/inbox/${selectedChat.id}`,
+        styles: {
+            palette: {
+                window: "#ffffff",
+                sourceBg: "#f4f4f5",
+                windowBorder: "#90a0b3",
+                tabIcon: "#000000",
+                inactiveTabIcon: "#555a5f",
+                menuIcons: "#555a5f",
+                link: "#000000",
+                action: "#000000",
+                inProgress: "#464646",
+                complete: "#000000",
+                error: "#cc0000",
+                textDark: "#000000",
+                textLight: "#fcfffd",
+                theme: "white",
+            },
+        },
+    }
 
     const sendMessage = async (newMessage: Message) => {
         try {
@@ -74,7 +104,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
                     attachments: newMessage.attachments,
                 });
                 setSelectedChat((prev) => {
-                    if (prev.id === newMessage.chatId) {
+                    if (prev && prev.id === newMessage.chatId) {
                         return {
                             ...prev,
                             messages: [...prev.messages, newMessage],
@@ -87,7 +117,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
         } catch (error) {
             toast.error("Failed to send message");
         }
-    };
+    }
 
     return (
         <div className="flex flex-col justify-between w-full h-full">
@@ -97,6 +127,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
                 selectedChat={tempSelectedChat}
                 sendMessage={sendMessage}
                 isMobile={isMobile}
+                cloudinaryOptions={cloudinaryOptions}
             />
         </div>
     );

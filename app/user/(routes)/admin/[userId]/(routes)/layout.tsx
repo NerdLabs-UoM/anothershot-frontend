@@ -12,7 +12,6 @@ type UserLayoutProps = {
 const UserLayout = (props: UserLayoutProps) => {
     return (
         <>
-            <AdminHeader/>
             {props.children}
         </>
     );
