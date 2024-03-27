@@ -68,10 +68,9 @@ const EditButton: React.FC<EditButtonProps> = ({
     const currentTestimonials = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials`);
-        console.log(response.data);
         setCurrentTestimonials(response.data);
       } catch (error: any) {
-        console.error('Error fetching testimonials:', error);
+        toast.error('Error fetching testimonials:', error);
       }
     };
 
@@ -82,22 +81,17 @@ const EditButton: React.FC<EditButtonProps> = ({
     setLoading(true);
 
     try {
-      console.log("Testimonials:", testimonials);
-      console.log("Current Testimonials:", currentTestimonials);
       const changedTestimonials = testimonials.filter(testimonial =>
         testimonial.visibility !== currentTestimonials.find(testimonialData => testimonialData.id === testimonial.id)?.visibility
       );
       const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
-      console.log("Changed Testimonials IDs:", changedTestimonialsIds);
-      
+
       const response = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials/visibility`,
         { testimonialId: changedTestimonialsIds }
       );
-      console.log("Testimonials updated successfully:", response.data);
       toast.success("Testimonials updated successfully!");
     } catch (error) {
-      console.error("Error updating testimonials:", error);
       toast.error("Failed to update testimonials");
     } finally {
       setLoading(false);

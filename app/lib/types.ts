@@ -81,6 +81,10 @@ export type PhotographerCategory =
     chatIds: string[];
     messagesSent: Message[];
     messagesReceived: Message[];
+     likedFeedImages: FeedImage[];
+  likedFeedImagesIds: string[];
+  savedFeedImages: FeedImage[];
+  savedFeedImagesIds: string[];
     createdAt: Date;
     updatedAt: Date;
     suspended: Suspended;
@@ -310,8 +314,14 @@ export interface FeedImage {
   id: string;
   photographer: Photographer;
   photographerId: string;
-  image: string;
-  caption: string;
+  imageUrl: string;
+  likes: User[];
+  likedUserIds: string[];
+  saves: User[];
+  savedUserIds: string[];
+  likeCount: number;
+  saveCount: number;
+  caption?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

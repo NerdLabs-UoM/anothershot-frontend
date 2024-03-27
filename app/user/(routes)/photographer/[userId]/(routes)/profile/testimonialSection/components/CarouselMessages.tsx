@@ -28,7 +28,6 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
 }) => {
 
   const [visibleTestimonials, setVisibleTestimonials] = useState<Testimonial[]>(testimonialsData);
-  console.log(testimonialsData);
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -60,7 +59,6 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
     const visibleTestimonials = testimonialsData.filter(
       (testimonial) => testimonial.visibility === "PUBLIC"
     );
-    console.log(visibleTestimonials);
     setVisibleTestimonials(visibleTestimonials);
   }, [testimonialsData]);
 
