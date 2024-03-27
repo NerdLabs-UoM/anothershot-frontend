@@ -6,114 +6,103 @@ export type ReportStatus = 'PENDING' | 'RESOLVED' | 'DISMISSED';
 
 export type TestimonialVisibility = 'PUBLIC' | 'PRIVATE';
 
-
 export type Suspended = 'SUSPENDED' | 'NOT_SUSPENDED';
 
 export type PaymentStatus = 'PENDING' | 'PAID' | 'UNPAID';
 
 export type PaymentType = 'BOOKING' | 'ALBUM PAYMENT';
 
-
 export type PhotographerCategory =
-| 'WEDDING'
-| 'PORTRAIT'
-| 'LANDSCAPE'
-| 'EVENT'
-| 'PRODUCT'
-| 'FASHION'
-| 'FOOD'
-| 'SPORT'
-| 'ARCHITECTURE'
-| 'WILDLIFE'
-| 'TRAVEL'
-| 'DOCUMENTARY'
-| 'STREET'
-| 'FAMILY'
-| 'NEWBORN'
-| 'MATERNITY'
-| 'PET'
-| 'BIRTHDAY'
-| 'BABY_SHOWER'
-| 'ENGAGEMENT'
-| 'ANNIVERSARY'
-| 'GRADUATION'
-| 'PROM'
-| 'BACHELOR'
-| 'BACHELORETTE'
-| 'REUNION'
-| 'RETIREMENT'
-| 'FUNERAL'
-| 'MEMORIAL'
-| 'RELIGIOUS'
-| 'CULTURAL'
-| 'POLITICAL'
-| 'MILITARY'
-| 'CHARITY'
-| 'FESTIVAL'
-| 'FAIR'
-| 'CONCERT'
-| 'CONFERENCE'
-| 'EXPO'
-| 'CONVENTION'
-| 'SEMINAR'
-| 'WORKSHOP'
-| 'RETREAT'
-| 'SUMMIT'
-| 'TRADE_SHOW'
-| 'MEETUP'
-| 'RALLY'
-| 'PROTEST'
-| 'MARCH'
-| 'PARADE';
+  | 'WEDDING'
+  | 'PORTRAIT'
+  | 'LANDSCAPE'
+  | 'EVENT'
+  | 'PRODUCT'
+  | 'FASHION'
+  | 'FOOD'
+  | 'SPORT'
+  | 'ARCHITECTURE'
+  | 'WILDLIFE'
+  | 'TRAVEL'
+  | 'DOCUMENTARY'
+  | 'STREET'
+  | 'FAMILY'
+  | 'NEWBORN'
+  | 'MATERNITY'
+  | 'PET'
+  | 'BIRTHDAY'
+  | 'BABY_SHOWER'
+  | 'ENGAGEMENT'
+  | 'ANNIVERSARY'
+  | 'GRADUATION'
+  | 'PROM'
+  | 'BACHELOR'
+  | 'BACHELORETTE'
+  | 'REUNION'
+  | 'RETIREMENT'
+  | 'FUNERAL'
+  | 'MEMORIAL'
+  | 'RELIGIOUS'
+  | 'CULTURAL'
+  | 'POLITICAL'
+  | 'MILITARY'
+  | 'CHARITY'
+  | 'FESTIVAL'
+  | 'FAIR'
+  | 'CONCERT'
+  | 'CONFERENCE'
+  | 'EXPO'
+  | 'CONVENTION'
+  | 'SEMINAR'
+  | 'WORKSHOP'
+  | 'RETREAT'
+  | 'SUMMIT'
+  | 'TRADE_SHOW'
+  | 'MEETUP'
+  | 'RALLY'
+  | 'PROTEST'
+  | 'MARCH'
+  | 'PARADE';
 
+  
+  export interface User {
+    id: string;
+    userName: string;
+    email: string;
+    emailVerified: boolean;
+    password: string;
+    userRole: UserRole;
+    image: string;
+    accounts: Account[];
+    photographer?: Photographer | null;
+    client?: Client | null;
+    admin?: Admin | null;
+    chats: Chat[];
+    chatIds: string[];
+    messagesSent: Message[];
+    messagesReceived: Message[];
+    createdAt: Date;
+    updatedAt: Date;
+    suspended: Suspended;
+  }
+  
+  export interface Account {
+    id: string;
+    userId: string;
+    type: string;
+    provider: string;
+    providerAccountId: string;
+    refresh_token?: string | null;
+    access_token?: string | null;
+    expires_at?: number | null;
+    token_type?: string | null;
+    scope?: string | null;
+    id_token?: string | null;
+    session_state?: string | null;
+    user: User;
+  }
 
-export interface Account {
-  id: string;
-  userId: string;
-  type: string;
-  provider: string;
-  providerAccountId: string;
-  refresh_token?: string | null;
-  access_token?: string | null;
-  expires_at?: number | null;
-  token_type?: string | null;
-  scope?: string | null;
-  id_token?: string | null;
-  session_state?: string | null;
-  user: User;
-}
-
-export interface Session {
-  id: string;
-  sessionToken: string;
-  userId: string;
-  expires: Date;
-  user: User;
-}
-
-export interface User {
-  id: string;
-  userName: string;
-  email: string;
-  emailVerified?: Date | null;
-  password: string;
-  userRole: UserRole;
-  image: string;
-  accounts: Account[];
-  sessions: Session[];
-  photographer?: Photographer | null;
-  client?: Client | null;
-  admin?: Admin | null;
-  chats: Chat[];
-  chatIds: string[];
-  messagesSent: Message[];
-  messagesReceived: Message[];
-  createdAt: Date;
-  updatedAt: Date;
-  suspended: Suspended;
-}
-
-export interface Photographer {
+  export interface Photographer {
   id: string;
   user: User;
   userId: string;
@@ -167,8 +156,8 @@ export interface Chat {
 }
 
 export interface Message {
-  id: string;
-  chat: Chat;
+  id?: string;
+  chat?: Chat;
   chatId: string;
   sender: User;
   senderId: string;
@@ -181,10 +170,10 @@ export interface Message {
 }
 
 export interface Attachment {
-  id: string;
-  message: Message;
-  messageId: string;
-  type: string;
+  id?: string;
+  message?: Message;
+  messageId?: string;
+  type?: string;
   url: string;
 }
 
@@ -199,12 +188,21 @@ export interface Booking {
   package: Package;
   packageId: string;
   payment?: string | null;
-  date: Date;
-  start?: Date | null;
-  end?: Date | null;
+  event: Event;
   status: BookingStatus;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  description?: string;
+  start?: Date;
+  end?: Date;
+  allDay?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface BankDetails {
@@ -285,8 +283,6 @@ export interface Address {
 }
 
 export interface SocialMedia {
-  // contactDetails: ContactDetails;
-  // contactDetailsId: string;
   facebook?: string | null;
   instagram?: string | null;
   twitter?: string | null;
@@ -336,7 +332,6 @@ export interface AlbumImage {
   album: Album;
   albumId: string;
   image: string;
-  caption: string;
 }
 
 export interface PaymentArray {

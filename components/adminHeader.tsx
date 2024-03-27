@@ -19,27 +19,34 @@ function AdminHeader() {
   const { data: session } = useSession();
   const isPathProfile = pathname.endsWith("/profile");
 
-  const path =(path:string)=>{
-    const isPathName = pathname.endsWith("/"+path);
+  const path = (path: string) => {
+    const isPathName = pathname.endsWith("/" + path);
     return isPathName;
   }
 
   const handleDirection = (dir: string) => {
     if (pathname == `/user/admin/${session?.user.id}`) {
       router.push(`${session?.user.id}/${dir}`);
-      console.log(pathname)
     } else {
       router.push(`${dir}`);
     }
   };
   return (
-    <NavigationMenu className={`w-full flex-col sm:flex-row justify-between ${isPathProfile? "hidden":""}`}>
+    <NavigationMenu className={`w-full flex-col sm:flex-row justify-between ${isPathProfile ? "hidden" : ""}`}>
+      <NavigationMenuItem className="list-none">
+        <NavigationMenuLink
+          onClick={() => handleDirection("dashboard")}
+          className={`${path("dashboard") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
+        >
+          Dashboard
+        </NavigationMenuLink>
+      </NavigationMenuItem>
       <NavigationMenuItem className="list-none">
         <NavigationMenuLink
           onClick={() => handleDirection("user-management")}
           className={`${path("user-management") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
         >
-         user-management
+          User Management
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem className="list-none">
@@ -47,7 +54,7 @@ function AdminHeader() {
           onClick={() => handleDirection("report-handling")}
           className={`${path("report-handling") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
         >
-         report-handling
+          Report Handling
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem className="list-none">
@@ -55,7 +62,7 @@ function AdminHeader() {
           onClick={() => handleDirection("payment-handling")}
           className={`${path("payment-handling") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer`}
         >
-          payment-handling
+          Payment Handling
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem className="list-none">
@@ -63,7 +70,7 @@ function AdminHeader() {
           onClick={() => handleDirection("inbox")}
           className={`${path("inbox") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
         >
-          inbox
+          Inbox
         </NavigationMenuLink>
       </NavigationMenuItem>
     </NavigationMenu>

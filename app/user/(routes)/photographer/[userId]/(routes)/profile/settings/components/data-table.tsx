@@ -34,8 +34,8 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className="flex flex-wrap mx-auto border rounded-md sm:w-[300px] md:w-[700px] lg:w-[920px]">
-            <div className="py-5 mx-4 text-2xl font-semibold leading-none leading-7 tracking-tight">
+        <div className="w-full border rounded-md">
+            <div className="py-5 mx-4 text-2xl font-semibold leading-none leading-7 ">
                 Payments Summary
             </div>
             <Table>

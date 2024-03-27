@@ -21,6 +21,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import { compileActivationTemplate } from "@/components/auth/emailTemplates/templateCompiler";
 
 const SignUpFormSchema = z.object({
     userName: z.string().min(2, { message: "Username must be at least 2 characters long" }).max(15, { message: "Username must be at most 15 characters long" }),
@@ -71,7 +72,20 @@ const SignUpForm = () => {
                 }
 
                 if (response.data) {
-                    toast.success("Account created successfully");
+                    const activationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/activation/${response.data.userId}`
+                    const body = compileActivationTemplate(values.userName, activationUrl);
+                    await axios.post(`/api/sendEmail`,
+                        {
+                            to: values.email,
+                            subject: "Activate AnotherShot Account",
+                            body: body
+                        })
+                        .then(() => {
+                            toast.success("Account created successfully. Please check your email to activate your account");
+                        })
+                        .catch((error) => {
+                            toast.error("Account created successfully. Email sending failed");
+                        });
                     router.push("/sign-in");
                 }
             }
