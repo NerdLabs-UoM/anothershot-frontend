@@ -1,7 +1,6 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
 import Photographer from "../../../../page";
 import axios from "axios";
 import toast from "react-hot-toast";

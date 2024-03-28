@@ -38,7 +38,7 @@ export const fetchCategoryById = async(userId:string|string[]) => {
     }
 }
 
-export const submitReport = async(userId:string|string[],val:Report) => {
+export const submitReport = async(userId:string|string[], val:Report) => {
     try {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/report/${userId}`, val);
 

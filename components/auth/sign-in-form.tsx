@@ -29,7 +29,6 @@ const SignInForm = () => {
 
     const router = useRouter();
     const session = useSession();
-    console.log(session);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
