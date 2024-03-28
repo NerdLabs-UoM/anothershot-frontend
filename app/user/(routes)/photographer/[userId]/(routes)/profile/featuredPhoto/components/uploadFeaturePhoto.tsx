@@ -15,6 +15,19 @@ interface UploadFeaturePhoto {
 
 const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadFeaturePhoto) => {
 
+    const handleAspectRation = (index: number) => {
+        switch (index) {
+            case 0:
+                return 0.67;
+            case 1:
+                return 0.76;
+            case 2:
+                return 0.76;
+            case 3:
+                return 0.67;
+            default:
+        }
+    }
     const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
     const [coverPhotos, setCoverPhotos] = useState<string[]>([]);
     console.log("index and image: " + index);
@@ -36,24 +49,25 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                             const tags = uploadedResult.tags;
                             setFeaturedPhotoURL(FeaturedURL.image);
                             handleUpdateFeaturePhoto(index, uploadedResult.secure_url)
-                            async function Update() {
-                            const data = {
-                                featured: [],
-                            };
-                            console.log("index and image: " + index, uploadedResult.secure_url);
-                            setFeaturedPhotoURL(FeaturedURL.image)  //set the coverPhoto url
+                            // async function Update() {
+                            // const data = {
+                            //     featured: [],
+                            // };
+                            // console.log("index and image: " + index, uploadedResult.secure_url);
+                            // setFeaturedPhotoURL(FeaturedURL.image)  
                             // setFeaturedPhoto({url:FeaturedURL.image})  //update the cover photo state   
-                            try{
-                                await axios.put(
-                                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/featured`, data
-                                );
-                              }
-                              catch (error) {
-                                toast.error("An error occured. Please try again.")
-                              }        
-                            }
-                            Update();
-                        }}
+                            // try{
+                            //     await axios.put(
+                            //         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/featured`, data
+                            //     );
+                            //   }
+                            //   catch (error) {
+                            //     toast.error("An error occured. Please try again.")
+                            //   }        
+                        }
+                            //     Update();
+                            // }}
+                        }
                         options={{
                             tags: ["featured"],
                             sources: ["local"],
@@ -61,7 +75,7 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                             showAdvancedOptions: false,
                             cropping: true,
                             croppingCoordinatesMode: "custom",
-                            croppingAspectRatio: 0.5,
+                            croppingAspectRatio: handleAspectRation(index),
                             multiple: false,
                             defaultSource: "local",
                             resourceType: "image",

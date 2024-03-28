@@ -55,7 +55,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
 
             }
             catch (err) {
-                toast.error("Cannot fetch data. Please try again.")
+                toast.error("at package Cannot fetch data. Please try again.")
 
             }
                  
