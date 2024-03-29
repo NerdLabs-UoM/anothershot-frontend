@@ -22,8 +22,21 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
         router.refresh();
     };
 
+    async function fetchImages2() {
+        try {
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/getimages`
+            );
+            setImage(response.data);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+
     useEffect(() => {
         onImageUpdate(image);
+        console.log("this is it ===>", image)
     }, [image]);
 
     useEffect(() => {
@@ -59,16 +72,17 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
 
                     async function Upload() {
                         try {
+                            console.log("working here ==>", imageURL, albumId);
                             await axios.post(
                                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
                                 {
-                                    images: imageURL,
+                                    images: [imageURL.image],
                                     albumId: albumId,
                                 }
                             );
                             console.log("image url", imageURL);
                             toast.success("Images uploaded successfully");
-
+                            fetchImages2();
                         } catch (e) {
                             console.log("eroor is", e);
                             toast.error("Images uploading failed");

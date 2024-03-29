@@ -1,6 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { cn } from "@/app/lib/utils";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,13 +17,6 @@ import {
     CardTitle,
     CardDescription,
 } from "@/components/ui/card";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { cn } from "@/app/lib/utils";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import {
     Command,
     CommandEmpty,
@@ -35,7 +37,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PhotographerCategory } from "@/app/lib/types";
@@ -60,20 +61,26 @@ function AddCategory() {
 
     useEffect(() => {
         const fetchCategory = async () => {
-                const data = await fetchCategories();
-                setCategoryList(Object.entries(data).map(([key,value])=>({label:key.toLowerCase().charAt(0).toUpperCase()+key.toLowerCase().slice(1),value})));
+            const data = await fetchCategories();
+            // setCategoryList(Object.entries())
+            // setCategoryList(Object.entries(data).map((key, value) => ({
+            //     label: key.toLowerCase().charAt(0).toUpperCase() + key.toLowerCase().slice(1),
+            //     value
+            // })));
+            console.log("data of categories",data);
+            setCategoryList(Object.entries(data).map(([key, value]) => ({
+                label: key.toLowerCase().charAt(0).toUpperCase() + key.toLowerCase().slice(1),
+                value: value as PhotographerCategory // Ensure value is of type PhotographerCategory
+            })))
         };
         fetchCategory();
 
         const fetchCatById = async () => {
-            console.log("userId",userId);
             const data = await fetchCategoryById(userId);
-            console.log("data",data);
             setSelectedCategories(data);
         };
         fetchCatById();
-
-    }, []);
+    },[]);
 
     useEffect(() => {
         setCategoriesArray(categoryList.map(category => ({ label: category.label, selected: false })));
@@ -92,10 +99,6 @@ function AddCategory() {
             console.log("eerror",e);
         }
     }
-
-
-    
-
 
     return (
         <Card className="w-[350px] my-8 lg:w-[540px] h-auto mx-auto">
@@ -215,7 +218,8 @@ function AddCategory() {
                                 List
                             </FormLabel>
                             {selectedCategories?.map((category, index) => (
-                                <Card
+                                <Badge
+                                    variant="outline"
                                     key={index}
                                     className="flex object-fill w-auto gap-3 ml-3 text-sm"
                                 >
@@ -236,7 +240,7 @@ function AddCategory() {
                                             setSelectedCategories(data);
                                         }}
                                     />
-                                </Card>
+                                </Badge>
                             ))}
                         </FormItem>
                         <div className="justify-end mt-[20px] ml-[10rem] lg:ml-[20rem]">

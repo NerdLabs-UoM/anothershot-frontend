@@ -29,11 +29,11 @@ import { BankDetails } from "@/app/lib/types";
 
 
 const bankFormSchema = z.object({
-    bankName: z.string().min(1,{message: "Bank name is required"}),
-    accountName: z.string().min(1,{message: "Account holder name is required"}),
-    accountBranch: z.string().min(1,{message: "Branch name is required"}),
-    accountNumber: z.string().regex(/^\d{8,18}$/,{message:"Account number must be between 8 to 18 digits"}),
-    accountBranchCode: z.string().regex(/^[0-9]\d{1,5}$/, { message: "Branch code must be less than 6 digits and required" }),
+    bankName: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Bank Name"}).min(1,{message: "Bank name is required"}),
+    accountName: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Account Holder Name"}).min(1,{message: "Account holder name is required"}),
+    accountBranch: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Branch"}).min(1,{message: "Branch name is required"}),
+    accountNumber: z.string().regex(/^\d{8,18}$/,{message:"Enter valid Account number"}),
+    accountBranchCode: z.string().regex(/^\d{1,5}$/, { message: "Enter valid Branch code" }),
 });
 
 const BankDetailsProps = [
@@ -79,13 +79,7 @@ const BankDetails = () => {
         },
     });
     
-    useEffect(()=>{
-        const fetchBankDetail = async () =>{
-            const data = await fetchBankDetails(userId);
-            setBankDets(data);
-        }
-        fetchBankDetail();
-    },[])
+
 
     useEffect(()=>{
         if (bankDets){
@@ -99,10 +93,17 @@ const BankDetails = () => {
         }
     },[bankDets,form])
 
-    async function handleSubmit(values: z.infer<typeof bankFormSchema>) {
+    useEffect(()=> {
+        const fetchBankDetail = async () => {
+            const data = await fetchBankDetails(userId);
+            setBankDets(data);
+        }
+        fetchBankDetail();
+    },[])
+
+    async function handleSubmision(values: z.infer<typeof bankFormSchema>) {
         try{
-            const res = await updateBankDetails(values ,userId)
-            console.log(res)
+            await updateBankDetails(values ,userId)
             toast.success("Bank details Successfully updated");
         }catch(e){
             toast.error("Error sending Bank Details");
@@ -120,7 +121,7 @@ const BankDetails = () => {
             <CardContent className="grid flex-col gap-2">
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit(handleSubmit)}
+                        onSubmit={form.handleSubmit(handleSubmision)}
                         className="grid gap-5 mr-5 md:grid-cols-2"
                     >
                         {BankDetailsProps.map((item, index) => (

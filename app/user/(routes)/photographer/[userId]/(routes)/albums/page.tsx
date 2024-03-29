@@ -55,26 +55,28 @@ import toast from "react-hot-toast";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 
 const albumFormSchema = z.object({
-    name: z.string().min(2).max(50).regex(/^[A-Za-z0-9]+$/),
-    description: z.string().min(2).max(200).regex(/^[A-Za-z0-9]+$/),
+    name: z.string()
+        .min(2)
+        .max(50)
+        .regex(/^[A-Za-z0-9 ]+$/, {message: "Enter valid Name"}),
+    description: z.string()
+        .min(2)
+        .max(200)
+        .regex(/^[A-Za-z0-9 ]+$/, {message: "Enter valid Description"}),
 });
 
 const AlbumPage = () => {
-    const [album, setAlbum] = useState<Album[]>();
-    const [photographer, setPhotographer] = useState<Photographer>();
     const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
     const [albumCoverImage, setAlbumCoverImage] = useState<string>(
         "https://res.cloudinary.com/dcn64hytu/image/upload/v1710027623/my%20album1/tuzt7eqztsfe67equdxq.jpg"
     );
-    const [values, setValues] = useState({name: "", description: ""});
-    const [newAlbum, setNewAlbum] = useState<string[][]>([]);
+    const [album, setAlbum] = useState<{ name: string; description: string; id: string }[]>([]);
     const [albumId, setAlbumId] = useState<string>("");
     const pathname = usePathname();
     const router = useRouter();
     const {data: session} = useSession();
     const {userId} = useParams();
-
-
+    const [isOpen, setIsOpen] = useState(false);
     const form = useForm<z.infer<typeof albumFormSchema>>({
         resolver: zodResolver(albumFormSchema),
         defaultValues: {
@@ -93,7 +95,8 @@ const AlbumPage = () => {
                 description: album.description,
                 id: album.id
             }));
-            setNewAlbum(albumsData);
+            setAlbum(albumsData);
+            console.log("Hi this ==>", albumsData);
 
         };
         fetchData();
@@ -111,24 +114,18 @@ const AlbumPage = () => {
     //     }
     // }, [session]);
 
-    const addAlbum = (values: { name: string, description: string }) => {
-        setNewAlbum((prevAlbums) => [
-            ...prevAlbums,
-            [values.name, values.description],
-        ]);
-        setAlbumId((prevId) => prevId + 1);
-    };
-
     function onSubmit(values: z.infer<typeof albumFormSchema>) {
-        addAlbum(values);
-
         async function Create() {
             try {
-                await axios.post(
+                const res = await axios.post(
                     `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/createAlbum`,
                     {photographerId: userId, ...values}
                 );
                 toast.success("Album created successfully");
+                setAlbum((prevAlbums) => [
+                    ...prevAlbums,
+                    {name: values.name, description: values.description, id: res.data.id},
+                ]);
             } catch (e) {
                 toast.error("Error creating album");
             }
@@ -138,29 +135,22 @@ const AlbumPage = () => {
         form.reset();
     }
 
-    const handleRefresh = () => {
-        router.refresh();
-    };
-    // const handleImageUpload = (albumId: string) => {
-    //     router.push(`/albums/${albumId}/edit`);
-    //     console.log("editing albums");
-    // };
-
     const handleDeleteAlbum = async (id: string) => {
         try {
             await axios.delete(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${id}/deletealbum`
             );
-            setNewAlbum(prevAlbums => prevAlbums.filter(album => album[2] !== id));
+            setAlbum(prevAlbums => prevAlbums.filter((album) => album["id"] !== id));
             toast.success("Album deleted successfully");
         } catch (e) {
+            console.log("error ==> ", e)
             toast.error("Error deleting album");
         }
-
     };
 
     return (
-        <div>
+        console.log("this is the album", album),
+        <div className="mb-[50px]">
             <Dialog>
                 <DialogTrigger asChild>
                     <Button variant="ghost" size="icon" className="ml-[80px]">
@@ -241,7 +231,7 @@ const AlbumPage = () => {
                     className="flex gap-4"
                     columnClassName=""
                 >
-                    {newAlbum?.map((album, index) => (
+                    {album?.map((album: { name: string, description: string, id: string }, index: number) => (
                         <Card
                             key={index}
                             className="w-[300px] my-3 mx-3 h-[400px] rounded-[40px] overflow-hidden relative"
@@ -254,8 +244,8 @@ const AlbumPage = () => {
                             <div
                                 className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
                                 <div className="flex flex-col justify-center">
-                                    <h3 className="text-xl font-semibold text-white">{album[0]}</h3>
-                                    <p className="text-sm text-white">{album[1]}</p>
+                                    <h3 className="text-xl font-semibold text-white">{album["name"]}</h3>
+                                    <p className="text-sm text-white">{album["description"]}</p>
                                 </div>
                                 <div className="flex space-x-2">
 
@@ -275,17 +265,23 @@ const AlbumPage = () => {
                                         <DropdownMenuContent className="w-56">
                                             <DropdownMenuGroup>
                                                 {isPhotographer &&
-                                                    <DropdownMenuItem onClick={() => handleDeleteAlbum(album[2])}>Delete
-                                                        Album</DropdownMenuItem>}
-                                                <DropdownMenuItem >
-                                                    <Link href={`albums/${album[2]}`}>
-                                                    View Album
+                                                    <>
+                                                        <DropdownMenuItem
+                                                            onClick={() => handleDeleteAlbum(album["id"])}>Delete
+                                                            Album
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem>
+                                                            <Link href={`albums/${album["id"]}?view=true`}>
+                                                                Edit Album
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                }
+                                                <DropdownMenuItem>
+                                                    <Link href={`albums/${album["id"]}?view=false`}>
+                                                        View Album
                                                     </Link>
                                                 </DropdownMenuItem>
-                                                {isPhotographer &&
-                                                    <DropdownMenuItem >
-                                                        Edit Album
-                                                    </DropdownMenuItem>}
                                             </DropdownMenuGroup>
                                         </DropdownMenuContent>
                                     </DropdownMenu>

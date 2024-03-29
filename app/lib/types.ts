@@ -206,28 +206,28 @@ export interface Event {
 }
 
 export interface BankDetails {
-  id: string;
-  photographer: Photographer;
-  photographerId: string;
+  id?: string;
+  photographer?: Photographer;
+  photographerId?: string;
   bankName: string;
   accountName: string;
   accountNumber: string;
   accountBranch: string;
   accountBranchCode?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Earnings {
-  id: string;
+  id?: string;
   photographer: Photographer;
   photographerId: string;
   totalAmount: number;
   pending: number;
   fees: number;
   date: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Report {
