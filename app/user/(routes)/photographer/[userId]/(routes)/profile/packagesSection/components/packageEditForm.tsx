@@ -45,8 +45,6 @@ import React from "react";
 interface PackageEditFormProps {
     packages: Package[];
     packageProp: React.Dispatch<React.SetStateAction<Package[]>>;
-
-
 }
 const formSchema = z.object({
     packageId: z.string(),
@@ -129,7 +127,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             price: form.getValues("price"),
         };
 
-        
+
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
             const newPackage: Package = response.data; // Assuming the response contains the newly created package
@@ -164,20 +162,28 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             toast.error("An error occurred. Please try again.")
         }
     }
+    const renderEditButton = () => {
+        if (session?.user?.id === userId) {
+            return (
+                <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
+                    <Button
+                        variant={"outline"}
+                        size={"icon"}
+                        className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px]"
+                    >
+                        <Pencil />
+                    </Button>
+                </DialogTrigger>
+            );
+        }
+        return null;
+    };
 
     return (
         <main>
             <div className="w-full pr-10">
                 <Dialog>
-                    <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
-                        <Button
-                            variant={"outline"}
-                            size={"icon"}
-                            className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px] "
-                        >
-                            <Pencil />
-                        </Button>
-                    </DialogTrigger>
+                    {renderEditButton()}
                     <DialogContent className="max-w-[300px] sm:max-w-[450px]">
                         <DialogHeader>
                             <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit Package Details</DialogTitle>

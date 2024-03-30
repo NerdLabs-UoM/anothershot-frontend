@@ -31,7 +31,7 @@ const PackagesSection = () => {
   return (
     <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
       <div className="flex flex-row sm:flex sm:flex-row sm:justify-between">
-        <h1 className="flex text-4xl font-bold mb-0 ml-32 sm:ml-6">Packages</h1>
+        <h1 className="flex text-5xl font-bold mb-0 sm:mb-6 ml-20 sm:ml-24">Packages</h1>
         <PackageEditForm packages={packageList}  packageProp={setPackageList} />
       </div>
       <div className='flex flex-wrap'>
