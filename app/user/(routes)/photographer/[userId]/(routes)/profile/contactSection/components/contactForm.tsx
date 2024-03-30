@@ -129,13 +129,13 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
     if (session?.user?.id === userId) {
       return (
         <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
-          {/* <Button
+          <Button
             variant={"outline"}
             size={"icon"}
             className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px]"
-          > */}
+          >
             <Pencil />
-          {/* </Button> */}
+          </Button>
         </DialogTrigger>
       );
     } return null;
@@ -144,16 +144,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
 
   return (
     <Dialog>
-      {/* {renderEditButton()} */}
-      <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
-        <Button
-          variant={"outline"}
-          size={"icon"}
-          className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px]"
-        >
-          <Pencil />
-        </Button>
-      </DialogTrigger>
+      {renderEditButton()}
       <DialogContent className="max-w-[300px] sm:max-w-[480px] max-h-[700px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit Contact Details</DialogTitle>

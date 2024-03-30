@@ -35,6 +35,7 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
     const [isPhotographer, setIsPhotographer] = useState(true);
     const [photographer, setPhotographer] = useState<Photographer>();
     const [featuredPhotoURL, setFeaturedPhotoURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
+
     return (
         <main>
             <div className="w-full pr-10">
