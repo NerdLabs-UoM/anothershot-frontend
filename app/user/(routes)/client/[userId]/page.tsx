@@ -103,6 +103,7 @@ const Client = () => {
                 </Popover>
                 <Button onClick={() => handleVisit()}>Visit</Button>
             </div>
+            
         </div>
     );
 }

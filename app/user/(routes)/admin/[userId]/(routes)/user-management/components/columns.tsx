@@ -48,7 +48,7 @@ export const columns: ColumnDef<UserManagement>[] = [
     cell: ({ row }) => (
       <div
         className={`pl-1.5 pr-2 py-0.5 text-center rounded-full ${
-          row.original.userRole == "photographer"
+          row.original.userRole == "PHOTOGRAPHER"
             ? "text-emerald-700 bg-green-300 w-32 flex gap-1 "
             : "bg-slate-300 w-16 text-zinc-700"
         }`}

@@ -207,6 +207,23 @@ export interface Booking {
   updatedAt: Date;
 }
 
+export interface Offer {
+  id: string;
+  client: Client;
+  clientId: string;
+  clientName:string;
+  photographer: Photographer;
+  photographerId: string;
+  bookingId: string;
+  description: string;
+  packageName: string;
+  price: number;
+  status: BookingStatus;
+  date: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface BankDetails {
   id: string;
   photographer: Photographer;
