@@ -84,6 +84,7 @@ export type PhotographerCategory =
     createdAt: Date;
     updatedAt: Date;
     suspended: Suspended;
+    reports: Report[];
   }
   
   export interface Account {

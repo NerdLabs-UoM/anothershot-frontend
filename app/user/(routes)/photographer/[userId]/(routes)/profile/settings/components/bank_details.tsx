@@ -64,7 +64,7 @@ const BankDetailsProps = [
     },
 ];
 
-const BankDetails = () => {
+const BankDetailsSection = () => {
     const { userId } = useParams();
     const [bankDets, setBankDets] = useState<BankDetails | undefined>(undefined);
 
@@ -118,7 +118,7 @@ const BankDetails = () => {
                     Make changes to your profile here. Click save when you're done.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="grid flex-col gap-2">
+            <CardContent className="grid gap-4 py-4">
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(handleSubmision)}
@@ -161,5 +161,5 @@ const BankDetails = () => {
     );
 };
 
-export default BankDetails;
+export default BankDetailsSection;
 

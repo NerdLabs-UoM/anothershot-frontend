@@ -4,21 +4,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { UserDetail } from "./userDetail";
-import { useRouter } from "next/router";
 import Link from "next/link";
-
-type UserManagement = {
-    id: string;
-    userRole: string;
-    name: string;
-    email: string;
-    status: string;
-};
-
-export const columns: ColumnDef<UserManagement>[] = [
+import {User} from "@/app/lib/types";
+export const columns: ColumnDef<User>[] = [
     {
         accessorKey: "id",
         header: ({ column }) => {
@@ -38,7 +28,7 @@ export const columns: ColumnDef<UserManagement>[] = [
             );
         },
         cell: ({ row }) => (
-            <div className="py-3 text-gray-900 text-sm font-medium font-['Inter'] leading-tight">
+            <div className="py-3 text-gray-900 text-sm font-medium leading-tight">
                 <Checkbox className="mr-8 border-slate" />
                 {row.original.id}
             </div>
@@ -51,13 +41,6 @@ export const columns: ColumnDef<UserManagement>[] = [
             <div>
                 {row.original.userRole === "PHOTOGRAPHER" ? (
                     <Badge variant="default">
-                        <Image
-                            src="/icons/check.svg"
-                            alt="image"
-                            width={8}
-                            height={8}
-                            className="relative"
-                        />
                         {row.original.userRole}
                     </Badge>
                 ) : row.original.userRole === "CLIENT" ? (
@@ -69,27 +52,30 @@ export const columns: ColumnDef<UserManagement>[] = [
         ),
     },
     {
-        accessorKey: "name",
+        accessorKey: "userName",
         header: "Name",
         cell: ({ row }) => (
             <UserDetail
-                name={row.original.name}
+                userName={row.original.userName}
                 email={row.original.email}
-                image="/images/Avatar (1).png"
+                image={row.original.image}
             />
         ),
     },
     {
         accessorKey: "status",
-        header: "Report Status",
-        cell: "No Reports",
+        header: "Reports",
+        cell: ({ row }) => (
+            <div>
+                {row.original.reports.length > 0 ? ("Have Reports") : ("No Reports")}
+            </div>
+        ),
     },
     {
         id: "actions",
         cell: ({ row }) => (
             <Button
                 variant="secondary"
-                onClick={() => handleView(row.original.id)}
             >
                 <Link href={`user-management/${row.original.id}/profile`}>
                     {" "}
@@ -99,7 +85,3 @@ export const columns: ColumnDef<UserManagement>[] = [
         ),
     },
 ];
-
-const handleView = (id: string) => {
-    console.log(`View button clicked for user with ID: ${id}`);
-};

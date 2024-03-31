@@ -29,4 +29,4 @@ export const Masonrygrid: React.FC<MasonrygridProps> = ({ images }) => {
             </Masonry>
         </div>
     );
-}
+};

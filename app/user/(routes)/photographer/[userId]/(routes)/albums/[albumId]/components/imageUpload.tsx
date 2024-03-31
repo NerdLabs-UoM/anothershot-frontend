@@ -1,23 +1,27 @@
-"use client"
+"use client";
 
-import {Upload} from "lucide-react";
-import {CldUploadWidget, CldUploadWidgetResults, CldUploadWidgetInfo} from "next-cloudinary";
-import {useState, useEffect} from "react";
-import {Button} from "@/components/ui/button";
-import {useRouter, useParams} from "next/navigation";
+import { Upload } from "lucide-react";
+import {
+    CldUploadWidget,
+    CldUploadWidgetResults,
+    CldUploadWidgetInfo,
+} from "next-cloudinary";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
-import {AlbumImage} from "@/app/lib/types";
+import { AlbumImage } from "@/app/lib/types";
 
 interface AlbumImageProp {
     albumId: string | string[];
     onImageUpdate: (images: AlbumImage[]) => void;
 }
 
-const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
+const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
     const [image, setImage] = useState<AlbumImage[]>([]);
     const router = useRouter();
-    const {userId} = useParams();
+    const { userId } = useParams();
     const handleRefresh = () => {
         router.refresh();
     };
@@ -33,10 +37,9 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
         }
     }
 
-
     useEffect(() => {
         onImageUpdate(image);
-        console.log("this is it ===>", image)
+        console.log("this is it ===>", image);
     }, [image]);
 
     useEffect(() => {
@@ -50,21 +53,16 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
                 console.error(e);
             }
         }
-
         fetchImages();
     }, []);
-
-
 
     return (
         <div>
             <CldUploadWidget
-                onOpen={() => {
-                }}
+                onOpen={() => {}}
                 onSuccess={(results: CldUploadWidgetResults) => {
                     console.log("results", results);
-                    const uploadedResult =
-                        results.info as CldUploadWidgetInfo;
+                    const uploadedResult = results.info as CldUploadWidgetInfo;
                     const imageURL = {
                         image: uploadedResult.secure_url,
                     };
@@ -73,14 +71,14 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
                     async function Upload() {
                         try {
                             console.log("working here ==>", imageURL, albumId);
-                            await axios.post(
+                            const res = await axios.post(
                                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
                                 {
                                     images: [imageURL.image],
                                     albumId: albumId,
                                 }
                             );
-                            console.log("image url", imageURL);
+                            console.log("response ", res);
                             toast.success("Images uploaded successfully");
                             fetchImages2();
                         } catch (e) {
@@ -119,15 +117,14 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
                             textLight: "#fcfffd",
                         },
                     },
-
                 }}
-
-                uploadPreset="o7oeqnou">
-                {({open}) => {
+                uploadPreset="o7oeqnou"
+            >
+                {({ open }) => {
                     return (
                         <Button variant="default" onClick={() => open()}>
                             <div className="flex gap-2 my-3">
-                                <Upload size={20} color="#fff"/>
+                                <Upload size={20} color="#fff" />
                                 <span className="text-1xl">Upload</span>
                             </div>
                         </Button>
@@ -136,6 +133,6 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
             </CldUploadWidget>
         </div>
     );
-}
+};
 
 export default ImageUpload;
