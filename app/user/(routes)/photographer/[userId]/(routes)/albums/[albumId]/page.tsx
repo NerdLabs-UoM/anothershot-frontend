@@ -28,11 +28,6 @@ const AlbumPage = () => {
     const [newAlbumName, setNewAlbumName] = useState({albumName: albumName, albumDescription: albumDescription});
     const router = useRouter();
 
-    // if (view === "false") {
-    //     setViewPage(false);
-    // }
-    // console.log("view true da nadda", newAlbumName.albumName,newAlbumName.albumDescription);
-
     useEffect(() => {
         async function fetchImages() {
             try {
@@ -42,7 +37,7 @@ const AlbumPage = () => {
                 setImages(response.data);
 
             } catch (e) {
-                console.error(e);
+                throw new Error("Error fetching images");
             }
         }
 
@@ -50,7 +45,7 @@ const AlbumPage = () => {
             setViewPage(false);
             fetchImages();
         }
-    }, []);
+    }, [albumId, view]);
 
     const imageUpload = (newImages: AlbumImage[]) => {
         setImages(newImages);
@@ -83,13 +78,10 @@ const AlbumPage = () => {
                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/660610c4c22861850552b644/editalbum`,
                 {albumId: albumId, name: newAlbumName.albumName, description: newAlbumName.albumDescription}
             );
-            console.log("Submit wuna album name and desc", res);
             toast.success("Album edited successfully");
         } catch (e) {
             toast.error("Error editing album");
         }
-        // console.log("me tiyenne new description val eka ", newAlbumName.albumDescription);
-        // console.log()
     }
 
     return (
@@ -100,29 +92,29 @@ const AlbumPage = () => {
                 }}/>
             </div>
             <div className="flex justify-between pt-4">
-
                 <div className="flex gap-3">
                     {toggleTextEdit ? (
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 ">
                             <Input
                                 value={newAlbumName.albumName}
                                 type="text"
-                                className="p-2 border-2 border-gray-300 rounded-md"
+                                className="p-2 border-2 border-gray-300 rounded-md w-[300px]"
                                 onChange={handleAlbumNameChange}
                             />
                             <Textarea
                                 value={newAlbumName.albumDescription}
-                                className="p-2 border-2 border-gray-300 rounded-md"
+                                className="p-2 border-2 border-gray-300 rounded-md w-[300px] h-[150px]"
                                 onChange={handleAlbumDescriptionChange}
                             />
                         </div>
                     ) : (
                         <div className="flex-col">
                             <h1 className="text-2xl font-bold">{newAlbumName.albumName}</h1>
-                            <p>{newAlbumName.albumDescription}</p>
+                            <p className="w-[300px]">{newAlbumName.albumDescription}</p>
                         </div>
 
                     )}
+                    <div className="absolute left-[350px]">
                     {viewPage && (
                         !toggleTextEdit ? (
                             <Pencil color="black" size={15} onClick={handleClick} className="mt-2"/>
@@ -130,6 +122,7 @@ const AlbumPage = () => {
                             <Check size={20} onClick={handleClick} className="mt-2"/>
                         )
                     )}
+                    </div>
                 </div>
 
                 {viewPage && (

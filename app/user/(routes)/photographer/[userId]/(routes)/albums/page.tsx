@@ -5,6 +5,7 @@ import React, {useEffect, useState} from "react";
 import {useParams, usePathname, useRouter} from "next/navigation";
 import {useSession} from "next-auth/react";
 import Link from "next/link";
+import Image from 'next/image';
 import {BiSolidPlusSquare} from "react-icons/bi";
 import {MoreVertical} from "lucide-react";
 import {Textarea} from "@/components/ui/textarea";
@@ -53,6 +54,7 @@ import {useForm} from "react-hook-form";
 import Masonry from "react-masonry-css";
 import toast from "react-hot-toast";
 import {Album} from "@/app/lib/types";
+import { CldImage } from "next-cloudinary";
 
 
 const albumFormSchema = z.object({
@@ -69,11 +71,9 @@ const albumFormSchema = z.object({
 
 const AlbumPage = () => {
     const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
-    const [albumCoverImage, setAlbumCoverImage] = useState<string>(
-        "https://res.cloudinary.com/dru0isacu/image/upload/…6608a4be085efd4417923b41/phfvcrecabwo8dmixexv.png"
-    );
+    const [albumCoverImage, setAlbumCoverImage] = useState<string>("/images/animal.png");
     const [album, setAlbum] = useState<
-        { name: string; description: string; id: string }[]
+        { name: string; description: string; id: string,image:string }[]
     >([]);
     const [albumId, setAlbumId] = useState<string>("");
     const pathname = usePathname();
@@ -96,6 +96,7 @@ const AlbumPage = () => {
                 name: album.name,
                 description: album.description,
                 id: album.id,
+                image: album.images[0] ? album.images[0].image : "/images/animal.png",
             }));
             setAlbum(albumsData);
         };
@@ -117,6 +118,7 @@ const AlbumPage = () => {
     });
 
     function onSubmit(values: z.infer<typeof albumFormSchema>) {
+        setIsOpen(false);
         async function Create() {
             try {
                 const res = await axios.post(
@@ -130,6 +132,7 @@ const AlbumPage = () => {
                         name: values.name,
                         description: values.description,
                         id: res.data.id,
+                        image: "/images/animal.png",
                     },
                 ]);
             } catch (e) {
@@ -151,7 +154,6 @@ const AlbumPage = () => {
             );
             toast.success("Album deleted successfully");
         } catch (e) {
-            console.log("error ==> ", e);
             toast.error("Error deleting album");
         }
     };
@@ -159,7 +161,7 @@ const AlbumPage = () => {
     return (
 
         <div className="mb-[50px]">
-            <Dialog>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                     <Button
                         variant="ghost"
@@ -248,17 +250,22 @@ const AlbumPage = () => {
                                 name: string;
                                 description: string;
                                 id: string;
+                                image: string;
                             },
                             index: number
                         ) => (
+
                             <Card
                                 key={index}
-                                className="w-[300px] my-3 mx-3 h-[400px] rounded-[40px] overflow-hidden relative"
+                                className="w-[300px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative"
                             >
-                                <img
-                                    className="absolute top-0 left-0 object-cover w-full h-full"
-                                    src="/images/animal.png"
-                                    alt="Background Image"
+                                <Image
+                                    src={album.image}
+                                    alt="album cover"
+                                    // width={300}
+                                    // height={800}
+                                    layout="fill"
+                                    objectFit="cover"
                                 />
                                 <div
                                     className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">

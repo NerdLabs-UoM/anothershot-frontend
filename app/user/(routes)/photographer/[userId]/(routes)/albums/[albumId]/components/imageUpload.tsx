@@ -33,14 +33,9 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
             );
             setImage(response.data);
         } catch (e) {
-            console.error(e);
+            throw new Error("Error fetching images");
         }
     }
-
-    useEffect(() => {
-        onImageUpdate(image);
-        console.log("this is it ===>", image);
-    }, [image]);
 
     useEffect(() => {
         async function fetchImages() {
@@ -50,27 +45,28 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                 );
                 setImage(response.data);
             } catch (e) {
-                console.error(e);
+                throw new Error("Error fetching images")
             }
         }
         fetchImages();
-    }, []);
+    }, [albumId]);
+
+    useEffect(() => {
+        onImageUpdate(image);
+    }, [image,onImageUpdate]);
 
     return (
         <div>
             <CldUploadWidget
                 onOpen={() => {}}
                 onSuccess={(results: CldUploadWidgetResults) => {
-                    console.log("results", results);
                     const uploadedResult = results.info as CldUploadWidgetInfo;
                     const imageURL = {
                         image: uploadedResult.secure_url,
                     };
-                    console.log("image url", imageURL);
 
                     async function Upload() {
                         try {
-                            console.log("working here ==>", imageURL, albumId);
                             const res = await axios.post(
                                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
                                 {
@@ -78,11 +74,9 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                                     albumId: albumId,
                                 }
                             );
-                            console.log("response ", res);
                             toast.success("Images uploaded successfully");
                             fetchImages2();
                         } catch (e) {
-                            console.log("eroor is", e);
                             toast.error("Images uploading failed");
                         }
                     }
