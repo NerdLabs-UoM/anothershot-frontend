@@ -5,14 +5,7 @@ import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { fetchData, fetchLastPage } from "./serviceData";
 import PaginationSection from "./components/pagination";
-
-interface User {
-  id: string;
-  userRole: string;
-  name: string;
-  email: string;
-  status: string;
-}
+import { User } from "@/app/lib/types";
 
 const AdminPage = () => {
   const [page, setPage] = useState(1);
@@ -21,7 +14,7 @@ const AdminPage = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const data = await fetchData(page);
+      const data:User[] = await fetchData(page);
       setFilteredUsers(data);
     };
     fetchUsers();
@@ -54,7 +47,6 @@ const AdminPage = () => {
   return (
     <div className="w-full">
         <DataTable columns={columns} data={filteredUsers} />
-      <div className="absolute top-[85%] inset-x-0">
         <PaginationSection
           lastPage={last}
           currentPage={page}
@@ -62,7 +54,6 @@ const AdminPage = () => {
           handleNext={handleNext}
           handleClick={handleClick}
         />
-      </div>
     </div>
   );
 };

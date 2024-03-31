@@ -52,26 +52,28 @@ const FormSchema = z.object({
     }),
 });
 
-function AddCategory() {
-    const [categories, setCategories] = useState< PhotographerCategory[]>([]);
-    const [categoryList,setCategoryList] = useState<{label:string,value:PhotographerCategory}[]>([]);
+const AddCategorySection = () => {
+    const [categories, setCategories] = useState<PhotographerCategory[]>([]);
+    const [categoryList, setCategoryList] = useState<
+        { label: string; value: PhotographerCategory }[]
+    >([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [categoriesArray, setCategoriesArray] = useState<{ label: string; selected: boolean }[]>([]);
+    const [categoriesArray, setCategoriesArray] = useState<
+        { label: string; selected: boolean }[]
+    >([]);
     const { userId } = useParams();
 
     useEffect(() => {
         const fetchCategory = async () => {
             const data = await fetchCategories();
-            // setCategoryList(Object.entries())
-            // setCategoryList(Object.entries(data).map((key, value) => ({
-            //     label: key.toLowerCase().charAt(0).toUpperCase() + key.toLowerCase().slice(1),
-            //     value
-            // })));
-            console.log("data of categories",data);
-            setCategoryList(Object.entries(data).map(([key, value]) => ({
-                label: key.toLowerCase().charAt(0).toUpperCase() + key.toLowerCase().slice(1),
-                value: value as PhotographerCategory // Ensure value is of type PhotographerCategory
-            })))
+            setCategoryList(
+                Object.entries(data).map(([key, value]) => ({
+                    label:
+                        key.toLowerCase().charAt(0).toUpperCase() +
+                        key.toLowerCase().slice(1),
+                    value: value as PhotographerCategory, // Ensure value is of type PhotographerCategory
+                }))
+            );
         };
         fetchCategory();
 
@@ -80,10 +82,15 @@ function AddCategory() {
             setSelectedCategories(data);
         };
         fetchCatById();
-    },[]);
+    }, []);
 
     useEffect(() => {
-        setCategoriesArray(categoryList.map(category => ({ label: category.label, selected: false })));
+        setCategoriesArray(
+            categoryList.map((category) => ({
+                label: category.label,
+                selected: false,
+            }))
+        );
     }, [categoryList]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -96,7 +103,7 @@ function AddCategory() {
             toast.success("Categories updated successfully");
         } catch (e) {
             toast.error("Error updating categories");
-            console.log("eerror",e);
+            console.log("eerror", e);
         }
     }
 
@@ -137,10 +144,12 @@ function AddCategory() {
                                                     >
                                                         {field.value
                                                             ? categoriesArray.find(
-                                                                (category) =>
-                                                                    category.label ===
-                                                                    String(field.value)
-                                                            )?.label
+                                                                  (category) =>
+                                                                      category.label ===
+                                                                      String(
+                                                                          field.value
+                                                                      )
+                                                              )?.label
                                                             : "Select Category"}
                                                         <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                                                     </Button>
@@ -149,12 +158,12 @@ function AddCategory() {
                                             <PopoverContent className="w-[200px] p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Search category..." />
-                                                    <ScrollArea className="border rounded-md h-72" >
+                                                    <ScrollArea className="border rounded-md h-72">
                                                         <CommandEmpty>
                                                             No category found.
                                                         </CommandEmpty>
-                                                         <CommandGroup>
-                                                                {categoriesArray?.map(
+                                                        <CommandGroup>
+                                                            {categoriesArray?.map(
                                                                 (category) => {
                                                                     return (
                                                                         !category.selected && (
@@ -203,7 +212,7 @@ function AddCategory() {
                                                                     );
                                                                 }
                                                             )}
-                                                        </CommandGroup> 
+                                                        </CommandGroup>
                                                     </ScrollArea>
                                                 </Command>
                                             </PopoverContent>
@@ -231,12 +240,11 @@ function AddCategory() {
                                         height={8}
                                         className="mr-2 cursor-pointer"
                                         onClick={() => {
-                                            const data: string[] = [...selectedCategories];
-                                                data.splice(
-                                                    index,
-                                                    1
-                                                );
-                                            
+                                            const data: string[] = [
+                                                ...selectedCategories,
+                                            ];
+                                            data.splice(index, 1);
+
                                             setSelectedCategories(data);
                                         }}
                                     />
@@ -258,4 +266,4 @@ function AddCategory() {
     );
 }
 
-export default AddCategory;
+export default AddCategorySection;

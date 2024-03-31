@@ -26,7 +26,7 @@ const ReportFormSchema = z.object({
     description: z.string().max(300, ).regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Description"}).min(1,{message: "Enter a Description"}),
 });
 
-const ReportForm = () => {
+const ReportSection = () => {
     const { userId } = useParams();
     const form = useForm<z.infer<typeof ReportFormSchema>>({
         resolver: zodResolver(ReportFormSchema),
@@ -101,4 +101,4 @@ const ReportForm = () => {
     )
 }
 
-export default ReportForm;
+export default ReportSection;
