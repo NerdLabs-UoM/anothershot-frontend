@@ -21,7 +21,7 @@ import EditForm from "./components/userEditForm";
 import { date } from "zod";
 import { useSession } from "next-auth/react";
 
-const page=()=> {
+const UserPage=()=> {
   const {data:session} = useSession();
   const [userData, setUserData] = useState<User>();
   const [details, setDetails] = useState({
@@ -147,7 +147,7 @@ const page=()=> {
                     variant="ghost"
                       onClick={() => {
                         onDelete();
-                        router.push(`/admin/${session?.user.id}/user-management`);
+                        router.push(`/user/admin/${session?.user.id}/user-management`);
                       }}
                     >
                       Delete
@@ -175,4 +175,4 @@ const page=()=> {
   );
 }
 
-export default page;
+export default UserPage;
