@@ -41,11 +41,12 @@ const formSchema = z.object({
   city: z.string(),
   state: z.string().regex(/^[a-zA-Z]+$/),
   zip: z.string(),
-  country: z.string().regex(/^[a-zA-Z]+$/),
-  instagram: z.string().regex(/^(?:https?:\/\/)?(?:www\.)?instagram\.com\/[a-zA-Z0-9_]+\/?$/i).nullable(),
-  facebook: z.string().regex(/^(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:profile\.php\?id=\d+|[a-zA-Z0-9.]+)\/?$/i).nullable(),
-  youtube: z.string().regex(/^(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:user\/[^\/]+|channel\/[^\/]+|[^\/]+)\/?$/i).nullable(),
-  tiktok: z.string().regex(/^(?:https?:\/\/)?(?:www\.)?tiktok\.com\/@[^\/]+\/?$/i).nullable(),
+  country: z.string(),
+  instagram: z.string().nullable(),
+  facebook: z.string().nullable(),
+  // facebook: z.string().regex(/^(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:profile\.php\?id=\d+|[a-zA-Z0-9.]+)\/?$/i).nullable(),
+  youtube: z.string().nullable(),
+  tiktok: z.string().nullable(),
 });
 
 const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, setContactDets }) => {
@@ -72,25 +73,27 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/contactdetails`, {
-      userId: userId,
-      phoneNum1: values.contactNum1,
-      phoneNum2: values.contactNum2,
-      email: values.email,
-      address: {
-        street: values.street,
-        city: values.city,
-        state: values.state,
-        zip: values.zip,
-        country: values.country,
-      },
-      socialMedia: {
-        instagram: values.instagram,
-        facebook: values.facebook,
-        youtube: values.youtube,
-        tiktok: values.tiktok,
-      },
-    });
+    try{
+      const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/contactdetails`, {
+        userId: userId,
+        phoneNum1: values.contactNum1,
+        phoneNum2: values.contactNum2,
+        email: values.email,
+        address: {
+          street: values.street,
+          city: values.city,
+          state: values.state,
+          zip: values.zip,
+          country: values.country,
+        },
+        socialMedia: {
+          instagram: values.instagram,
+          facebook: values.facebook,
+          youtube: values.youtube,
+          tiktok: values.tiktok,
+        },
+      });
+    
 
     if (res.status === 200) {
       setContactDets({
@@ -117,36 +120,32 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
       toast.error("Failed to update contact details");
     }
   }
-  // const renderEditButton = () => {
-  //   if (session?.user?.id === userId) {
-  //     return (
-  //       <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
-  //         <Button
-  //           variant={"outline"}
-  //           size={"icon"}
-  //           className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px]"
-  //         >
-  //           <Pencil />
-  //         </Button>
-  //       </DialogTrigger>
-  //     );
-  //   } return null;
-  // };
+  catch(err){
+    toast.error("An error occured. Please try again.")
+  }
+ 
+  }
+  const renderEditButton = () => {
+    if (session?.user?.id === userId) {
+      return (
+        <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
+          <Button
+            variant={"outline"}
+            size={"icon"}
+            className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px]"
+          >
+            <Pencil />
+          </Button>
+        </DialogTrigger>
+      );
+    } return null;
+  };
 
 
   return (
     <Dialog>
-      {/* {renderEditButton()} */}
-      <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
-        <Button
-          variant={"outline"}
-          size={"icon"}
-          className="w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] md:w-[40px] md:h-[40px]"
-        >
-          <Pencil />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-[300px] sm:max-w-[450px]">
+      {renderEditButton()}
+      <DialogContent className="max-w-[300px] sm:max-w-[480px] max-h-[700px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit Contact Details</DialogTitle>
           <DialogDescription className="sm:mt-2 sm:mb-4">
