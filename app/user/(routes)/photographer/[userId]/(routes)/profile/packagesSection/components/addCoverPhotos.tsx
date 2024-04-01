@@ -61,7 +61,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                  
         };
         fetchData();
-    });
+    },[]);
     useEffect(() => {
         if (userId == session?.user.id) {
             setIsPhotographer(true);
