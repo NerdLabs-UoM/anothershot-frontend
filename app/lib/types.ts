@@ -88,6 +88,7 @@ export type PhotographerCategory =
     createdAt: Date;
     updatedAt: Date;
     suspended: Suspended;
+    reports: Report[];
   }
   
   export interface Account {
@@ -210,41 +211,41 @@ export interface Event {
 }
 
 export interface BankDetails {
-  id: string;
-  photographer: Photographer;
-  photographerId: string;
+  id?: string;
+  photographer?: Photographer;
+  photographerId?: string;
   bankName: string;
   accountName: string;
   accountNumber: string;
   accountBranch: string;
   accountBranchCode?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Earnings {
-  id: string;
+  id?: string;
   photographer: Photographer;
   photographerId: string;
   totalAmount: number;
   pending: number;
   fees: number;
   date: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Report {
-  id: string;
+  id?: string;
   client?: Client | null;
   clientId?: string | null;
   photographer?: Photographer | null;
   photographerId?: string | null;
   subject: string;
   description: string;
-  status: ReportStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  status?: ReportStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Package {
@@ -327,18 +328,18 @@ export interface FeedImage {
 }
 
 export interface Album {
-  id: string;
+  id?: string;
   photographer: Photographer;
   photographerId: string;
   name: string;
   description: string;
   images: AlbumImage[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface AlbumImage {
-  id: string;
+  id?: string;
   album: Album;
   albumId: string;
   image: string;
