@@ -117,7 +117,7 @@ export default function ChatBottombar({
                         handleAttachmentSend((results.info as any).secure_url)
                     }}
                     options={cloudinaryOptions}
-                    uploadPreset="o7oeqnou"
+                    uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                 >
                     {({ open }) => {
                         return (

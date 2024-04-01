@@ -151,13 +151,13 @@ const FeedComponent = () => {
     <div className="flex flex-wrap justify-center md:mx-20 mb-10 mt-4">
       {feedImages.map(feedImage => (
         <div key={feedImage.id} >
-          <div className="relative flex flex-col justify-end items-center overflow-hidden w-[350px] h-[500px] sm:w-[250px] sm:h-[400px] lg:h-[600px] lg:w-[400px] rounded-[40px] mx-2 md:mx-4 my-4">
+          <div className="relative flex flex-col justify-end items-center overflow-hidden w-[350px] h-[350px] lg:h-[400px] lg:w-[400px] rounded-[40px] mx-2 md:mx-4 my-4">
             <Image
               src={feedImage.imageUrl}
               alt="Background Image"
               width={400}
               height={400}
-              className=" rounded-[35px] h-[600px] w-[400px]"
+              className=" rounded-[35px] h-[400px] w-[400px]"
             />
             <div className="absolute z-10 grid grid-cols-6 items-center justify-center w-full bg-gradient-to-t from-black to-transparent rounded-b-[40px]">
               <div className="col-span-4 flex flex-start items-center justify-start pl-4">
