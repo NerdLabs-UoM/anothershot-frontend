@@ -45,7 +45,7 @@ const AddButton = () => {
         if (session?.user.id === userId) {
             return (
                 <CldUploadWidget
-                uploadPreset='dymz9yfzv'
+                uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                 onSuccess={(results: CldUploadWidgetResults) => {
                     const uploadedResult =
                         results.info as CldUploadWidgetInfo;
@@ -67,11 +67,12 @@ const AddButton = () => {
                     sources: ["local"],
                     googleApiKey: "<image_search_google_api_key>",
                     showAdvancedOptions: false,
+                    singleUploadAutoClose: false,
                     cropping: true,
                     multiple: false,
                     defaultSource: "local",
                     resourceType: "image",
-                    folder: `${userId}/${photographer?.name}/feed`,
+                    folder: `anothershot/${userId}/feed/`,
                     styles: {
                         palette: {
                             window: "#ffffff",

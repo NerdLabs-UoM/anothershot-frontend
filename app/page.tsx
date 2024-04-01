@@ -1,12 +1,15 @@
+"use client"
+
 import Navbar from '@/components/Navbar';
+import FeedImageComp from '@/components/feedImageComp';
 import React from 'react';
 
-const Home = async () => {
+const Home = () => {
 
-  return (  
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Landing Page
-      <Navbar/>
+  return (
+    <main>
+      <FeedImageComp />
+      <Navbar />
     </main>
   )
 }
