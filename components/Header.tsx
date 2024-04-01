@@ -74,7 +74,7 @@ const Header = () => {
        {loggedIn&&<Button variant="ghost" className ="h-auto mb-7" onClick={() => signOut({
                     callbackUrl: `${window.location.origin}/sign-in`
                 })}>Sign Out</Button>}
-          <Search/>
+          <Button  variant="ghost" className ="h-auto mb-8 hover:bg-white" onClick={()=>{router.push(`/search`)}}><Search /></Button>
           <Sheet>
             <SheetTrigger>
               <BellDot className="fill-black mb-8"  />

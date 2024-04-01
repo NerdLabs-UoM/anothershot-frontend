@@ -104,7 +104,7 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
 
                 }}
 
-                uploadPreset="rahuz25t">
+                uploadPreset="hszok2yb">
                 {({open}) => {
                     return (
                         <Button variant="default" onClick={() => open()}>
