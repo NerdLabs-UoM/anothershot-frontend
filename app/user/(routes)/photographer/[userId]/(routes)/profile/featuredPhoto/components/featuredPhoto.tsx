@@ -178,7 +178,7 @@ export default function FeaturedPhoto() {
 
   return (
     <div>
-      <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10  space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg gap-5">
+      <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10 space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg gap-5">
         {/* {featuredPhoto.map((photo, index) => {
           return (
             <div className={`relative mt-20 rounded-3xl`}>
@@ -195,13 +195,13 @@ export default function FeaturedPhoto() {
             </div>
           )
         })} */}
-        <div className="flex -space-x-4 xl:-space-x-14 md:-space-x-64">
+        <div className="flex -space-x-4 xl:-space-x-14 md:-space-x-16">
           <div className="relative flex mt-10 sm:mt-20 md:mt-20 lg:mt-20 sm:mb-14">
             <Image
               key={0}
               src={featuredPhoto[0]!=null?featuredPhoto[0]:defaultImage}
               alt="featured photo 1"
-              className="w-[220px] sm:w-[340px] h-[160px] sm:h-[500px] rounded-3xl sm:rounded-3xl mt-8"
+              className="w-[220px] md:w-[200px] xl:w-[340px] h-[160px] md:h-[250px] xl:h-[500px] rounded-3xl sm:rounded-3xl mt-8"
               width={340}
               height={50}
             />
@@ -215,7 +215,7 @@ export default function FeaturedPhoto() {
               key={1}
               src={featuredPhoto[1]!=null? featuredPhoto[1]: defaultImage}
               alt={"featured photo 2"}
-              className="w-[250px] md:w-[456px] h-[200px] md:h-[600px] rounded-3xl sm:rounded-3xl"
+              className="w-[250px] lg:w-[300px] xl:w-[456px] h-[200px] md:h-[400px] xl:h-[600px] rounded-3xl sm:rounded-3xl"
               width={456}
               height={600}
             />
@@ -234,7 +234,7 @@ export default function FeaturedPhoto() {
               key={2}
               src={featuredPhoto[2]!=null ? featuredPhoto[2]:defaultImage}
               alt={"featured photo 3"}
-              className="w-[300px] lg:w-[456px] h-[200px] sm:h-[600px] rounded-3xl sm:rounded-2xl "
+              className="w-[300px] xl:w-[456px] h-[200px] md:h-[400px] xl:h-[600px] rounded-3xl sm:rounded-2xl "
               width={456}
               height={600}
             />
@@ -250,7 +250,7 @@ export default function FeaturedPhoto() {
               key={3}
               src={featuredPhoto[3]!=null ? featuredPhoto[3]:defaultImage}
               alt="featured photo 4"
-              className="w-[220px] sm:w-[340px] h-[160px] sm:h-[500px] rounded-3xl sm:rounded-2xl mt-20 sm:mt-24 md:mt-24 lg:mt-24 xl:mt-24 pb-3"
+              className="w-[220px] md:w-[200px] xl:w-[340px] h-[160px] md:h-[250px] xl:h-[500px] rounded-3xl sm:rounded-3xl mt-16 md:mt-24 md:ml-36 xl:ml-0"
               width={340}
               height={500}
             />
