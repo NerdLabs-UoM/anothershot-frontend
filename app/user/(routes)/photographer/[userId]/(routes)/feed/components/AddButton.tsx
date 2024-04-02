@@ -67,11 +67,12 @@ const AddButton = () => {
                     sources: ["local"],
                     googleApiKey: "<image_search_google_api_key>",
                     showAdvancedOptions: false,
+                    singleUploadAutoClose: false,
                     cropping: true,
                     multiple: false,
                     defaultSource: "local",
                     resourceType: "image",
-                    folder: `${userId}/${photographer?.name}/feed`,
+                    folder: `anothershot/${userId}/feed/`,
                     styles: {
                         palette: {
                             window: "#ffffff",

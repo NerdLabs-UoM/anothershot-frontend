@@ -1,30 +1,41 @@
-"use client"
+"use client";
 
-import {Upload} from "lucide-react";
-import {CldUploadWidget, CldUploadWidgetResults, CldUploadWidgetInfo} from "next-cloudinary";
-import {useState, useEffect} from "react";
-import {Button} from "@/components/ui/button";
-import {useRouter, useParams} from "next/navigation";
+import { Upload } from "lucide-react";
+import {
+    CldUploadWidget,
+    CldUploadWidgetResults,
+    CldUploadWidgetInfo,
+} from "next-cloudinary";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
-import {AlbumImage} from "@/app/lib/types";
+import { AlbumImage } from "@/app/lib/types";
 
 interface AlbumImageProp {
     albumId: string | string[];
     onImageUpdate: (images: AlbumImage[]) => void;
 }
 
-const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
+const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
     const [image, setImage] = useState<AlbumImage[]>([]);
     const router = useRouter();
-    const {userId} = useParams();
+    const { userId } = useParams();
     const handleRefresh = () => {
         router.refresh();
     };
 
-    useEffect(() => {
-        onImageUpdate(image);
-    }, [image]);
+    async function fetchImages2() {
+        try {
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/getimages`
+            );
+            setImage(response.data);
+        } catch (e) {
+            throw new Error("Error fetching images");
+        }
+    }
 
     useEffect(() => {
         async function fetchImages() {
@@ -34,39 +45,38 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
                 );
                 setImage(response.data);
             } catch (e) {
-                console.error(e);
+                throw new Error("Error fetching images")
             }
         }
-
         fetchImages();
-    }, []);
+    }, [albumId]);
+
+    useEffect(() => {
+        onImageUpdate(image);
+    }, [image,onImageUpdate]);
+
     return (
         <div>
             <CldUploadWidget
-                onOpen={() => {
-                }}
+                onOpen={() => {}}
                 onSuccess={(results: CldUploadWidgetResults) => {
-                    const uploadedResult =
-                        results.info as CldUploadWidgetInfo;
+                    const uploadedResult = results.info as CldUploadWidgetInfo;
                     const imageURL = {
                         image: uploadedResult.secure_url,
                     };
-                    console.log("image url", imageURL);
 
                     async function Upload() {
                         try {
-                            await axios.post(
+                            const res = await axios.post(
                                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
                                 {
-                                    images: imageURL,
+                                    images: [imageURL.image],
                                     albumId: albumId,
                                 }
                             );
-                            console.log("image url", imageURL);
                             toast.success("Images uploaded successfully");
-
+                            fetchImages2();
                         } catch (e) {
-                            console.log("eroor is", e);
                             toast.error("Images uploading failed");
                         }
                     }
@@ -101,15 +111,15 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
                             textLight: "#fcfffd",
                         },
                     },
-
                 }}
+
 
                 uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}>
                 {({open}) => {
                     return (
                         <Button variant="default" onClick={() => open()}>
                             <div className="flex gap-2 my-3">
-                                <Upload size={20} color="#fff"/>
+                                <Upload size={20} color="#fff" />
                                 <span className="text-1xl">Upload</span>
                             </div>
                         </Button>
@@ -118,6 +128,6 @@ const ImageUpload: React.FC<AlbumImageProp> = ({albumId, onImageUpdate}) => {
             </CldUploadWidget>
         </div>
     );
-}
+};
 
 export default ImageUpload;
