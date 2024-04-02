@@ -178,7 +178,7 @@ export default function FeaturedPhoto() {
 
   return (
     <div>
-      <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10 mr-6 space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg gap-5">
+      <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10  space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg gap-5">
         {/* {featuredPhoto.map((photo, index) => {
           return (
             <div className={`relative mt-20 rounded-3xl`}>
@@ -210,12 +210,12 @@ export default function FeaturedPhoto() {
               {renderUploadFeaturePhotoOne()}
             </div>
           </div>
-          <div className=" flex relative mt-10 -ml-2 ">
+          <div className=" flex relative mt-10 -ml-2 md:mr-10">
             <Image
               key={1}
               src={featuredPhoto[1]!=null? featuredPhoto[1]: defaultImage}
               alt={"featured photo 2"}
-              className="w-[250px] sm:w-[456px] h-[200px] sm:h-[600px] rounded-3xl sm:rounded-3xl"
+              className="w-[250px] md:w-[456px] h-[200px] md:h-[600px] rounded-3xl sm:rounded-3xl"
               width={456}
               height={600}
             />
@@ -234,7 +234,7 @@ export default function FeaturedPhoto() {
               key={2}
               src={featuredPhoto[2]!=null ? featuredPhoto[2]:defaultImage}
               alt={"featured photo 3"}
-              className="w-[280px] lg:w-[456px] h-[200px] sm:h-[600px] rounded-3xl sm:rounded-2xl "
+              className="w-[300px] lg:w-[456px] h-[200px] sm:h-[600px] rounded-3xl sm:rounded-2xl "
               width={456}
               height={600}
             />
