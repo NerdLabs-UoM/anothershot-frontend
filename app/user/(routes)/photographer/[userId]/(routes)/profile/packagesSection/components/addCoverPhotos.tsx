@@ -146,7 +146,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                                 },
                             },
                         }}
-                        uploadPreset="crca4igr"
+                        uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                     >
                         {({ open }) => {
                             return (

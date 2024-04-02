@@ -219,7 +219,7 @@ const Hero = () => {
                       multiple: false,
                       defaultSource: "local",
                       resourceType: "image",
-                      folder: `${photographer?.userId}/${photographer?.name}/profile`,
+                      folder: `${userId}/profile`,
                       styles: {
                         palette: {
                           window: "#ffffff",
@@ -298,7 +298,7 @@ const Hero = () => {
                 multiple: false,
                 defaultSource: "local",
                 resourceType: "image",
-                folder: `${photographer?.userId}/${photographer?.name}/cover-image`,
+                folder: `${userId}/cover-image`,
                 styles: {
                   palette: {
                     window: "#ffffff",

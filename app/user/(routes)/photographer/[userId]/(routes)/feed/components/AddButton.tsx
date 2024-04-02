@@ -45,7 +45,7 @@ const AddButton = () => {
         if (session?.user.id === userId) {
             return (
                 <CldUploadWidget
-                uploadPreset='dymz9yfzv'
+                uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                 onSuccess={(results: CldUploadWidgetResults) => {
                     const uploadedResult =
                         results.info as CldUploadWidgetInfo;

@@ -100,7 +100,7 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                                 },
                             },
                         }}
-                        uploadPreset={process.env.CLOUDINRY_UPLOAD_PRESET}
+                        uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                     >
                         {({ open }) => {
                             return (

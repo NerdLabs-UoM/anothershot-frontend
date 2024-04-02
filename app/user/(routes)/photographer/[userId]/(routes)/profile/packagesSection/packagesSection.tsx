@@ -29,8 +29,8 @@ const PackagesSection = () => {
   }, [userId]);
   return (
     <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-white">
-      <div className="flex flex-col justify-center sm:flex sm:flex-row sm:justify-between">
-        <h1 className="flex text-3xl sm:text-5xl font-bold mb-0 sm:mb-6 sm:ml-10">
+      <div className="flex flex-col justify-center text-center sm:flex sm:flex-row sm:justify-between">
+        <h1 className="text-center text-2xl sm:text-5xl font-bold mb-0 sm:mb-6 sm:ml-10">
           Packages
         </h1>
         <PackageEditForm packages={packageList} packageProp={setPackageList} />
