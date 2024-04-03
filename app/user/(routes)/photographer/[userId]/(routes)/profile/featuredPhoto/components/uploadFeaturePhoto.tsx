@@ -100,12 +100,12 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                                 },
                             },
                         }}
-                        uploadPreset="crca4igr"
+                        uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                     >
                         {({ open }) => {
                             return (
                                 <Button
-                                    variant="default"
+                                    variant="link"
                                     className="rounded-md mt-2 ml-2 bg-transparent"
                                     onClick={() => {
                                         open();

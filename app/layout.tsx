@@ -7,6 +7,7 @@ import Header from '@/components/Header'
 import  SessionProvider  from '@/providers/AuthProvider'
 import { getServerSession } from 'next-auth'
 
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default async function RootLayout({
           {children}
           <ToasterProvider />
         </SessionProvider>
-      </body>
+      </body>   
     </html>
   )
 }
