@@ -61,7 +61,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                  
         };
         fetchData();
-    });
+    },[]);
     useEffect(() => {
         if (userId == session?.user.id) {
             setIsPhotographer(true);
@@ -146,7 +146,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                                 },
                             },
                         }}
-                        uploadPreset="crca4igr"
+                        uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                     >
                         {({ open }) => {
                             return (

@@ -41,7 +41,11 @@ import { Photographer } from "@/app/lib/types";
 
 const formSchema = z.object({
   name: z
-    .string()
+    .string({
+      required_error: "Name is required",
+      invalid_type_error: "Name is must_be_a_string",
+    }
+    )
     .min(2, {
       message: "Username must be at least 2 characters long",
     })
@@ -93,15 +97,16 @@ const Hero = () => {
 
   useEffect(() => {
     if (photographer) {
+      console.log(photographer);
       setValues({
         name: photographer.name,
         description: photographer.bio ?? "",
       });
 
     }
-    setProfileImage(photographer?.user.image ?? "");
+    setProfileImage(photographer?.user.image ?? "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878461/defaultImages/default-profile-image_grcgcd.png");
     if (coverImageURL != null) {
-      setCoverImageURL(photographer?.coverPhoto ?? "");
+    setCoverImageURL(photographer?.coverPhoto ?? "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878041/defaultImages/default-coverImage_sdmwpt.png");
     }
 
   }, [photographer]);
@@ -116,6 +121,7 @@ const Hero = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      bio: "",
     },
   });
 
@@ -124,7 +130,7 @@ const Hero = () => {
     setValues({ name: values.name, description: values.bio });
     async function Update() {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/update`,
         values
       );
     }
@@ -213,7 +219,7 @@ const Hero = () => {
                       multiple: false,
                       defaultSource: "local",
                       resourceType: "image",
-                      folder: `${photographer?.userId}/${photographer?.name}/profile`,
+                      folder: `${userId}/profile`,
                       styles: {
                         palette: {
                           window: "#ffffff",
@@ -233,7 +239,7 @@ const Hero = () => {
                         },
                       },
                     }}
-                    uploadPreset="t2z7iiq4"
+                    uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                   >
                     {({ open }) => {
                       return (
@@ -292,7 +298,7 @@ const Hero = () => {
                 multiple: false,
                 defaultSource: "local",
                 resourceType: "image",
-                folder: `${photographer?.userId}/${photographer?.name}/cover-image`,
+                folder: `${userId}/cover-image`,
                 styles: {
                   palette: {
                     window: "#ffffff",
@@ -311,8 +317,8 @@ const Hero = () => {
                   },
                 },
               }}
-              uploadPreset="t2z7iiq4"
-            >
+              uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
+              >
               {({ open }) => {
                 return (
                   <Button

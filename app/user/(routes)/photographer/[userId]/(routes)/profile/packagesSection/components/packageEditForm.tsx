@@ -181,7 +181,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
 
     return (
         <main>
-            <div className="w-full pr-10">
+            <div className="w-full sm:pr-10">
                 <Dialog>
                     {renderEditButton()}
                     <DialogContent className="max-w-[300px] sm:max-w-[450px]">
