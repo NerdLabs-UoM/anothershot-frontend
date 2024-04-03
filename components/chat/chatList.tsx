@@ -1,30 +1,40 @@
 import { useSession } from "next-auth/react";
 import React, { useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { CldImage } from "next-cloudinary";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ChatBottombar from "./chatBottomBar";
 import { Chat, Message } from "@/app/lib/types";
 import { cn } from "@/app/lib/utils";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 interface ChatListProps {
   messages?: Message[];
   selectedChat: Chat;
   sendMessage: (newMessage: Message) => void;
   isMobile: boolean;
+  cloudinaryOptions: any;
 }
 
 export function ChatList({
   messages,
   selectedChat,
   sendMessage,
-  isMobile
+  isMobile,
+  cloudinaryOptions,
 }: ChatListProps) {
 
   const { data: session } = useSession();
   const [selectedUser, setSelectedUser] = React.useState(selectedChat.users.find(user => user.id !== session?.user.id))
   const [sessionUser, setSessionUser] = React.useState(selectedChat.users.find(user => user.id === session?.user.id))
-
+  const [clickAttachment, setClickAttachment] = React.useState(false)
+  const [selectedAttachment, setSelectedAttachment] = React.useState('')
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleCloseDialog = () => {
+    setClickAttachment(false);
+    setSelectedAttachment('');
+  };
 
   React.useEffect(() => {
     if (messagesContainerRef.current) {
@@ -76,14 +86,33 @@ export function ChatList({
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 )}
-                <span className={`bg-accent p-3 rounded-md max-w-xs ${message.senderId !== selectedUser?.id && 'bg-black text-white'}`}>
+                {message.message != '' && <span className={`bg-accent p-3 rounded-md max-w-xs ${message.senderId !== selectedUser?.id && 'bg-black text-white'}`}>
                   {message.message}
-                </span>
+                </span>}
+                {message.attachments?.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    {message.attachments.map((attachment, index) => (
+                      <CldImage
+                        key={index}
+                        src={attachment.url}
+                        width={150}
+                        height={150}
+                        crop="fill"
+                        alt={'Attachment'}
+                        className="rounded-md"
+                        onClick={() => {
+                          setSelectedAttachment(attachment.url);
+                          setClickAttachment(true);
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
                 {message.senderId !== selectedUser?.id && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
                       src={sessionUser?.image}
-                      alt={sessionUser?.name}
+                      alt={sessionUser?.userName}
                       width={6}
                       height={6}
                     />
@@ -95,7 +124,29 @@ export function ChatList({
           ))}
         </AnimatePresence>
       </div>
-      <ChatBottombar sendMessage={sendMessage} isMobile={isMobile} selectedChat={selectedChat} />
+      <Dialog
+          open={clickAttachment}
+          onOpenChange={handleCloseDialog}
+        >
+          <DialogTrigger></DialogTrigger>
+          <DialogContent>
+            <CldImage
+              src={selectedAttachment}
+              width={500}
+              height={500}
+              sizes="100vw"
+              crop="fill"
+              alt={'Attachment'}
+              className="rounded-md"
+            />
+          </DialogContent>
+        </Dialog>
+      <ChatBottombar
+        sendMessage={sendMessage}
+        isMobile={isMobile}
+        selectedChat={selectedChat}
+        cloudinaryOptions={cloudinaryOptions}
+      />
     </div >
   );
 }

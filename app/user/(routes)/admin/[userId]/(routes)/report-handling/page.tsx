@@ -1,9 +1,10 @@
-import React from 'react'
-
-function page() {
-  return (
-    <div>Report Handeling</div>
-  )
+const ReportHandlingPage = () => {
+    return (
+        <>
+            <h1>Report Handling Page</h1>
+        </>
+    );
 }
 
-export default page
+export default ReportHandlingPage;
+
