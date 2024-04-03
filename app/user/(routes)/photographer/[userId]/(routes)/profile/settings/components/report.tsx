@@ -17,14 +17,17 @@ import {
 import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea";
 import React from "react";
-
+import { submitReport } from "../serviceData";
+import { useParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 const ReportFormSchema = z.object({
-    subject: z.string().max(100).min(1,{message: "Enter a subject"}),
-    description: z.string().max(300, ).min(1,{message: "Enter a Description"}),
+    subject: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Report"}).max(100).min(1,{message: "Enter a subject"}),
+    description: z.string().max(300, ).regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Description"}).min(1,{message: "Enter a Description"}),
 });
 
-const ReportForm = () => {
+const ReportSection = () => {
+    const { userId } = useParams();
     const form = useForm<z.infer<typeof ReportFormSchema>>({
         resolver: zodResolver(ReportFormSchema),
         defaultValues: {
@@ -33,6 +36,12 @@ const ReportForm = () => {
         },
     });
     const handleSubmit = (val: z.infer<typeof ReportFormSchema>) => {
+        try{
+            submitReport(userId,val);
+            toast.success("Report successfully submitted");
+        }catch(e){
+            toast.error("Error submitting report");
+        }
         form.reset();
     }
     return (
@@ -92,4 +101,4 @@ const ReportForm = () => {
     )
 }
 
-export default ReportForm;
+export default ReportSection;

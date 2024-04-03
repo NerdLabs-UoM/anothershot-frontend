@@ -42,6 +42,7 @@ import {
 
 const Navbar = () => {
 
+
 const [isPhotographer,setIsPhotographer] = useState <boolean>(false);
 const [isClient,setIsClient] = useState<boolean>(false);
 const [isAdmin,setIsAdmin] = useState<boolean>(false);
@@ -52,7 +53,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
   const isPathAdmin = pathname.startsWith("/admin");
   const router = useRouter();
   const { data: session } = useSession();
- 
+ const userId = session?.user.id;
   useEffect(() =>{
   if(session?.user.userRole =="PHOTOGRAPHER"){
     console.log(isPhotographer)
@@ -68,12 +69,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
  },[session])
  
   const handleDirection = (dir: string) => {
-   if(pathname == `/user/photographer/${session?.user.id}`) {
-      router.push(`${session?.user.id}/${dir}`);
-    } 
-    else {
       router.push(`${dir}`);
-    }
   };
 
   const handleHome=()=>{
@@ -86,18 +82,13 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
   }
 
   const handleDirectionClient = (dir: string) => {
-    if(pathname == `/user/client/${session?.user.id}`) {
-      router.push(`${session?.user.id}/${dir}`);
-    } 
-    else {
       router.push(`${dir}`);
-    }
   };
 
   if (isClient) {
     navigationMenuContent = !isPathAdmin && (
       <NavigationMenu>
-        <NavigationMenuList className="bg-black sm:rounded-t-3xl sm: px-4 py-3  sm:gap-20 shadow-lg border-t">
+        <NavigationMenuList className="px-4 py-3 bg-black border-t shadow-lg rounded-t-3xl sm: sm:gap-20">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -105,7 +96,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
                   
                     <NavigationMenuLink
                     onClick={() => {
-                      handleHome();
+                      handleDirection('/')
                     }}
                       className={
                         pathname == "/"
@@ -129,7 +120,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
                 <NavigationMenuItem className="px-8 sm:px-6">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirectionClient("profile");
+                      handleDirectionClient(`/user/client/${userId}/profile`);
                     }}
                     className={
                       pathname == "/photographer/profile"
@@ -150,10 +141,10 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
+                <NavigationMenuItem className="px-8 sm:px-6 lg:flex">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirectionClient("bookings");
+                      handleDirectionClient(`/user/client/${userId}/bookings`);
                     }}
                     className={
                       pathname == "/Photographer-bookings"
@@ -177,7 +168,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
                 <NavigationMenuItem className="px-8 sm:px-6 :flex">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirectionClient("inbox");
+                      handleDirectionClient(`/user/client/${userId}/inbox`);
                     }}
                     className={
                       pathname == "/inbox"
@@ -200,7 +191,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
   } else if (isPhotographer && pathname != "/admin") {
     navigationMenuContent = !isPathAdmin && (
       <NavigationMenu>
-        <NavigationMenuList className="bg-black sm:rounded-t-3xl sm: px-4 py-3  sm:gap-20 shadow-lg border-t">
+        <NavigationMenuList className="px-4 py-3 bg-black border-t shadow-lg rounded-t-3xl sm:gap-20">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -208,7 +199,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
                   
                     <NavigationMenuLink
                     onClick={() => {
-                      handleHome()
+                      handleDirection('/')
                     }}
                       className={
                         pathname == "/"
@@ -232,7 +223,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
                 <NavigationMenuItem className="px-8 sm:px-6">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirection("profile");
+                      handleDirection(`/user/photographer/${userId}/profile`);
                     }}
                     className={
                       pathname == "/photographer/profile"
@@ -253,10 +244,10 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
+                <NavigationMenuItem className="hidden px-8 sm:px-6 lg:flex">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirection("feed");
+                      handleDirection(`/user/photographer/${userId}/feed`);
                     }}
                     className={
                       pathname == "/Photographer-feed"
@@ -277,13 +268,13 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className=" hidden lg:flex px-8 sm:px-6 ">
+                <NavigationMenuItem className="hidden px-8 lg:flex sm:px-6">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirection("albums");
+                      handleDirection(`/user/photographer/${userId}/albums`);
                     }}
                     className={
-                      pathname == "/Phorographer-albums"
+                      pathname == "/Photographer-albums"
                         ? "flex flex-col items-center shadow-lg"
                         : "flex flex-col items-center text-white"
                     }
@@ -301,10 +292,10 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6 hidden lg:flex">
+                <NavigationMenuItem className="hidden px-8 sm:px-6 lg:flex">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirection("bookings");
+                      handleDirection(`/user/photographer/${userId}/bookings`);
                     }}
                     className={
                       pathname == "/Photographer-bookings"
@@ -328,7 +319,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
                 <NavigationMenuItem className="px-8 sm:px-6 :flex">
                   <NavigationMenuLink
                     onClick={() => {
-                      handleDirection("inbox");
+                      handleDirection(`/user/photographer/${userId}/inbox`);
                     }}
                     className={
                       pathname == "/inbox"
@@ -346,7 +337,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
             </Tooltip>
           </TooltipProvider>
 
-          <NavigationMenuItem className="flex lg:hidden px-8 sm:px-6">
+          <NavigationMenuItem className="flex px-8 lg:hidden sm:px-6">
             <NavigationMenuLink>
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex flex-col items-center text-slate-500 active:text-white">
@@ -356,7 +347,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
             
                     <DropdownMenuItem
                      onClick={() => {
-                      handleDirection("bookings");
+                      handleDirection(`/user/photographer/${userId}/bookings`);
                     }}
                       className={
                         pathname == "/Home"
@@ -369,7 +360,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
 
                     <DropdownMenuItem
                     onClick={() => {
-                      handleDirection("feed");
+                      handleDirection(`/user/photographer/${userId}/feed`);
                     }}
                       className={
                         pathname == "/Home"
@@ -382,7 +373,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
 
                     <DropdownMenuItem
                     onClick={() => {
-                      handleDirection("albums");
+                      handleDirection(`/user/photographer/${userId}/albums`);
                     }}
                       className={
                         pathname == "/Home"
@@ -399,10 +390,10 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
         </NavigationMenuList>
       </NavigationMenu>
     );
-  } else if (!isLogged) {
+  } else  {
     navigationMenuContent = !isPathAdmin && (
       <NavigationMenu>
-        <NavigationMenuList className="bg-black rounded-t-3xl sm: px-4 py-3 sm:gap-20">
+        <NavigationMenuList className="px-4 py-3 bg-black rounded-t-3xl sm: sm:gap-20">
           <NavigationMenuItem className="px-10">
             <Link href="/" legacyBehavior passHref>
               <NavigationMenuLink
@@ -452,7 +443,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 w-full text-black z-50">
+    <div className="fixed inset-x-0 bottom-0 z-50 w-full text-black">
       <div className="flex justify-center">{navigationMenuContent}</div>
     </div>
   );
