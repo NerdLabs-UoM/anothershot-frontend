@@ -53,8 +53,8 @@ const FeedComponent = () => {
   const { data: session } = useSession();
   const sessionUserId = session?.user?.id ? session.user.id : '';
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isSaving, setIsSaving] = React.useState(false);
   const [isLikingMap, setIsLikingMap] = React.useState<Record<string, boolean>>({});
+  const [isSavingMap, setIsSavingMap] = React.useState<Record<string, boolean>>({});
   const [caption, setCaption] = React.useState<string>("");
   useEffect(() => {
     const fetchFeedImages = async () => {
@@ -110,7 +110,10 @@ const FeedComponent = () => {
       toast.error('You must be logged in to save a feed image');
       return;
     }
-    setIsSaving(true);
+    setIsSavingMap(prevMap => ({
+      ...prevMap,
+      [imageId]: true,
+    }));
     try {
       const index = feedImages.findIndex(image => image.id === imageId);
       if (index !== -1) {
@@ -129,7 +132,10 @@ const FeedComponent = () => {
         userId: session?.user?.id,
         save: !isSaved
       });
-      setIsSaving(false);
+      setIsSavingMap(prevMap => ({
+        ...prevMap,
+        [imageId]: false,
+      }));
       toast('📌')
     } catch (error: any) {
       toast.error('Error saving feed image:', error);
@@ -241,7 +247,7 @@ const FeedComponent = () => {
                       size="sm"
                       className="flex items-center justify-center gap-2"
                       onClick={() => handleSave(feedImage.id, feedImage.savedUserIds != null && feedImage.savedUserIds.includes(sessionUserId), feedImage.photographerId)}
-                      disabled={isSaving}
+                      disabled={isSavingMap[feedImage.id]}
                     >
                       {feedImage.savedUserIds != null && feedImage.savedUserIds.includes(sessionUserId) ? (
                         <Bookmark fill="#ffffff" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
