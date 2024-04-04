@@ -4,9 +4,7 @@ import { PackageCard } from './components/packageCard';
 import { Package } from '@/app/lib/types';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import PackageEditForm from './components/packageEditForm';
-import { useSession } from "next-auth/react";
 import toast from 'react-hot-toast';
 
 const PackagesSection = () => {
@@ -24,7 +22,6 @@ const PackagesSection = () => {
       catch (error) {
         toast.error("Cannot fetch packages. Please try again.")
       }
-           
     };
     fetchPackages();
   }, [userId]);
