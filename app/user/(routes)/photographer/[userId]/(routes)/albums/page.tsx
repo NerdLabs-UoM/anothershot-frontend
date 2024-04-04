@@ -1,14 +1,14 @@
 "use client";
 
-import {Button} from "@/components/ui/button";
-import React, {useEffect, useState} from "react";
-import {useParams, usePathname, useRouter} from "next/navigation";
-import {useSession} from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Image from 'next/image';
-import {BiSolidPlusSquare} from "react-icons/bi";
-import {MoreVertical} from "lucide-react";
-import {Textarea} from "@/components/ui/textarea";
+import Image from "next/image";
+import { BiSolidPlusSquare } from "react-icons/bi";
+import { MoreVertical } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import {
     Dialog,
     DialogContent,
@@ -22,7 +22,7 @@ import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
-} from "@/components/ui/hover-card"
+} from "@/components/ui/hover-card";
 import {
     Form,
     FormControl,
@@ -39,53 +39,51 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch"
-import {Label} from "@/components/ui/label";
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
 import axios from "axios";
-import {Input} from "@/components/ui/input";
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useForm} from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import Masonry from "react-masonry-css";
 import toast from "react-hot-toast";
-import {Album} from "@/app/lib/types";
-import { CldImage } from "next-cloudinary";
-
+import { Album } from "@/app/lib/types";
 
 const albumFormSchema = z.object({
     name: z
         .string()
         .min(2)
         .max(50)
-        .regex(/^[A-Za-z0-9 ]+$/, {message: "Enter valid Name"}),
+        .regex(/^[A-Za-z0-9 ]+$/, { message: "Enter valid Name" }),
     description: z
         .string()
         .min(2)
-        .max(500,{message: "Description exceeds maximum limit"}),
+        .max(500, { message: "Description exceeds maximum limit" }),
 });
 
 const AlbumPage = () => {
     const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
-    const [albumCoverImage, setAlbumCoverImage] = useState<string>("/images/animal.png");
     const [album, setAlbum] = useState<
-        { name: string; description: string; id: string,image:string }[]
+        {
+            name: string;
+            description: string;
+            id: string;
+            image: string;
+        }[]
     >([]);
-    const [albumId, setAlbumId] = useState<string>("");
-    const pathname = usePathname();
-    const {data: session} = useSession();
-    const {userId} = useParams();
-    const [sessionId, setSessionId] = useState<string | null>(null);
+    const { data: session } = useSession();
+    const { userId } = useParams();
     const [isOpen, setIsOpen] = useState(false);
-
-    const router = useRouter();
-    const handleRefresh = () => {
-        router.refresh();
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -96,7 +94,9 @@ const AlbumPage = () => {
                 name: album.name,
                 description: album.description,
                 id: album.id,
-                image: album.images[0] ? album.images[0].image : "/images/animal.png",
+                image: album.images[0]
+                    ? album.images[0].image
+                    : "/images/albumcover.png",
             }));
             setAlbum(albumsData);
         };
@@ -123,7 +123,7 @@ const AlbumPage = () => {
             try {
                 const res = await axios.post(
                     `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/createAlbum`,
-                    {photographerId: userId, ...values}
+                    { photographerId: userId, ...values }
                 );
                 toast.success("Album created successfully");
                 setAlbum((prevAlbums) => [
@@ -132,7 +132,7 @@ const AlbumPage = () => {
                         name: values.name,
                         description: values.description,
                         id: res.data.id,
-                        image: "/images/animal.png",
+                        image: "/images/albumcover.png",
                     },
                 ]);
             } catch (e) {
@@ -144,32 +144,27 @@ const AlbumPage = () => {
         form.reset();
     }
 
-    const handleDeleteAlbum = async (id: string) => {
+    const handleDeleteAlbum = async (id:string) => {
         try {
-            await axios.delete(
+            const res = await axios.delete(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${id}/deletealbum`
             );
             setAlbum((prevAlbums) =>
                 prevAlbums.filter((album) => album["id"] !== id)
             );
             toast.success("Album deleted successfully");
-        } catch (e) {
+        } catch (error) {
             toast.error("Error deleting album");
         }
-    };
+    }
 
     return (
-
         <div className="mb-[50px]">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="ml-[80px]"
-                    >
-                        <BiSolidPlusSquare size={100}/>
-                    </Button>
+                    {isPhotographer && (
+                        <BiSolidPlusSquare size={50} className="ml-[80px]"/>
+                    )}
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
@@ -186,7 +181,7 @@ const AlbumPage = () => {
                             <FormField
                                 control={form.control}
                                 name="name"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <div className="grid items-center grid-cols-4 gap-4">
                                             <FormLabel className="text-right">
@@ -200,14 +195,14 @@ const AlbumPage = () => {
                                                 />
                                             </FormControl>
                                         </div>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="description"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <div className="grid items-center grid-cols-4 gap-4">
                                             <FormLabel className="text-right">
@@ -217,14 +212,14 @@ const AlbumPage = () => {
                                                 <Textarea
                                                     placeholder="Enter Description"
                                                     {...field}
-                                                    className="col-span-3" />
+                                                    className="col-span-3"
+                                                />
                                             </FormControl>
                                         </div>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
-
                             <DialogFooter>
                                 <Button type="submit">Create Album</Button>
                             </DialogFooter>
@@ -252,37 +247,34 @@ const AlbumPage = () => {
                                 id: string;
                                 image: string;
                             },
-                            index: number
                         ) => (
-
+                            <div key="index">
+                            
                             <Card
-                                key={index}
                                 className="w-[300px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative"
                             >
                                 <Image
                                     src={album.image}
                                     alt="album cover"
-                                    // width={300}
-                                    // height={800}
                                     layout="fill"
                                     objectFit="cover"
                                 />
-                                <div
-                                    className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
+                                <div className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
                                     <div className="flex flex-col justify-center">
-
                                         <HoverCard>
                                             <HoverCardTrigger asChild>
                                                 <div>
-                                                <h3 className="text-xl font-semibold text-white">
-                                                    {album["name"]}
-                                                </h3>
-                                                <p className="text-sm text-white">
-                                                    {album["description"].slice(0, 30)}
-                                                </p>
+                                                    <h3 className="text-xl font-semibold text-white">
+                                                        {album["name"]}
+                                                    </h3>
+                                                    <p className="text-sm text-white">
+                                                        {album[
+                                                            "description"
+                                                        ].slice(0, 30)}
+                                                    </p>
                                                 </div>
                                             </HoverCardTrigger>
-                                            <HoverCardContent className="w-60 h-auto">
+                                            <HoverCardContent className="h-auto w-60">
                                                 <h6 className="text-xl font-semibold">
                                                     {album["name"]}
                                                 </h6>
@@ -305,17 +297,44 @@ const AlbumPage = () => {
                                                 <DropdownMenuGroup>
                                                     {isPhotographer && (
                                                         <>
-                                                            <DropdownMenuItem onClick={() => handleDeleteAlbum(album["id"])}>
-                                                                Delete Album
-                                                            </DropdownMenuItem>
+                                                            <AlertDialog>
+                                                            <AlertDialogTrigger className="relative hover:bg-accent flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 pr-28">
+
+                                                                {/*<Button*/}
+                                                                {/*    variant="ghost"*/}
+                                                                {/*    size="sm"*/}
+                                                                {/*    className="w-full h-4 py-4 ml-0 pr-28"*/}
+                                                                {/*    >*/}
+                                                                    Delete Album
+                                                                {/*</Button>*/}
+                                                            </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Are you sure to delete this Album ?</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                            This action cannot be undone. This will permanently remove from your Albums.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction onClick={()=>handleDeleteAlbum(album["id"])}>Continue</AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
                                                             <DropdownMenuItem>
                                                                 <Link
                                                                     href={{
                                                                         pathname: `albums/${album["id"]}`,
                                                                         query: {
                                                                             view: true,
-                                                                            albumName: album["name"],
-                                                                            albumDescription: album["description"]
+                                                                            albumName:
+                                                                                album[
+                                                                                    "name"
+                                                                                ],
+                                                                            albumDescription:
+                                                                                album[
+                                                                                    "description"
+                                                                                ],
                                                                         },
                                                                     }}
                                                                 >
@@ -330,8 +349,14 @@ const AlbumPage = () => {
                                                                 pathname: `albums/${album["id"]}`,
                                                                 query: {
                                                                     view: false,
-                                                                    albumName: album["name"],
-                                                                    albumDescription: album["description"]
+                                                                    albumName:
+                                                                        album[
+                                                                            "name"
+                                                                        ],
+                                                                    albumDescription:
+                                                                        album[
+                                                                            "description"
+                                                                        ],
                                                                 },
                                                             }}
                                                         >
@@ -344,12 +369,12 @@ const AlbumPage = () => {
                                     </div>
                                 </div>
                             </Card>
+                            </div>
                         )
                     )}
                 </Masonry>
             </div>
         </div>
-
     );
 };
 

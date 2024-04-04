@@ -6,7 +6,6 @@ import {
     getCoreRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,
@@ -15,8 +14,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
-import { columns } from "./paymentColumns";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
