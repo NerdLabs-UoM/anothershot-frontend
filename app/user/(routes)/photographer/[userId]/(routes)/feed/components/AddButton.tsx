@@ -30,9 +30,9 @@ const AddButton = () => {
         }
         else {
             return (
-                <div className=' flex justify-center '>
+                <div className=' flex justify-start pl-20 '>
                     <Link href={`/user/photographer/${userId}/profile`}>
-                        <Button className='flex flex-row items-center justify-center py-7 bg-slate-300'>
+                        <Button variant="ghost" className='h-auto'>
                             <Avatar className="w-12 h-12 mr-3">
                                 <AvatarImage src={photographer?.user.image ?? ''} alt="@shadcn" />
                                 <AvatarFallback>CN</AvatarFallback>
@@ -72,7 +72,7 @@ const AddButton = () => {
                     sources: ["local"],
                     googleApiKey: "<image_search_google_api_key>",
                     showAdvancedOptions: false,
-                    singleUploadAutoClose: false,
+                    singleUploadAutoClose: true,
                     cropping: true,
                     multiple: false,
                     defaultSource: "local",
