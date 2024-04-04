@@ -41,8 +41,8 @@ const SubmitForm: React.FC = ({
   const handleStarClick = (ratingValue: number) => {
     setSelectedRating(ratingValue);
   };
-  
-  const onSubmit = async (values: z.infer<typeof formSchema>, e:any) => {
+
+  const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
     try {
       setLoading(true);
       if (values) {
@@ -52,7 +52,8 @@ const SubmitForm: React.FC = ({
           clientId: session?.user?.id,
           photographerId: userId,
         });
-        if (response.status === 200) {
+
+        if (response.status === 201) {
           setLoading(false);
           e.target.reset();
           toast.success("Thank you for your feedback");
