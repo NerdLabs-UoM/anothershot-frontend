@@ -65,7 +65,7 @@ const AlbumPage = () => {
     const handleAlbumEdit = async () => {
         try {
             const res = await axios.put(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/660610c4c22861850552b644/editalbum`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/editalbum`,
                 {albumId: albumId, name: newAlbumName.albumName, description: newAlbumName.albumDescription}
             );
             toast.success("Album edited successfully");

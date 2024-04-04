@@ -163,13 +163,7 @@ const AlbumPage = () => {
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                     {isPhotographer && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="ml-[80px]"
-                        >
-                            <BiSolidPlusSquare size={100} />
-                        </Button>
+                        <BiSolidPlusSquare size={50} className="ml-[80px]"/>
                     )}
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
@@ -253,12 +247,10 @@ const AlbumPage = () => {
                                 id: string;
                                 image: string;
                             },
-                            index: number
                         ) => (
-                            <>
+                            <div key="index">
                             
                             <Card
-                                key={index}
                                 className="w-[300px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative"
                             >
                                 <Image
@@ -306,14 +298,15 @@ const AlbumPage = () => {
                                                     {isPhotographer && (
                                                         <>
                                                             <AlertDialog>
-                                                            <AlertDialogTrigger>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="w-full h-4 py-4 ml-0 pr-28"
-                                                                    >
+                                                            <AlertDialogTrigger className="relative hover:bg-accent flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 pr-28">
+
+                                                                {/*<Button*/}
+                                                                {/*    variant="ghost"*/}
+                                                                {/*    size="sm"*/}
+                                                                {/*    className="w-full h-4 py-4 ml-0 pr-28"*/}
+                                                                {/*    >*/}
                                                                     Delete Album
-                                                                </Button>
+                                                                {/*</Button>*/}
                                                             </AlertDialogTrigger>
                                                                     <AlertDialogContent>
                                                                         <AlertDialogHeader>
@@ -376,7 +369,7 @@ const AlbumPage = () => {
                                     </div>
                                 </div>
                             </Card>
-                            </>
+                            </div>
                         )
                     )}
                 </Masonry>
