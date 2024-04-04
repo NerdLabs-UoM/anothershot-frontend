@@ -81,7 +81,7 @@ const Hero = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get<Photographer>(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/get`
         );
         setPhotographer(res.data);
       }
@@ -156,7 +156,7 @@ const Hero = () => {
     };
     const update = async () => {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/updateuser`,
         updatedPhotographer
       )
         .then((res) => {
@@ -168,6 +168,22 @@ const Hero = () => {
     }
     await update();
     handleRefresh();
+  };
+  const renderFeedButton = () => {
+    if (session?.user?.id !== userId) {
+      return (
+        <div>
+          <Link href={`/user/photographer/${userId}/feed`}>
+            <Button
+              variant="outline"
+              className="">
+              View Feed
+            </Button>
+          </Link>
+        </div>
+      );
+    }
+    return null;
   };
 
   const handleCreateChat = async () => {
@@ -254,7 +270,7 @@ const Hero = () => {
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",
                       showAdvancedOptions: false,
-                      singleUploadAutoClose: false,
+                      singleUploadAutoClose: true,
                       cropping: true,
                       multiple: false,
                       defaultSource: "local",
@@ -334,7 +350,7 @@ const Hero = () => {
               options={{
                 tags: ["cover image", `${session?.user.id}`],
                 sources: ["local"],
-                singleUploadAutoClose: false,
+                singleUploadAutoClose: true,
                 googleApiKey: "<image_search_google_api_key>",
                 showAdvancedOptions: false,
                 cropping: true,
@@ -447,6 +463,9 @@ const Hero = () => {
             </Dialog>
           </div>
         )}
+        {
+          !isPhotographer &&renderFeedButton()
+        }
         {!isPhotographer && (
           <Button
             variant="default"

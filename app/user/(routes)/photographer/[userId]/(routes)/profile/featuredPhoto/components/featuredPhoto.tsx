@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
 import UploadFeaturePhoto from "./uploadFeaturePhoto";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function FeaturedPhoto() {
   const { userId } = useParams();
@@ -99,7 +101,7 @@ export default function FeaturedPhoto() {
   };
 
   const renderFeedButton = () => {
-    if (session?.user?.id === null) {
+    if (session?.user?.id !== userId) {
       return (
         <div>
           <Link href={`/user/photographer/${userId}/feed`}>
@@ -177,6 +179,7 @@ export default function FeaturedPhoto() {
           </div>
         </div>
       </div>
+      <div>{renderFeedButton()}</div>
       </div>
   );
 }
