@@ -20,7 +20,7 @@ const formSchema = z.object({
 });
 interface PackageEditFormProps {
     packageId: string;
-    setCoverPhoto: React.Dispatch<  //update the cover photo state
+    setCoverPhoto: React.Dispatch< 
         React.SetStateAction<{
             url: string;
         }>>
@@ -32,12 +32,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
     const [isPhotographer, setIsPhotographer] = useState(true);
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
-
-    const [values, setValues] = useState({
-        coverPhoto: "",
-    });
     const [coverPhotos, setCoverPhotos] = useState<string[]>([]);  //update the cover photo state
-
     const [imageKey, setImageKey] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
@@ -80,7 +75,6 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
         }
     }, [photographer]);
 
-
     return (
         <main>
             <div className="w-full pr-10">
@@ -92,17 +86,14 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                             const packageImageURL = {
                                 image: uploadedResult.secure_url,
                             };
-
                             const tags = uploadedResult.tags;
                             setCoverImageURL(packageImageURL.image);
-
                             async function Update() {
                                 const data = {
                                     coverPhotos: [packageImageURL.image]
                                 };
-                                setCoverPhotos([packageImageURL.image])  //set the coverPhoto url
-
-                                setCoverPhoto({ url: packageImageURL.image })  //update the cover photo state           
+                                setCoverPhotos([packageImageURL.image])  
+                                setCoverPhoto({ url: packageImageURL.image })         
                                 try {
                                     await axios.put(
                                         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
@@ -111,10 +102,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                 catch (error) {
                                     toast.error("An error occured. Please try again.")
                                 }
-
                             }
-                            Update();
-                            handleRefresh();
                         }}
                         options={{
                             tags: ["cover image", `${session?.user.id}`],

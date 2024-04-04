@@ -8,11 +8,12 @@ import {
     FormControl,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusSquare } from 'lucide-react';
+import axios from "axios";
 import {
     Dialog,
     DialogTrigger,
@@ -32,20 +33,31 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Pencil } from "lucide-react";
-import Image from 'next/image'
 import { Package } from "@/app/lib/types";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
-import { Photographer } from "@/app/lib/types";
 import React from "react";
-
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 interface PackageEditFormProps {
     packages: Package[];
     packageProp: React.Dispatch<React.SetStateAction<Package[]>>;
 }
+interface AlertDialogProps {
+    handleDeletePackage: () => void;
+}
+
 const formSchema = z.object({
     packageId: z.string(),
     name: z
@@ -70,10 +82,12 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
     const [isNew, setIsNew] = useState<boolean>(false)
     const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1708486003/oooolhqi3vcrtcqhhy3b.jpg");
     const { userId } = useParams();
-    const [photographer, setPhotographer] = useState<Photographer>();
     const router = useRouter(); const handleRefresh = () => {
         router.refresh();
     };
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDialog = () => setIsOpen(!isOpen);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -93,6 +107,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         }
         setSelectedPackageId(value)
     }
+
     const handleSaveChanges = async () => {
         const data = {
             photographerId: session?.user?.id,
@@ -104,7 +119,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data)
             const updatedPackage: Package = response.data;
-
             // Update the package list state by replacing the old package with the updated one
             packageProp(prevPackageList => prevPackageList.map(packageItem =>
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
@@ -126,12 +140,9 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             coverPhotos: [],
             price: form.getValues("price"),
         };
-
-
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
-            const newPackage: Package = response.data; // Assuming the response contains the newly created package
-
+            const newPackage: Package = response.data;
             // Check if the new package already exists in the package list
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
@@ -144,7 +155,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             toast.error("An error occurred. Please try again.");
         }
     };
-
 
     const handleDeletePackage = async () => {
         if (session?.user?.id === undefined) return
@@ -275,7 +285,27 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                         </Form>
                         <DialogFooter>
                             {!isNew && (
-                                <Button variant={'destructive'} onClick={() => handleDeletePackage()}>Delete</Button>
+                                <div>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                     <Button variant={'destructive'} >Delete</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete your
+                                                account and remove your data from our servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleDeletePackage()
+                                        }>Continue</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                                </div>
                             )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset()
