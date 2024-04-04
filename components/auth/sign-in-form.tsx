@@ -48,8 +48,8 @@ const SignInForm = () => {
             password: values.password,
         });
 
-        if (res?.error) {
-            toast.error(res.error);
+        if (res?.status === 401) {
+            toast.error("Invalid email or password");
         }
 
         if (res?.status === 200) {

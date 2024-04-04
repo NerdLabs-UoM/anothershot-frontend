@@ -409,10 +409,10 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className="px-10">
-            <Link href="/sign-up" legacyBehavior passHref>
+            <Link href="/sign-in" legacyBehavior passHref>
               <NavigationMenuLink
                 className={
-                  pathname == "/sign-up"
+                  pathname == "/sign-in"
                     ? "flex flex-col items-center text-white"
                     : "flex flex-col items-center text-slate-500"
                 }
