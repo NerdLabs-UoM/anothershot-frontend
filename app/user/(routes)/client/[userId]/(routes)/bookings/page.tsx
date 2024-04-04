@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-function page() {
+function CLientBookings() {
   const { data: session } = useSession();
   const params = useParams();
   const router = useRouter();
@@ -78,4 +78,4 @@ function page() {
   );
 }
 
-export default page;
+export default CLientBookings;

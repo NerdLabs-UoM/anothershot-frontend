@@ -23,7 +23,7 @@ interface CheckoutFormOptions{
   amount:string;
   currency:string;
 }
-const Checkout = (offer:CheckoutFormOptions) => {
+const Checkout = () => {
 
   const [clientSecret, setClientSecret] = useState<string>("");
 
@@ -40,7 +40,7 @@ const Checkout = (offer:CheckoutFormOptions) => {
       setClientSecret(response.data.clientSecret);
     };
     stripe();
-  }, [offer]);
+  }, []);
 
   const appearance = {
     theme: "stripe",
