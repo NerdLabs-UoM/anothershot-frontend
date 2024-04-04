@@ -14,7 +14,9 @@ const SignInPage = () => {
 
     const handleGoogleSignIn = async () => {
         try {
-            await signIn('google')
+            await signIn('google',{
+                callbackUrl: `/`,
+            })
                 .then(() => {
                     toast.success("Signed in successfully");
                 })

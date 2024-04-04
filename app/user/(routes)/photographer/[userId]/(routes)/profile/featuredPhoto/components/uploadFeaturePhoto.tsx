@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { PlusSquare } from "lucide-react";
+import { useSession } from 'next-auth/react';
 
 
 interface UploadFeaturePhoto {
@@ -31,7 +32,7 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
     const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
     const [coverPhotos, setCoverPhotos] = useState<string[]>([]);
     console.log("index and image: " + index);
-    // const { data: session } = useSession();
+    const { data: session } = useSession();
     const [isPhotographer, setIsPhotographer] = useState(true);
     const [photographer, setPhotographer] = useState<Photographer>();
     const [featuredPhotoURL, setFeaturedPhotoURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
@@ -69,18 +70,20 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                             //     Update();
                             // }}
                         }
+
                         options={{
                             tags: ["featured"],
                             sources: ["local"],
                             googleApiKey: "<image_search_google_api_key>",
                             showAdvancedOptions: false,
+                            singleUploadAutoClose: false,
                             cropping: true,
                             croppingCoordinatesMode: "custom",
                             croppingAspectRatio: handleAspectRation(index),
                             multiple: false,
                             defaultSource: "local",
                             resourceType: "image",
-                            folder: `featured`,
+                            folder: `anothershot/${session?.user.id}/featured`,
                             //   folder: `${photographer?.userId}/${photographer?.name}/featured`,
                             styles: {
                                 palette: {
@@ -100,13 +103,14 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                                 },
                             },
                         }}
-                        uploadPreset="crca4igr"
+                        uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                     >
                         {({ open }) => {
                             return (
                                 <Button
-                                    variant="default"
-                                    className="rounded-md mt-2 ml-2 bg-transparent"
+                                    variant="outline"
+                                    size={'icon'}
+                                    className="rounded-md mt-2 ml-2 w-8 h-8"
                                     onClick={() => {
                                         open();
                                     }}
