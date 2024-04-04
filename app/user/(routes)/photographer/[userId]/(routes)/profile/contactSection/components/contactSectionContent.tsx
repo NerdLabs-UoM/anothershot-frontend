@@ -23,8 +23,7 @@ const ContactSectionContent = () => {
     }
   };
   fetchContactDets();
-}, [userId]); // Include userId in the dependency array
-
+}, [userId]); 
 
   const handleDirect = (url: string) => {
     window.open(url, "_blank");

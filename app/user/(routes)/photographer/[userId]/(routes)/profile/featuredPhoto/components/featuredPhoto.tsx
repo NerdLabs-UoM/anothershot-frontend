@@ -1,12 +1,10 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
 import UploadFeaturePhoto from "./uploadFeaturePhoto";
-import { Link } from "lucide-react";
 
 export default function FeaturedPhoto() {
   const { userId } = useParams();
