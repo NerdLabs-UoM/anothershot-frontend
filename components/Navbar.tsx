@@ -50,7 +50,6 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
 
   let navigationMenuContent;
   const pathname = usePathname();
-  const isPathAdmin = pathname.startsWith("/admin");
   const router = useRouter();
   const { data: session } = useSession();
  const userId = session?.user.id;
@@ -86,7 +85,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
   };
 
   if (isClient) {
-    navigationMenuContent = !isPathAdmin && (
+    navigationMenuContent = !isAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="px-4 py-3 bg-black border-t shadow-lg rounded-t-3xl sm: sm:gap-20">
           <TooltipProvider>
@@ -189,7 +188,7 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
       </NavigationMenu>
     );
   } else if (isPhotographer && pathname != "/admin") {
-    navigationMenuContent = !isPathAdmin && (
+    navigationMenuContent = !isAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="px-4 py-3 bg-black border-t shadow-lg rounded-t-3xl sm:gap-20">
           <TooltipProvider>
@@ -390,8 +389,29 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
         </NavigationMenuList>
       </NavigationMenu>
     );
-  } else  {
-    navigationMenuContent = !isPathAdmin && (
+  } else if(isAdmin){
+    navigationMenuContent = (
+      <NavigationMenu>
+        <NavigationMenuList className="px-4 py-3 bg-black rounded-t-3xl sm: sm:gap-20">
+          <NavigationMenuItem className="px-10">
+            <Link href={`/user/admin/${userId}`}  legacyBehavior passHref>
+              <NavigationMenuLink
+                className={
+                  pathname == `/user/admin/${userId}` 
+                    ? "flex flex-col items-center text-white ease-in"
+                    : "flex flex-col items-center text-slate-500"
+                }
+              >
+                Dashboard
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    );
+
+  }else  {
+    navigationMenuContent = !isAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="px-4 py-3 bg-black rounded-t-3xl sm: sm:gap-20">
           <NavigationMenuItem className="px-10">
