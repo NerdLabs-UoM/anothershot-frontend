@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { toast } from 'react-hot-toast';
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 import { useRouter } from 'next/navigation';
+import { set } from 'lodash';
 
 const formatCount = (count: number) => {
     if (count < 1000) {
@@ -24,6 +25,8 @@ const FeedImageComp = () => {
     const [feedImages, setFeedImages] = useState<FeedImage[]>([]);
     const { data: session } = useSession();
     const router = useRouter();
+    const [likeDisabled, setLikeDisabled] = useState<string>('');
+    const [saveDisabled, setSaveDisabled] = useState<string>('');
 
     useEffect(() => {
         const fetchFeedImages = async () => {
@@ -43,6 +46,7 @@ const FeedImageComp = () => {
             return;
         }
         try {
+            setLikeDisabled(feedImageId);
             const updatedFeedImages = [...feedImages];
             const index = updatedFeedImages.findIndex(image => image.id === feedImageId);
 
@@ -61,8 +65,10 @@ const FeedImageComp = () => {
                 userId: session?.user?.id,
                 like: !isLiked
             });
+            setLikeDisabled('');
             toast('❤️')
         } catch (error: any) {
+            setLikeDisabled('');
             toast.error('Error liking feed image:', error);
         }
     }
@@ -74,6 +80,7 @@ const FeedImageComp = () => {
         }
 
         try {
+            setSaveDisabled(feedImageId);
             const index = feedImages.findIndex(image => image.id === feedImageId);
             if (index !== -1) {
                 const updatedFeedImages = [...feedImages];
@@ -91,8 +98,10 @@ const FeedImageComp = () => {
                 userId: session?.user?.id,
                 save: !isSaved
             });
+            setSaveDisabled('');
             toast('📌')
         } catch (error: any) {
+            setSaveDisabled('');
             toast.error('Error saving feed image:', error);
         }
     };
@@ -135,6 +144,7 @@ const FeedImageComp = () => {
                                             variant={null}
                                             role="heart"
                                             size="sm"
+                                            disabled={likeDisabled === feedImage.id}
                                             className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
                                             onClick={() => handleLike(feedImage.id, feedImage.photographerId, feedImage.likedUserIds != null && session !== null && feedImage.likedUserIds.includes(session.user.id))}
                                         >
@@ -153,6 +163,7 @@ const FeedImageComp = () => {
                                             variant={null}
                                             role="save"
                                             size="sm"
+                                            disabled={saveDisabled === feedImage.id}
                                             className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
                                             onClick={() => handleSave(feedImage.id, feedImage.photographerId, feedImage.savedUserIds != null && session !== null && feedImage.savedUserIds.includes(session.user.id))}
                                         >

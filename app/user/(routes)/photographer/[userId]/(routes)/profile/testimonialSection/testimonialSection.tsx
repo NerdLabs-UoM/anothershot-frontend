@@ -24,7 +24,7 @@ const TestMonialsSection = () => {
   }, [userId]);
 
   return (
-    <div className="flex flex-col items-center w-full border-y border-transparent pb-40 pt-32">
+    <div className="flex flex-col items-center w-full pb-40 pt-10 border-t-2">
       <EditButton
         testimonialsData={testimonials}
       />

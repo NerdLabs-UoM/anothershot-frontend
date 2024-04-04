@@ -4,14 +4,14 @@ import { PackageCard } from "./components/packageCard";
 import { Package } from "@/app/lib/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import PackageEditForm from "./components/packageEditForm";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const PackagesSection = () => {
   const [packageList, setPackageList] = useState<Package[]>([]);
   const { userId } = useParams();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -27,13 +27,16 @@ const PackagesSection = () => {
     };
     fetchPackages();
   }, [userId]);
+
   return (
-    <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-white">
+    <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-white border-t-2">
       <div className="flex flex-col justify-center text-center sm:flex sm:flex-row sm:justify-between">
         <h1 className="text-center text-2xl sm:text-5xl font-bold mb-0 sm:mb-6 sm:ml-5">
           Packages
         </h1>
-        <PackageEditForm packages={packageList} packageProp={setPackageList} />
+        {session && session.user && session.user.id === userId &&
+          <PackageEditForm packages={packageList} packageProp={setPackageList} />
+        }
       </div>
       {packageList.length > 0 ? (
         <>
