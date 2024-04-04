@@ -53,7 +53,6 @@ const FormSchema = z.object({
 });
 
 const AddCategorySection = () => {
-    const [categories, setCategories] = useState<PhotographerCategory[]>([]);
     const [categoryList, setCategoryList] = useState<
         { label: string; value: PhotographerCategory }[]
     >([]);
@@ -264,6 +263,6 @@ const AddCategorySection = () => {
             </CardContent>
         </Card>
     );
-}
+};
 
 export default AddCategorySection;

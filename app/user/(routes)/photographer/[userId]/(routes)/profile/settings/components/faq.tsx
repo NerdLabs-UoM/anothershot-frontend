@@ -37,7 +37,6 @@ const FaqSection =() =>{
                 </Accordion>
             </CardContent>
         </Card>
-
     );
 }
 export default FaqSection;

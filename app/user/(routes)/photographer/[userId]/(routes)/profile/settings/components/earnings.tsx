@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+
 interface Earnings {
     name: string;
     value: number;
@@ -26,8 +26,8 @@ const fields: Earnings[] = [
         name: "Fees",
         value: 100
     }
-
 ];
+
 const EarningSection = () => {
     return (
         <Card className="w-[350px] mt-8 h-[300px] mx-auto md:justify-start">

@@ -1,4 +1,4 @@
-import FeaturedPhoto from "./components/featuredPhoto";
+import FeaturedPhoto from "../featuredPhoto/components/featuredPhoto";
 
 const FeaturedPhotoSection = () => {
    

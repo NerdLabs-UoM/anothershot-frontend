@@ -8,7 +8,7 @@ import {
 } from "next-cloudinary";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { AlbumImage } from "@/app/lib/types";
@@ -20,11 +20,7 @@ interface AlbumImageProp {
 
 const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
     const [image, setImage] = useState<AlbumImage[]>([]);
-    const router = useRouter();
     const { userId } = useParams();
-    const handleRefresh = () => {
-        router.refresh();
-    };
 
     async function fetchImages2() {
         try {
@@ -82,7 +78,6 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                     }
 
                     Upload();
-                    handleRefresh();
                 }}
                 options={{
                     sources: ["local"],
@@ -93,7 +88,7 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                     maxFiles: 10,
                     defaultSource: "local",
                     resourceType: "image",
-                    folder: `photographer/${userId}/albums/${albumId}`,
+                    folder: `anothershot/${userId}/albums/${albumId}`,
                     styles: {
                         palette: {
                             window: "#ffffff",
@@ -112,8 +107,6 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                         },
                     },
                 }}
-
-
                 uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}>
                 {({open}) => {
                     return (

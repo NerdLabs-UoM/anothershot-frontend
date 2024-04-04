@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { UserDetail } from "./userDetail";
 import Link from "next/link";
 import {User} from "@/app/lib/types";
+
 export const columns: ColumnDef<User>[] = [
     {
         accessorKey: "id",
@@ -28,7 +29,7 @@ export const columns: ColumnDef<User>[] = [
             );
         },
         cell: ({ row }) => (
-            <div className="py-3 text-gray-900 text-sm font-medium leading-tight">
+            <div className="py-3 text-sm font-medium leading-tight text-gray-900">
                 <Checkbox className="mr-8 border-slate" />
                 {row.original.id}
             </div>
