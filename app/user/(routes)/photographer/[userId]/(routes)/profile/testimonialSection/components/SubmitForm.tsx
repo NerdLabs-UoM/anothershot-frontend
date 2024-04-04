@@ -14,16 +14,16 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import React, { Component } from "react";
+import React from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
-
 
 const formSchema = z.object({
   review: z.string().min(100, "Give your feedback should be between 100-200 characters").max(200, "Give your feedback should be between 100-200 characters"),
   rating: z.number(),
 });
+
 const SubmitForm: React.FC = ({
 }) => {
   const [selectedRating, setSelectedRating] = React.useState<number | 0 >(0);
@@ -37,9 +37,11 @@ const SubmitForm: React.FC = ({
       rating: 0,
     },
   });
+
   const handleStarClick = (ratingValue: number) => {
     setSelectedRating(ratingValue);
   };
+  
   const onSubmit = async (values: z.infer<typeof formSchema>, e:any) => {
     try {
       setLoading(true);
