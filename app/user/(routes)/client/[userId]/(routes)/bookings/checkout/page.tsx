@@ -40,7 +40,7 @@ const Checkout = (offer:CheckoutFormOptions) => {
       setClientSecret(response.data.clientSecret);
     };
     stripe();
-  }, []);
+  }, [offer]);
 
   const appearance = {
     theme: "stripe",

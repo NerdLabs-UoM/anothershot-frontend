@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -63,12 +64,13 @@ const UserPage=()=> {
           name: userData.client.name,
           email: userData.email,
         });
+        setSuspended(userData.suspended);
       }else if(userData.admin){
         setDetails({
           name: userData.admin.name,
           email: userData.email,
         });
-      
+        setSuspended(userData.suspended);
       }
     }
   }, [userData]);
@@ -124,7 +126,7 @@ const UserPage=()=> {
           <div className="flex items-center align-middle gap-5 py-2">
             <Avatar className="relative w-16 h-16">
               <AvatarImage
-                src={userData?.image}
+                src={userData?.image || "/images/avatar.png"}
                 alt="@shadcn"
                 className="absolute"
               />
@@ -152,7 +154,10 @@ const UserPage=()=> {
                     >
                       Delete
                     </Button>
+                    <DialogClose asChild>
                     <Button onClick={()=>{console.log("Close")}}>Cancel</Button>
+                    </DialogClose>
+                    
                   </DialogDescription>
                 </DialogHeader>
               </DialogContent>
