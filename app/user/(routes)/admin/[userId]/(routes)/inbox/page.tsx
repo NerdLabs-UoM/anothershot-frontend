@@ -6,7 +6,7 @@ const Inbox = () => {
     const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
 
     return (
-        <main className="flex h-[80vh] flex-col items-center justify-center p-4  gap-4">
+        <main className="flex w-full h-[80vh] flex-col items-center justify-center p-4  gap-4 pb-10">
             <div className="z-10 border rounded-lg max-w-5xl w-full h-full text-sm lg:flex">
                 <ChatLayout defaultLayout={defaultLayout} navCollapsedSize={8} />
             </div>

@@ -32,12 +32,14 @@ import {
   CldUploadWidgetResults,
   CldUploadWidgetInfo,
   CldUploadWidget,
+  cloudinaryLoader,
 } from "next-cloudinary";
 
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Photographer } from "@/app/lib/types";
+import { Photographer, Suspended, User } from "@/app/lib/types";
+import { addYears } from "date-fns";
 
 const formSchema = z.object({
   name: z
@@ -69,6 +71,7 @@ const Hero = () => {
     description: "",
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [isSuspended, setIsSuspended] = useState<Suspended>("NOT_SUSPENDED");
   const router = useRouter();
   const handleRefresh = () => {
     router.refresh();
@@ -93,7 +96,26 @@ const Hero = () => {
     if (userId == session?.user.id) {
       setIsPhotographer(true);
     }
-  }, [userId, session]);
+    const user = async () => {
+      try{
+        const res = await axios.get<User>(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/${userId}/profile`
+        );
+        setIsSuspended(res.data.suspended);
+      }
+      catch (err) {
+        console.error(err);
+      }
+    };
+    user();
+
+  }, [session]);
+
+  useEffect(() => {
+    if(isSuspended=="SUSPENDED") {
+      toast.error("Your account has been Suspended")
+    }
+  },[isSuspended])
 
   useEffect(() => {
     if (photographer) {
@@ -221,10 +243,13 @@ const Hero = () => {
                           profileImageURL
                         );
                       }
+                      console.log(photographer)
                       Update();
                       handleRefresh();
                     }}
+
                     options={{
+                      publicId:`${session?.user.id}.profile`,
                       tags: ["profile image", `${session?.user.id}`],
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",
@@ -301,6 +326,10 @@ const Hero = () => {
                 }
                 Update();
                 handleRefresh();
+              }}
+
+              onPublicId={()=>{
+                
               }}
               options={{
                 tags: ["cover image", `${session?.user.id}`],
