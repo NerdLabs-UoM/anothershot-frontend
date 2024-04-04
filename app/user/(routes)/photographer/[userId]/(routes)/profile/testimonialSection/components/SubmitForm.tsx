@@ -14,19 +14,19 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import React, { Component } from "react";
+import React from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-
 const formSchema = z.object({
-  review: z.string().min(100, "Give your feedback should be between 100-200 characters").max(200, "Give your feedback should be between 100-200 characters"),
+  review: z.string().min(5, "Give your feedback should be between 5-200 characters").max(200, "Give your feedback should be between 100-200 characters"),
   rating: z.number(),
 });
+
 const SubmitForm: React.FC = ({
 }) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | 0 >(0);
+  const [selectedRating, setSelectedRating] = React.useState<number | 0>(0);
   const { userId } = useParams();
   const { data: session } = useSession();
   const [loading, setLoading] = React.useState(false);
@@ -37,9 +37,11 @@ const SubmitForm: React.FC = ({
       rating: 0,
     },
   });
+
   const handleStarClick = (ratingValue: number) => {
     setSelectedRating(ratingValue);
   };
+  
   const onSubmit = async (values: z.infer<typeof formSchema>, e:any) => {
     try {
       setLoading(true);
@@ -48,7 +50,7 @@ const SubmitForm: React.FC = ({
           review: values.review,
           rating: selectedRating,
           clientId: session?.user?.id,
-          photographerId:userId,
+          photographerId: userId,
         });
         if (response.status === 200) {
           setLoading(false);
@@ -58,8 +60,8 @@ const SubmitForm: React.FC = ({
       }
     } catch (error) {
       setLoading(false);
-      toast.error("Something went wrong");
-    }finally{
+      toast.error("Error submitting feedback");
+    } finally {
       setLoading(false);
     }
     form.reset();

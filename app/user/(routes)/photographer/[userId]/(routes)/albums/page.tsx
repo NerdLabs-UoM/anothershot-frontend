@@ -2,7 +2,13 @@
 
 import {Button} from "@/components/ui/button";
 import React, {useEffect, useState} from "react";
+import {useParams, usePathname, useRouter} from "next/navigation";
+import {useSession} from "next-auth/react";
+import Link from "next/link";
+import Image from 'next/image';
 import {BiSolidPlusSquare} from "react-icons/bi";
+import {MoreVertical} from "lucide-react";
+import {Textarea} from "@/components/ui/textarea";
 import {
     Dialog,
     DialogContent,
@@ -11,69 +17,97 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from "@/components/ui/dialog";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-
-import {useParams, usePathname, useRouter} from "next/navigation";
-import axios from "axios";
-import Image from "next/image";
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch"
 import {Label} from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import axios from "axios";
 import {Input} from "@/components/ui/input";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
-import {Album, Photographer} from "@/app/lib/types";
-import {useSession} from "next-auth/react";
 import Masonry from "react-masonry-css";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {MoreVertical, Settings} from "lucide-react";
-import Link from "next/link";
 import toast from "react-hot-toast";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Album} from "@/app/lib/types";
+import { CldImage } from "next-cloudinary";
+
 
 const albumFormSchema = z.object({
-    name: z.string().min(2).max(50).regex(/^[A-Za-z0-9]+$/),
-    description: z.string().min(2).max(200).regex(/^[A-Za-z0-9]+$/),
+    name: z
+        .string()
+        .min(2)
+        .max(50)
+        .regex(/^[A-Za-z0-9 ]+$/, {message: "Enter valid Name"}),
+    description: z
+        .string()
+        .min(2)
+        .max(500,{message: "Description exceeds maximum limit"}),
 });
 
 const AlbumPage = () => {
-    const [album, setAlbum] = useState<Album[]>();
-    const [photographer, setPhotographer] = useState<Photographer>();
     const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
-    const [albumCoverImage, setAlbumCoverImage] = useState<string>(
-        "https://res.cloudinary.com/dcn64hytu/image/upload/v1710027623/my%20album1/tuzt7eqztsfe67equdxq.jpg"
-    );
-    const [values, setValues] = useState({name: "", description: ""});
-    const [newAlbum, setNewAlbum] = useState<string[][]>([]);
+    const [albumCoverImage, setAlbumCoverImage] = useState<string>("/images/animal.png");
+    const [album, setAlbum] = useState<
+        { name: string; description: string; id: string,image:string }[]
+    >([]);
     const [albumId, setAlbumId] = useState<string>("");
     const pathname = usePathname();
-    const router = useRouter();
     const {data: session} = useSession();
     const {userId} = useParams();
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
 
+    const router = useRouter();
+    const handleRefresh = () => {
+        router.refresh();
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/getalbums`
+            );
+            const albumsData = res.data.map((album: Album) => ({
+                name: album.name,
+                description: album.description,
+                id: album.id,
+                image: album.images[0] ? album.images[0].image : "/images/animal.png",
+            }));
+            setAlbum(albumsData);
+        };
+        fetchData();
+    }, [userId]);
+
+    useEffect(() => {
+        if (userId == session?.user.id) {
+            setIsPhotographer(true);
+        }
+    }, [userId, session]);
 
     const form = useForm<z.infer<typeof albumFormSchema>>({
         resolver: zodResolver(albumFormSchema),
@@ -83,48 +117,24 @@ const AlbumPage = () => {
         },
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await axios.get<Album[]>(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/getalbums`
-            );
-            const albumsData = res.data.map(album => [album.name, album.description, album.id]);
-            setNewAlbum(albumsData);
-
-        };
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        if (userId == session?.user.id) {
-            setIsPhotographer(true);
-        }
-    }, [userId, session]);
-
-    // useEffect(() => {
-    //     if (session) {
-    //         setSessionId(session?.user.id);
-    //     }
-    // }, [session]);
-
-    const addAlbum = (values: { name: string, description: string }) => {
-        setNewAlbum((prevAlbums) => [
-            ...prevAlbums,
-            [values.name, values.description],
-        ]);
-        setAlbumId((prevId) => prevId + 1);
-    };
-
     function onSubmit(values: z.infer<typeof albumFormSchema>) {
-        addAlbum(values);
-
+        setIsOpen(false);
         async function Create() {
             try {
-                await axios.post(
+                const res = await axios.post(
                     `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/createAlbum`,
                     {photographerId: userId, ...values}
                 );
                 toast.success("Album created successfully");
+                setAlbum((prevAlbums) => [
+                    ...prevAlbums,
+                    {
+                        name: values.name,
+                        description: values.description,
+                        id: res.data.id,
+                        image: "/images/animal.png",
+                    },
+                ]);
             } catch (e) {
                 toast.error("Error creating album");
             }
@@ -134,32 +144,30 @@ const AlbumPage = () => {
         form.reset();
     }
 
-    const handleRefresh = () => {
-        router.refresh();
-    };
-    // const handleImageUpload = (albumId: string) => {
-    //     router.push(`/albums/${albumId}/edit`);
-    //     console.log("editing albums");
-    // };
-
     const handleDeleteAlbum = async (id: string) => {
         try {
             await axios.delete(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${id}/deletealbum`
             );
-            setNewAlbum(prevAlbums => prevAlbums.filter(album => album[2] !== id));
+            setAlbum((prevAlbums) =>
+                prevAlbums.filter((album) => album["id"] !== id)
+            );
             toast.success("Album deleted successfully");
         } catch (e) {
             toast.error("Error deleting album");
         }
-
     };
 
     return (
-        <div>
-            <Dialog>
+
+        <div className="mb-[50px]">
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="ml-[80px]">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="ml-[80px]"
+                    >
                         <BiSolidPlusSquare size={100}/>
                     </Button>
                 </DialogTrigger>
@@ -206,11 +214,10 @@ const AlbumPage = () => {
                                                 Description
                                             </FormLabel>
                                             <FormControl>
-                                                <Input
+                                                <Textarea
                                                     placeholder="Enter Description"
                                                     {...field}
-                                                    className="col-span-3"
-                                                />
+                                                    className="col-span-3" />
                                             </FormControl>
                                         </div>
                                         <FormMessage/>
@@ -232,66 +239,117 @@ const AlbumPage = () => {
                         default: 4,
                         1024: 3,
                         768: 2,
-                        640: 1
+                        640: 1,
                     }}
                     className="flex gap-4"
                     columnClassName=""
                 >
-                    {newAlbum?.map((album, index) => (
-                        <Card
-                            key={index}
-                            className="w-[300px] my-3 mx-3 h-[400px] rounded-[40px] overflow-hidden relative"
-                        >
-                            <img
-                                className="absolute top-0 left-0 object-cover w-full h-full"
-                                src="/images/animal.png"
-                                alt="Background Image"
-                            />
-                            <div
-                                className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
-                                <div className="flex flex-col justify-center">
-                                    <h3 className="text-xl font-semibold text-white">{album[0]}</h3>
-                                    <p className="text-sm text-white">{album[1]}</p>
+                    {album?.map(
+                        (
+                            album: {
+                                name: string;
+                                description: string;
+                                id: string;
+                                image: string;
+                            },
+                            index: number
+                        ) => (
+
+                            <Card
+                                key={index}
+                                className="w-[300px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative"
+                            >
+                                <Image
+                                    src={album.image}
+                                    alt="album cover"
+                                    // width={300}
+                                    // height={800}
+                                    layout="fill"
+                                    objectFit="cover"
+                                />
+                                <div
+                                    className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
+                                    <div className="flex flex-col justify-center">
+
+                                        <HoverCard>
+                                            <HoverCardTrigger asChild>
+                                                <div>
+                                                <h3 className="text-xl font-semibold text-white">
+                                                    {album["name"]}
+                                                </h3>
+                                                <p className="text-sm text-white">
+                                                    {album["description"].slice(0, 30)}
+                                                </p>
+                                                </div>
+                                            </HoverCardTrigger>
+                                            <HoverCardContent className="w-60 h-auto">
+                                                <h6 className="text-xl font-semibold">
+                                                    {album["name"]}
+                                                </h6>
+                                                <p className="text-sm ">
+                                                    {album["description"]}
+                                                </p>
+                                            </HoverCardContent>
+                                        </HoverCard>
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <MoreVertical
+                                                    size={32}
+                                                    color="#ffffff"
+                                                    strokeWidth={2.5}
+                                                />
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="w-56">
+                                                <DropdownMenuGroup>
+                                                    {isPhotographer && (
+                                                        <>
+                                                            <DropdownMenuItem onClick={() => handleDeleteAlbum(album["id"])}>
+                                                                Delete Album
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem>
+                                                                <Link
+                                                                    href={{
+                                                                        pathname: `albums/${album["id"]}`,
+                                                                        query: {
+                                                                            view: true,
+                                                                            albumName: album["name"],
+                                                                            albumDescription: album["description"]
+                                                                        },
+                                                                    }}
+                                                                >
+                                                                    Edit Album
+                                                                </Link>
+                                                            </DropdownMenuItem>
+                                                        </>
+                                                    )}
+                                                    <DropdownMenuItem>
+                                                        <Link
+                                                            href={{
+                                                                pathname: `albums/${album["id"]}`,
+                                                                query: {
+                                                                    view: false,
+                                                                    albumName: album["name"],
+                                                                    albumDescription: album["description"]
+                                                                },
+                                                            }}
+                                                        >
+                                                            View Album
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuGroup>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </div>
-                                <div className="flex space-x-2">
-
-
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                role="save"
-                                                size="sm"
-                                                className="flex items-center justify-center gap-2"
-                                            >
-                                                <MoreVertical size={32} color="#ffffff" strokeWidth={2.5}/>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-
-                                        <DropdownMenuContent className="w-56">
-                                            <DropdownMenuGroup>
-                                                {isPhotographer &&
-                                                    <DropdownMenuItem onClick={() => handleDeleteAlbum(album[2])}>Delete
-                                                        Album</DropdownMenuItem>}
-                                                <DropdownMenuItem >
-                                                    <Link href={`albums/${album[2]}`}>
-                                                    View Album
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                                {isPhotographer &&
-                                                    <DropdownMenuItem >
-                                                        Edit Album
-                                                    </DropdownMenuItem>}
-                                            </DropdownMenuGroup>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
+                            </Card>
+                        )
+                    )}
                 </Masonry>
             </div>
         </div>
+
     );
 };
 

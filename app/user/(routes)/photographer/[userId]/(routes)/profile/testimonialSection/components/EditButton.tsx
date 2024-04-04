@@ -59,6 +59,7 @@ const EditButton: React.FC<EditButtonProps> = ({
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setTestimonials(testimonialsData);
@@ -73,23 +74,21 @@ const EditButton: React.FC<EditButtonProps> = ({
         toast.error('Error fetching testimonials:', error);
       }
     };
-
     currentTestimonials();
   }, [userId]);
 
   const handleSubmit = async () => { 
     setLoading(true);
-
     try {
       const changedTestimonials = testimonials.filter(testimonial =>
         testimonial.visibility !== currentTestimonials.find(testimonialData => testimonialData.id === testimonial.id)?.visibility
       );
       const changedTestimonialsIds = changedTestimonials.map(testimonial => testimonial.id);
-
-      const response = await axios.patch(
+      await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials/visibility`,
         { testimonialId: changedTestimonialsIds }
       );
+      setIsOpen(false);
       toast.success("Testimonials updated successfully!");
     } catch (error) {
       toast.error("Failed to update testimonials");
@@ -169,7 +168,7 @@ const EditButton: React.FC<EditButtonProps> = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-5 mb-16 mx-3">
       <p className="font-extrabold text-2xl md:text-5xl">Testimonials</p>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         {renderEditButton()}
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

@@ -20,7 +20,7 @@ const formSchema = z.object({
 });
 interface PackageEditFormProps {
     packageId: string;
-    setCoverPhoto: React.Dispatch<  //update the cover photo state
+    setCoverPhoto: React.Dispatch< 
         React.SetStateAction<{
             url: string;
         }>>
@@ -33,6 +33,47 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
     const [coverPhotos, setCoverPhotos] = useState<string[]>([]);  //update the cover photo state
+    const [imageKey, setImageKey] = useState(0);
+    const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
+    const handleRefresh = () => {
+        router.refresh();
+    };
+    useEffect(() => {
+        const fetchData = async () => {
+
+            try {
+                const res = await axios.get<Photographer>(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`
+                );
+                setPhotographer(res.data);
+
+            }
+            catch (err) {
+                toast.error("at package Cannot fetch data. Please try again.")
+
+            }
+
+        };
+        fetchData();
+    }, []);
+    useEffect(() => {
+        if (userId == session?.user.id) {
+            setIsPhotographer(true);
+        }
+    }, [userId, session]);
+    useEffect(() => {
+        if (session) {
+            setSessionId(session?.user.id);
+        }
+    }, [session]);
+    useEffect(() => {
+        if (photographer) {
+            setValues({
+                coverPhoto: photographer?.coverPhoto ?? "",
+            });
+        }
+    }, [photographer]);
 
     return (
         <main>
@@ -51,8 +92,8 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                 const data = {
                                     coverPhotos: [packageImageURL.image]
                                 };
-                                setCoverPhotos([packageImageURL.image])  //set the coverPhoto url
-                                setCoverPhoto({ url: packageImageURL.image })  //update the cover photo state           
+                                setCoverPhotos([packageImageURL.image])  
+                                setCoverPhoto({ url: packageImageURL.image })         
                                 try {
                                     await axios.put(
                                         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
@@ -61,7 +102,6 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                 catch (error) {
                                     toast.error("An error occured. Please try again.")
                                 }
-
                             }
                         }}
                         options={{
@@ -70,6 +110,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                             googleApiKey: "<image_search_google_api_key>",
                             showAdvancedOptions: false,
                             cropping: true,
+                            singleUploadAutoClose: false,
                             croppingCoordinatesMode: "custom",
                             croppingAspectRatio: 1,
                             multiple: false,
@@ -94,7 +135,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                 },
                             },
                         }}
-                        uploadPreset="crca4igr"
+                        uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                     >
                         {({ open }) => {
                             return (

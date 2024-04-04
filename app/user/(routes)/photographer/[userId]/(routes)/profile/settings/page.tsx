@@ -2,14 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Earnings from "./components/earnings";
-import AddCategory from "./components/add_category";
-import BankDetails from "./components/bank_details";
-import Report from "./components/report";
-import Faq from "./components/faq";
+import AddCategorySection from "./components/add_category";
+import BankDetailsSection from "./components/bank_details";
+import ReportSection from "./components/report";
+import FaqSection from "./components/faq";
 import { Payment, columns } from "./components/paymentColumns";
 import { DataTable } from "./components/data-table";
 import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
 
 const getData: Payment[] = [
     {
@@ -60,31 +59,20 @@ export default function Settings() {
                 >
                     Delete Account
                 </Button>
-                <Button
-                    onClick={() =>
-                        signOut({
-                            callbackUrl: `${window.location.origin}/sign-in`,
-                        })
-                    }
-                >
-                    Log Out
-                </Button>
             </div>
-            <div className="grid mb-4 md:flex md:justify-center lg:gap-[40px]">
+            <div className="grid md:flex md:justify-center lg:gap-[40px]">
                 <div className="md:mb-0 md:mr-4">
                     <Earnings />
                 </div>
-                 <AddCategory />
+                 <AddCategorySection />
             </div>
-            <div className="lg:mx-[4%]">
-                <BankDetails />
+            <div>
+                <BankDetailsSection />
+                <DataTable columns={columns} data={filteredUsers} />
             </div>
-            <DataTable columns={columns} data={filteredUsers} />
-            <div className="grid sm:grid-flow-col mb-4 sm:justify-stretch lg:w-[920px]">
-                <div className="md:mb-5">
-                    <Report />
-                </div>
-                <Faq />
+            <div className="grid md:flex grid mb-4 md:flex md:justify-center lg:gap-[40px]">
+                <ReportSection />
+                <FaqSection />
             </div>
         </div>
     );
