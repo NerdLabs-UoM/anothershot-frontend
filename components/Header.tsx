@@ -58,26 +58,28 @@ const NotificationData: Notifications[] = [
 ];
 
 const Header = () => {
-  const {data:session} = useSession()
-  const[loggedIn,setIsLoggedIn] = useState<boolean>(false)
-  useEffect(() =>{
-    if(session){
+  const { data: session } = useSession()
+  const [loggedIn, setIsLoggedIn] = useState<boolean>(false)
+  useEffect(() => {
+    if (session) {
       setIsLoggedIn(true)
     }
-  },[session])
+  }, [session])
   const router = useRouter();
   return (
     <div>
-      <div className="flex flex-row justify-between item-center h-24 px-5 sm:px-20 pt-10 ">
-        <Logo />
+      <div className="flex flex-row justify-between item-center h-24 px-5 sm:px-20 pt-10 " >
+        <div onClick={() => router.push("/")} className="cursor-pointer">
+          <Logo />
+        </div>
         <div className="flex gap-4">
-       {loggedIn&&<Button variant="ghost" className ="h-auto mb-7" onClick={() => signOut({
-                    callbackUrl: `${window.location.origin}/sign-in`
-                })}>Sign Out</Button>}
-          <Search/>
+          {loggedIn && <Button variant="ghost" className="h-auto mb-7" onClick={() => signOut({
+            callbackUrl: `${window.location.origin}/sign-in`
+          })}>Sign Out</Button>}
+          <Button variant="ghost" className="h-auto mb-8 hover:bg-white" onClick={() => { router.push(`/search`) }}><Search /></Button>
           <Sheet>
             <SheetTrigger>
-              <BellDot className="fill-black mb-8"  />
+              <BellDot className="fill-black mb-8" />
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
