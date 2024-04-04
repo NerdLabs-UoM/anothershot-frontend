@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 
@@ -15,13 +15,11 @@ const TestMonialsSection = () => {
     const fetchTestimonials = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials`);
-        console.log(response.data);
         setTestimonials(response.data);
       } catch (error: any) {
         console.error('Error fetching testimonials:', error);
       }
     };
-
     fetchTestimonials();
   }, [userId]);
 
