@@ -25,11 +25,8 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
     const { userId } = useParams();
     const { data: session } = useSession();
     const [isPhotographer, setIsPhotographer] = useState(true);
-
     const router = useRouter();
-    const handleRefresh = () => {
-        router.refresh();
-    };
+ 
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -53,7 +50,6 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
         }
     }, [photographer, session]);
 
-
     return (
         <main>
             <div className="w-full pr-10">
@@ -69,7 +65,6 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                 const data = {
                                     coverPhotos: [packageImageURL.image]
                                 };
-                                setCoverPhoto({ url: packageImageURL.image })
                                 try {
                                     await axios.put(
                                         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
@@ -78,10 +73,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                 catch (error) {
                                     toast.error("An error occured. Please try again.")
                                 }
-
                             }
-                            Update();
-                            handleRefresh();
                         }}
                         options={{
                             tags: ["cover image", `${session?.user.id}`],

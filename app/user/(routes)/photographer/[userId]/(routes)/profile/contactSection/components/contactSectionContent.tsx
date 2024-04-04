@@ -3,7 +3,6 @@ import { Phone } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-
 import { Button } from "@/components/ui/button";
 import ContactForm from "./contactForm";
 import { ContactDetails } from "@/app/lib/types";

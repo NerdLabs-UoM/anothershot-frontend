@@ -11,7 +11,6 @@ interface CardProps {
   description: string;
   price: string;
   packageId: string;
-
 }
 export const PackageCard = ({ src, name, description, price, packageId }: CardProps) => {
 
