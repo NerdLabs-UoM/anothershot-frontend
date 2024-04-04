@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { BiSolidPlusSquare } from "react-icons/bi";
@@ -14,6 +15,7 @@ const AddButton = () => {
     const { userId } = useParams();
     const { data: session } = useSession();
     const [photographer, setPhotographer] = React.useState<Photographer>();
+
     useEffect(() => {
         async function fetchPhotographer() {
             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed/header`);
@@ -21,6 +23,7 @@ const AddButton = () => {
         }
         fetchPhotographer();
     }, [userId]);
+
     const renderNavigateButton = () => {
         if (session?.user.id === userId) {
             return null;
@@ -41,6 +44,7 @@ const AddButton = () => {
             )
         }
     }
+    
     const renderAddButton = () => {
         if (session?.user.id === userId) {
             return (
@@ -60,6 +64,7 @@ const AddButton = () => {
                         }
 
                         );
+                        window.location.reload();
                     }
                     handleUploadSuccess();
                 }}
