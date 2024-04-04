@@ -1,5 +1,4 @@
 "use client";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,13 +13,9 @@ import { useParams, useRouter } from "next/navigation";
 import { Photographer } from "@/app/lib/types";
 import { PlusSquare } from "lucide-react";
 
-const formSchema = z.object({
-    packageId: z.string(),
-    coverPhoto: z.string()
-});
 interface PackageEditFormProps {
     packageId: string;
-    setCoverPhoto: React.Dispatch< 
+    setCoverPhoto: React.Dispatch<
         React.SetStateAction<{
             url: string;
         }>>
@@ -30,50 +25,30 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
     const { userId } = useParams();
     const { data: session } = useSession();
     const [isPhotographer, setIsPhotographer] = useState(true);
-    const [sessionId, setSessionId] = useState<string | null>(null);
-    const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
-    const [coverPhotos, setCoverPhotos] = useState<string[]>([]);  //update the cover photo state
-    const [imageKey, setImageKey] = useState(0);
-    const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
-    const handleRefresh = () => {
-        router.refresh();
-    };
+ 
     useEffect(() => {
         const fetchData = async () => {
-
             try {
                 const res = await axios.get<Photographer>(
                     `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`
                 );
                 setPhotographer(res.data);
-
             }
             catch (err) {
                 toast.error("at package Cannot fetch data. Please try again.")
-
             }
-
         };
         fetchData();
     }, []);
+
     useEffect(() => {
-        if (userId == session?.user.id) {
+        if (userId !== session?.user.id) {
+            setIsPhotographer(false);
+        } else {
             setIsPhotographer(true);
         }
-    }, [userId, session]);
-    useEffect(() => {
-        if (session) {
-            setSessionId(session?.user.id);
-        }
-    }, [session]);
-    useEffect(() => {
-        if (photographer) {
-            setValues({
-                coverPhoto: photographer?.coverPhoto ?? "",
-            });
-        }
-    }, [photographer]);
+    }, [photographer, session]);
 
     return (
         <main>
@@ -86,14 +61,10 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                             const packageImageURL = {
                                 image: uploadedResult.secure_url,
                             };
-                            const tags = uploadedResult.tags;
-                            setCoverImageURL(packageImageURL.image);
                             async function Update() {
                                 const data = {
                                     coverPhotos: [packageImageURL.image]
                                 };
-                                setCoverPhotos([packageImageURL.image])  
-                                setCoverPhoto({ url: packageImageURL.image })         
                                 try {
                                     await axios.put(
                                         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
@@ -116,7 +87,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                             multiple: false,
                             defaultSource: "local",
                             resourceType: "image",
-                            folder: `${photographer?.userId}/${photographer?.name}/coverphotos`,
+                            folder: `anothershot/${photographer?.userId}/packages/coverphotos`,
                             styles: {
                                 palette: {
                                     window: "#ffffff",

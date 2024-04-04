@@ -1,4 +1,5 @@
 "use client";
+
 import {
     Form,
     FormField,
@@ -8,12 +9,11 @@ import {
     FormControl,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusSquare } from 'lucide-react';
-import axios from "axios";
 import {
     Dialog,
     DialogTrigger,
@@ -32,13 +32,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Pencil } from "lucide-react";
-import { Package } from "@/app/lib/types";
-import { useState } from "react";
-import { useSession } from "next-auth/react";
-import toast from "react-hot-toast";
-import { useParams, useRouter } from "next/navigation";
-import React from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -50,12 +43,18 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Pencil } from "lucide-react";
+import { Package } from "@/app/lib/types";
+import { useState } from "react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import { useParams, useRouter } from "next/navigation";
+import React from "react";
+
 interface PackageEditFormProps {
     packages: Package[];
     packageProp: React.Dispatch<React.SetStateAction<Package[]>>;
-}
-interface AlertDialogProps {
-    handleDeletePackage: () => void;
 }
 
 const formSchema = z.object({
@@ -75,19 +74,13 @@ const formSchema = z.object({
     price: z.string(),
     coverPhoto: z.string()
 });
+
 const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp }) => {
     const { data: session } = useSession()
-    const [isPhotographer, setIsPhotographer] = useState(true);
     const [selectedPackageId, setSelectedPackageId] = useState<string>("")
     const [isNew, setIsNew] = useState<boolean>(false)
-    const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/dts2l2pnj/image/upload/v1708486003/oooolhqi3vcrtcqhhy3b.jpg");
     const { userId } = useParams();
-    const router = useRouter(); const handleRefresh = () => {
-        router.refresh();
-    };
-    const [isOpen, setIsOpen] = useState(false);
 
-    const toggleDialog = () => setIsOpen(!isOpen);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -107,7 +100,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         }
         setSelectedPackageId(value)
     }
-
     const handleSaveChanges = async () => {
         const data = {
             photographerId: session?.user?.id,
@@ -119,7 +111,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data)
             const updatedPackage: Package = response.data;
-            // Update the package list state by replacing the old package with the updated one
             packageProp(prevPackageList => prevPackageList.map(packageItem =>
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
             ));
@@ -140,14 +131,14 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             coverPhotos: [],
             price: form.getValues("price"),
         };
+
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
-            const newPackage: Package = response.data;
-            // Check if the new package already exists in the package list
+            const newPackage: Package = response.data
+
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
             } else {
-                // Update the package list state by adding the new package
                 packageProp(prevPackageList => [...prevPackageList, newPackage]);
                 toast.success("Package created successfully.");
             }
@@ -155,6 +146,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             toast.error("An error occurred. Please try again.");
         }
     };
+
 
     const handleDeletePackage = async () => {
         if (session?.user?.id === undefined) return
@@ -165,15 +157,16 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         try {
             const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data })
             packageProp(prevPackageList => prevPackageList.filter(packageItem => packageItem.id !== selectedPackageId));
-
             toast.success("Package deleted successfully.")
         }
         catch (error) {
             toast.error("An error occurred. Please try again.")
         }
     }
+
     const renderEditButton = () => {
-        if (session?.user?.id === userId) {
+        if (session && session.user && session.user.id === userId) {
+            console.log("session", session)
             return (
                 <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
                     <Button
@@ -259,7 +252,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                                     maxLength={100} // Set the maximum character limit
                                                     {...field}
                                                 />
-
                                             </FormControl>
                                         </FormItem>
                                     )}
@@ -280,32 +272,31 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                         </FormItem>
                                     )}
                                 />
-
                             </form>
                         </Form>
                         <DialogFooter>
                             {!isNew && (
-                                <div>
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                     <Button variant={'destructive'} >Delete</Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete your
-                                                account and remove your data from our servers.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => handleDeletePackage()
-                                        }>Continue</AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                                </div>
+                                
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button variant={'destructive'}
+                                            >Delete</Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently delete your
+                                                    packages and remove your data from our servers.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => handleDeletePackage()}>Continue</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                    
                             )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset()

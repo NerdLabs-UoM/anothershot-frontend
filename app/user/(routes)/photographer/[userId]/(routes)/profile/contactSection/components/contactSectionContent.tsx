@@ -35,7 +35,7 @@ const ContactSectionContent = () => {
   return (
     <>
       {(contactDets || session?.user?.id === userId) ?
-        <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 border-y-0 sm:border-y-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
+        <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 border-y-0 sm:border-t-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
           <div className="flex flex-row  sm:flex sm:flex-row  sm:justify-between">
             <h1 className="flex text-5xl font-bold mb-0 ml-24 sm:ml-0">Contact</h1>
             <Button

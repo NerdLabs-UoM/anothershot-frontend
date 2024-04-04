@@ -91,36 +91,38 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
           tiktok: values.tiktok,
         },
       });
-    
-    if (res.status === 200) {
-      setContactDets({
-        ...contactDets,
-        phoneNum1: values.contactNum1,
-        phoneNum2: values.contactNum2,
-        email: values.email,
-        address: {
-          street: values.street,
-          city: values.city,
-          state: values.state,
-          zip: values.zip,
-          country: values.country,
-        },
-        socialMedia: {
-          instagram: values.instagram,
-          facebook: values.facebook,
-          youtube: values.youtube,
-          tiktok: values.tiktok,
-        },
-      })
-      toast.success("Contact details updated successfully");
-    } else {
-      toast.error("Failed to update contact details");
+
+      if (res.status === 200) {
+        if (contactDets)
+          setContactDets({
+            ...contactDets,
+            phoneNum1: values.contactNum1,
+            phoneNum2: values.contactNum2,
+            email: values.email,
+            address: {
+              street: values.street,
+              city: values.city,
+              state: values.state,
+              zip: values.zip,
+              country: values.country,
+            },
+            socialMedia: {
+              instagram: values.instagram,
+              facebook: values.facebook,
+              youtube: values.youtube,
+              tiktok: values.tiktok,
+            },
+          })
+        toast.success("Contact details updated successfully");
+      } else {
+        toast.error("Failed to update contact details");
+      }
+    }
+    catch (err) {
+      toast.error("An error occured. Please try again.")
     }
   }
-  catch(err){
-    toast.error("An error occured. Please try again.")
-  }
-  }
+        
   const renderEditButton = () => {
     if (session?.user?.id === userId) {
       console.log("session", session?.user?.id);
