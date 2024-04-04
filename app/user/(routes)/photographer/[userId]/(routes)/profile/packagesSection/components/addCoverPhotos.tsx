@@ -81,7 +81,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                             googleApiKey: "<image_search_google_api_key>",
                             showAdvancedOptions: false,
                             cropping: true,
-                            singleUploadAutoClose: false,
+                            singleUploadAutoClose:true,
                             croppingCoordinatesMode: "custom",
                             croppingAspectRatio: 1,
                             multiple: false,
