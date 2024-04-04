@@ -53,8 +53,9 @@ const FeedComponent = () => {
   const { data: session } = useSession();
   const sessionUserId = session?.user?.id ? session.user.id : '';
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isLiking, setIsLiking] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
+  const [isLikingMap, setIsLikingMap] = React.useState<Record<string, boolean>>({});
+  const [caption, setCaption] = React.useState<string>("");
   useEffect(() => {
     const fetchFeedImages = async () => {
       try {
@@ -66,14 +67,16 @@ const FeedComponent = () => {
     };
     fetchFeedImages();
   }, [userId]);
-  const [caption, setCaption] = React.useState<string>("");
 
   const handleLike = async (imageId: string, isLiked: boolean, photographerId: string) => {
     if (session === null) {
       toast.error('You must be logged in to like a feed image');
       return;
     }
-    setIsLiking(true);
+    setIsLikingMap(prevMap => ({
+      ...prevMap,
+      [imageId]: true,
+    }));
     try {
       const updatedFeedImages = [...feedImages];
       const index = updatedFeedImages.findIndex(image => image.id === imageId);
@@ -92,7 +95,10 @@ const FeedComponent = () => {
         userId: session?.user?.id,
         like: !isLiked
       });
-      setIsLiking(false);
+      setIsLikingMap(prevMap => ({
+        ...prevMap,
+        [imageId]: false,
+      }));
       toast('❤️')
     } catch (error: any) {
       toast.error('Error liking feed image:', error);
@@ -216,7 +222,7 @@ const FeedComponent = () => {
                       size="sm"
                       className="flex items-center justify-center gap-2"
                       onClick={() => handleLike(feedImage.id, feedImage.likedUserIds != null && feedImage.likedUserIds.includes(sessionUserId), feedImage.photographerId)}
-                      disabled={isLiking}
+                      disabled={isLikingMap[feedImage.id]}
                     >
                       {feedImage.likedUserIds != null && feedImage.likedUserIds.includes(sessionUserId) ? (
                         <Heart fill="#cb1a1a" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 " />
