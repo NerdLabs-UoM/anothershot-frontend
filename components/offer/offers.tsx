@@ -53,24 +53,19 @@ function Offers() {
     const fetchOffers = async () => {
       try {
         const data = await axios.get<Offer[]>(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/offer/${userId}/photographer`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/offer/${userId}/photographer/offers`
         );
         setValues(data.data);
       } catch (err) {
         toast.error("Error fetching offers");
       }
+      if(values?.length==0) {
+        toast.error("No offers found");
+      }
     };
     fetchOffers();
   }, []);
-  console.log(userId)
-  
-  console.log(values)
-  const router = useRouter();
-  const [clicked, setClicked] = useState(false);
 
-  const handleClick = () => {
-    setClicked(!clicked);
-  };
 
   return (
     <>

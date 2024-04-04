@@ -18,7 +18,8 @@ export const UserDetail: React.FC<Partial<User>> = ({userName, email, image}) =>
             {/*  height={50}*/}
             {/*/>*/}
             <Image
-                src="/images/avatar.png"
+                src={image ||"/images/avatar.png"}
+                className="rounded-3xl"
                 alt="img"
                 width={50}
                 height={50}

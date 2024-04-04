@@ -244,7 +244,7 @@ const Hero = () => {
                       multiple: false,
                       defaultSource: "local",
                       resourceType: "image",
-                      folder: `${userId}/profile`,
+                      folder: `anothershot/${userId}/profile`,
                       styles: {
                         palette: {
                           window: "#ffffff",
