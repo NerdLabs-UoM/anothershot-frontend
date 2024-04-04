@@ -3,19 +3,15 @@ import { Phone } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-
 import { Button } from "@/components/ui/button";
 import ContactForm from "./contactForm";
 import { ContactDetails } from "@/app/lib/types";
-import { Session } from "inspector";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 const ContactSectionContent = () => {
 
   const { userId } = useParams()
   const [contactDets, setContactDets] = useState<ContactDetails | undefined>(undefined)
-
 
  useEffect(() => {
   const fetchContactDets = async () => {

@@ -21,66 +21,19 @@ const formSchema = z.object({
 interface PackageEditFormProps {
     packageId: string;
     setCoverPhoto: React.Dispatch<  //update the cover photo state
-    React.SetStateAction<{
-        url: string;
-    }>> 
+        React.SetStateAction<{
+            url: string;
+        }>>
 }
-const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPhoto}) => {
+const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPhoto }) => {
     const [photographer, setPhotographer] = useState<Photographer>();
     const { userId } = useParams();
     const { data: session } = useSession();
     const [isPhotographer, setIsPhotographer] = useState(true);
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [coverImageURL, setCoverImageURL] = useState("https://res.cloudinary.com/image/upload/v1707855067/hlnolejsok99gjupmfbi.jpg");
-
-    const [values, setValues] = useState({
-        coverPhoto: "",
-    });
     const [coverPhotos, setCoverPhotos] = useState<string[]>([]);  //update the cover photo state
- 
-     const [imageKey, setImageKey] = useState(0);
-    const [isOpen, setIsOpen] = useState(false);
-    const router = useRouter();
-    const handleRefresh = () => {
-        router.refresh();
-    };
-    useEffect(() => {
-        const fetchData = async () => {
-           
-            try{
-                const res = await axios.get<Photographer>(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`
-                );
-                setPhotographer(res.data);
 
-            }
-            catch (err) {
-                toast.error("at package Cannot fetch data. Please try again.")
-
-            }
-                 
-        };
-        fetchData();
-    });
-    useEffect(() => {
-        if (userId == session?.user.id) {
-            setIsPhotographer(true);
-        }
-    }, [userId, session]);
-    useEffect(() => {
-        if (session) {
-            setSessionId(session?.user.id);
-        }
-    }, [session]);
-    useEffect(() => {
-        if (photographer) {
-            setValues({
-                coverPhoto: photographer?.coverPhoto ?? "",
-            });
-        }
-    }, [photographer]);
-
-   
     return (
         <main>
             <div className="w-full pr-10">
@@ -92,29 +45,24 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                             const packageImageURL = {
                                 image: uploadedResult.secure_url,
                             };
-                           
                             const tags = uploadedResult.tags;
                             setCoverImageURL(packageImageURL.image);
-                                                    
                             async function Update() {
                                 const data = {
                                     coverPhotos: [packageImageURL.image]
                                 };
                                 setCoverPhotos([packageImageURL.image])  //set the coverPhoto url
-                               
-                                setCoverPhoto({url:packageImageURL.image})  //update the cover photo state           
-                              try{
-                                await axios.put(
-                                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
-                                );
-                              }
-                              catch (error) {
-                                toast.error("An error occured. Please try again.")
-                              }
-                                
+                                setCoverPhoto({ url: packageImageURL.image })  //update the cover photo state           
+                                try {
+                                    await axios.put(
+                                        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
+                                    );
+                                }
+                                catch (error) {
+                                    toast.error("An error occured. Please try again.")
+                                }
+
                             }
-                            Update();
-                            handleRefresh();
                         }}
                         options={{
                             tags: ["cover image", `${session?.user.id}`],
@@ -151,14 +99,14 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId ,setCoverPho
                         {({ open }) => {
                             return (
                                 <Button
-                                variant="default"
-                                className="rounded-md mt-2 ml-2 bg-transparent"
-                                onClick={() => {
-                                    open();
-                                }}
-                            >
-                                <PlusSquare style={{ color: 'black' }} />
-                            </Button>
+                                    variant="default"
+                                    className="rounded-md mt-2 ml-2 bg-transparent"
+                                    onClick={() => {
+                                        open();
+                                    }}
+                                >
+                                    <PlusSquare style={{ color: 'black' }} />
+                                </Button>
                             );
                         }}
                     </CldUploadWidget>
