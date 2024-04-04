@@ -1,13 +1,13 @@
 "use client";
+
 import React, { useEffect } from "react";
-import { Heart, MessageSquare, MoreVertical } from "lucide-react";
+import { Heart, Bookmark, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -18,6 +18,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import Image from 'next/image';
 import { FeedImage } from "@/app/lib/types";
@@ -26,7 +37,7 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 
-const formatCount = (count : number) => {
+const formatCount = (count: number) => {
   if (count < 1000) {
     return count.toString();
   } else if (count < 1000000) {
@@ -36,13 +47,15 @@ const formatCount = (count : number) => {
   }
 };
 
-
 const FeedComponent = () => {
-
   const [feedImages, setFeedImages] = React.useState<FeedImage[]>([]);
   const { userId } = useParams();
   const { data: session } = useSession();
-  const clientId = session?.user?.id ? session.user.id : '';
+  const sessionUserId = session?.user?.id ? session.user.id : '';
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [isLikingMap, setIsLikingMap] = React.useState<Record<string, boolean>>({});
+  const [caption, setCaption] = React.useState<string>("");
   useEffect(() => {
     const fetchFeedImages = async () => {
       try {
@@ -52,74 +65,93 @@ const FeedComponent = () => {
         toast.error('Error fetching feed images:', error);
       }
     };
-
     fetchFeedImages();
   }, [userId]);
-  const [caption, setCaption] = React.useState<string>("");
 
-  const handleLike = async (id: string, isLiked: boolean) => {
+  const handleLike = async (imageId: string, isLiked: boolean, photographerId: string) => {
+    if (session === null) {
+      toast.error('You must be logged in to like a feed image');
+      return;
+    }
+    setIsLikingMap(prevMap => ({
+      ...prevMap,
+      [imageId]: true,
+    }));
     try {
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed/like`, {
-        feedId: id,
+      const updatedFeedImages = [...feedImages];
+      const index = updatedFeedImages.findIndex(image => image.id === imageId);
+      if (index !== -1) {
+        updatedFeedImages[index] = {
+          ...updatedFeedImages[index],
+          likeCount: isLiked ? updatedFeedImages[index].likeCount - 1 : updatedFeedImages[index].likeCount + 1,
+          likedUserIds: isLiked
+            ? updatedFeedImages[index].likedUserIds.filter(id => id !== session?.user.id)
+            : [...updatedFeedImages[index].likedUserIds, session?.user.id],
+        };
+        setFeedImages(updatedFeedImages);
+      }
+      await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${photographerId}/feed/like`, {
+        feedId: imageId,
         userId: session?.user?.id,
         like: !isLiked
       });
-      setFeedImages((prevFeedImage) => {
-        return prevFeedImage.map((image) => {
-          if (image.id === id) {
-            return {
-              ...image,
-              likeCount: isLiked ? image.likeCount - 1 : image.likeCount + 1,
-              likedUserIds: isLiked ? image.likedUserIds.filter((id) => id !== clientId) : [...image.likedUserIds, clientId],
-            };
-          }
-          return image;
-        });
-      });
+      setIsLikingMap(prevMap => ({
+        ...prevMap,
+        [imageId]: false,
+      }));
+      toast('❤️')
     } catch (error: any) {
       toast.error('Error liking feed image:', error);
     }
   }
-  const handleSave = async (id: string, isSaved: boolean) => {
+
+  const handleSave = async (imageId: string, isSaved: boolean, photographerId: string) => {
+    if (session === null) {
+      toast.error('You must be logged in to save a feed image');
+      return;
+    }
+    setIsSaving(true);
     try {
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed/createSave`, {
-        feedId: id,
+      const index = feedImages.findIndex(image => image.id === imageId);
+      if (index !== -1) {
+        const updatedFeedImages = [...feedImages];
+        updatedFeedImages[index] = {
+          ...updatedFeedImages[index],
+          saveCount: isSaved ? updatedFeedImages[index].saveCount - 1 : updatedFeedImages[index].saveCount + 1,
+          savedUserIds: isSaved
+            ? updatedFeedImages[index].savedUserIds.filter(id => id !== session.user.id)
+            : [...updatedFeedImages[index].savedUserIds, session.user.id],
+        };
+        setFeedImages(updatedFeedImages);
+      }
+      await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${photographerId}/feed/createSave`, {
+        feedId: imageId,
         userId: session?.user?.id,
         save: !isSaved
       });
-      setFeedImages((prevFeedImage) => {
-        return prevFeedImage.map((image) => {
-          if (image.id === id) {
-            return {
-              ...image,
-              saveCount: isSaved ? image.saveCount - 1 : image.saveCount + 1,
-              savedUserIds: isSaved ? image.savedUserIds.filter((id) => id !== clientId) : [...image.savedUserIds, clientId],
-            };
-          }
-          return image;
-        });
-      });
+      setIsSaving(false);
+      toast('📌')
     } catch (error: any) {
       toast.error('Error saving feed image:', error);
     }
   }
 
-
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (imageId: string, photographerId: string) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed/delete`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${photographerId}/feed/delete`, {
         data: {
-          feedId: id,
+          feedId: imageId,
         },
       });
-      setFeedImages(prevFeedImages => prevFeedImages.filter(image => image.id !== id));
+      setFeedImages(prevFeedImages => prevFeedImages.filter(image => image.id !== imageId));
     } catch (error: any) {
       toast.error('Error deleting feed image:', error);
     }
   };
+
   const addCaption = async (id: string, caption: string) => {
     try {
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed/caption`, {
+      await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed/caption`, {
         feedId: id,
         caption: caption,
       });
@@ -134,14 +166,25 @@ const FeedComponent = () => {
           return image;
         });
       });
+      setIsOpen(false);
+      setCaption("");
+      toast.success('Caption added successfully');
     } catch (error: any) {
       toast.error('Error adding caption to feed image:', error);
     }
   }
+
   const renderOptions = () => {
     if (session?.user?.id === userId) {
       return (
-        <MoreVertical size={32} color="#ffffff" className="sm:w-5 sm:h-5 lg:w-7 lg:h-7" />
+        <Button
+          variant={null}
+          role="save"
+          size="sm"
+          className="flex items-center justify-center gap-2"
+        >
+          <MoreVertical size={32} color="#ffffff" className="sm:w-5 sm:h-5 lg:w-7 lg:h-7" />
+        </Button>
       );
     }
     return null;
@@ -178,12 +221,13 @@ const FeedComponent = () => {
                       role="heart"
                       size="sm"
                       className="flex items-center justify-center gap-2"
-                      onClick={() => handleLike(feedImage.id, feedImage.likedUserIds != null && feedImage.likedUserIds.includes(clientId))}
+                      onClick={() => handleLike(feedImage.id, feedImage.likedUserIds != null && feedImage.likedUserIds.includes(sessionUserId), feedImage.photographerId)}
+                      disabled={isLikingMap[feedImage.id]}
                     >
-                      {feedImage.likedUserIds != null && feedImage.likedUserIds.includes(clientId) ? (
+                      {feedImage.likedUserIds != null && feedImage.likedUserIds.includes(sessionUserId) ? (
                         <Heart fill="#cb1a1a" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 " />
                       ) : (
-                        <Heart color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 "/>
+                        <Heart color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 " />
                       )}
                     </Button>
                   </div>
@@ -196,12 +240,13 @@ const FeedComponent = () => {
                       role="save"
                       size="sm"
                       className="flex items-center justify-center gap-2"
-                      onClick={() => handleSave(feedImage.id, feedImage.savedUserIds != null && feedImage.savedUserIds.includes(clientId))}
+                      onClick={() => handleSave(feedImage.id, feedImage.savedUserIds != null && feedImage.savedUserIds.includes(sessionUserId), feedImage.photographerId)}
+                      disabled={isSaving}
                     >
-                      {feedImage.savedUserIds != null && feedImage.savedUserIds.includes(clientId) ? (
-                        <MessageSquare fill="#ffffff" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                      {feedImage.savedUserIds != null && feedImage.savedUserIds.includes(sessionUserId) ? (
+                        <Bookmark fill="#ffffff" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
                       ) : (
-                        <MessageSquare color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                        <Bookmark color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" /> 
                       )}
                     </Button>
                   </div>
@@ -212,19 +257,28 @@ const FeedComponent = () => {
                 <div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant={null}
-                        role="save"
-                        size="sm"
-                        className="flex items-center justify-center gap-2"
-                      >
-                        {renderOptions()}
-                      </Button>
+                      {renderOptions()}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-20">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem className="pl-4" onClick={() => handleDelete(feedImage.id)}>Delete</DropdownMenuItem>
-                        <Dialog>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button className="bg-transparent text-black font-normal hover:bg-slate-200 pr-14">Delete</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the image.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(feedImage.id, feedImage.photographerId)}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                        <Dialog open={isOpen} onOpenChange={setIsOpen}>
                           <DialogTrigger>
                             <Button className="bg-transparent text-black font-normal hover:bg-slate-200"> Add Caption</Button>
                           </DialogTrigger>
@@ -232,7 +286,8 @@ const FeedComponent = () => {
                             <DialogHeader>
                               <DialogTitle className="mb-2">Add a Caption</DialogTitle>
                               <DialogDescription>
-                                Add a caption to your image to give it more context.
+                                Add a caption to your image to give it more context.<br />
+                                (Maximum 15 characters.)
                               </DialogDescription>
                               <div className="flex flex-wrap">
                                 <Input
@@ -243,11 +298,15 @@ const FeedComponent = () => {
                                   onChange={(e) => {
                                     const maxLength = 15;
                                     let newCaption = e.target.value.slice(0, maxLength);
-                                    if (e.target.value.length > maxLength) {
-                                      newCaption += '...';
-                                    }
                                     setCaption(newCaption);
-                                  }}
+                                  }
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Backspace') {
+                                      setCaption((prevCaption) => prevCaption.slice(0, -1));
+                                    }
+                                  }
+                                  }
                                 />
                                 <Button
                                   className="w-auto bg-black text-gray-200" onClick={() => addCaption(feedImage.id, caption)}>
