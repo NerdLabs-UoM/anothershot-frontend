@@ -1,10 +1,10 @@
 "use client";
 
 import React, {useEffect, useState} from "react";
+import { useParams } from "next/navigation";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
-
 import {Button} from "@/components/ui/button";
 import {
     Form,
@@ -22,11 +22,9 @@ import {
     CardDescription,
 } from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
-import { useParams } from "next/navigation";
-import { updateBankDetails,fetchBankDetails } from "../serviceData";
 import toast from "react-hot-toast";
+import { updateBankDetails,fetchBankDetails } from "../serviceData";
 import { BankDetails } from "@/app/lib/types";
-
 
 const bankFormSchema = z.object({
     bankName: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Bank Name"}).min(1,{message: "Bank name is required"}),
@@ -67,7 +65,6 @@ const BankDetailsProps = [
 const BankDetailsSection = () => {
     const { userId } = useParams();
     const [bankDets, setBankDets] = useState<BankDetails | undefined>(undefined);
-
     const form = useForm<z.infer<typeof bankFormSchema>>({
         resolver: zodResolver(bankFormSchema),
         defaultValues: {
@@ -78,8 +75,6 @@ const BankDetailsSection = () => {
             accountBranchCode: bankDets?.accountBranchCode || "",
         },
     });
-    
-
 
     useEffect(()=>{
         if (bankDets){
@@ -155,7 +150,6 @@ const BankDetailsSection = () => {
                         </div>
                     </form>
                 </Form>
-
             </CardContent>
         </Card>
     );

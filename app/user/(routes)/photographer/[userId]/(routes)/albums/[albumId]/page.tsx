@@ -1,7 +1,5 @@
 "use client";
 
-import {Button} from "@/components/ui/button";
-import {signOut, useSession} from "next-auth/react";
 import {useParams, useSearchParams, useRouter} from "next/navigation";
 import {LucideArrowLeft} from 'lucide-react';
 import {Check, Pencil} from "lucide-react";
@@ -21,10 +19,8 @@ const AlbumPage = () => {
     const albumName = searchParams.get("albumName") ?? "Album Name";
     const albumDescription = searchParams.get("albumDescription") ?? "Album Description";
     const [toggleTextEdit, setToggleTextEdit] = useState<boolean>(false);
-    const [toggleIcon, setToggleIcon] = useState<boolean>(true);
     const [viewPage, setViewPage] = useState<boolean>(true);
     const [images, setImages] = useState<AlbumImage[]>([]);
-    const {data: session} = useSession();
     const [newAlbumName, setNewAlbumName] = useState({albumName: albumName, albumDescription: albumDescription});
     const router = useRouter();
 
@@ -50,12 +46,6 @@ const AlbumPage = () => {
     const imageUpload = (newImages: AlbumImage[]) => {
         setImages(newImages);
     };
-
-    // useEffect(() => {
-    //     if (albumId == session?.user.image) {
-    //         setIsPhotographer(true);
-    //     }
-    // }, [albumId, session]);
 
     const handleClick = () => {
         setToggleTextEdit((prevState) => !prevState);
@@ -132,7 +122,7 @@ const AlbumPage = () => {
                     />
                 )}
             </div>
-            <Masonrygrid images={images}/>
+            <Masonrygrid images={images} albumName={newAlbumName.albumName} canView={viewPage}/>
         </div>
     );
 };

@@ -1,9 +1,10 @@
 "use client"
 
+import React from "react";
+import { useParams } from "next/navigation";
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import * as z from "zod"
-
 import {Button} from "@/components/ui/button"
 import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
 import {
@@ -16,10 +17,8 @@ import {
 } from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea";
-import React from "react";
-import { submitReport } from "../serviceData";
-import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
+import { submitReport } from "../serviceData";
 
 const ReportFormSchema = z.object({
     subject: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Report"}).max(100).min(1,{message: "Enter a subject"}),
@@ -28,6 +27,7 @@ const ReportFormSchema = z.object({
 
 const ReportSection = () => {
     const { userId } = useParams();
+    
     const form = useForm<z.infer<typeof ReportFormSchema>>({
         resolver: zodResolver(ReportFormSchema),
         defaultValues: {
@@ -35,6 +35,7 @@ const ReportSection = () => {
             description: "",
         },
     });
+    
     const handleSubmit = (val: z.infer<typeof ReportFormSchema>) => {
         try{
             submitReport(userId,val);
@@ -44,6 +45,7 @@ const ReportSection = () => {
         }
         form.reset();
     }
+    
     return (
         <Card className="grid border-none ">
             <CardHeader className="flex mb-4">
@@ -97,7 +99,6 @@ const ReportSection = () => {
                 </Form>
             </CardContent>
         </Card>
-
     )
 }
 
