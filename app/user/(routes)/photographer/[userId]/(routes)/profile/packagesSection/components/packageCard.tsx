@@ -34,7 +34,7 @@ export const PackageCard = ({ src, name, description, price,packageId }: CardPro
                 className="rounded-xl"
               />
             </div>
-            <div className=" row-span-1 p-6">
+            <div className=" row-span-1 p-6 ">
               <h3 className="flex justify-center items-center font-bold text-xl mt-0">
                 {name}
               </h3>
