@@ -234,10 +234,12 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       Username
                     </FormLabel>
+                    <div className="col-span-6">
                     <FormControl className="col-span-6">
                       <Input placeholder={newvalues.username} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -249,10 +251,12 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       Email
                     </FormLabel>
-                    <FormControl className="col-span-6">
+                    <div className="col-span-6">
+                    <FormControl >
                       <Input placeholder={newvalues.email} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -264,10 +268,12 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       contactNo
                     </FormLabel>
+                    <div className="col-span-6">
                     <FormControl className="col-span-6">
                       <Input placeholder={newvalues.phoneNo1} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -280,10 +286,12 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       PhoneNo2
                     </FormLabel>
+                    <div className="col-span-6">
                     <FormControl className="col-span-6">
                       <Input placeholder={newvalues.phoneNo1} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -373,10 +381,12 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       City
                     </FormLabel>
-                    <FormControl className="col-span-6">
+                    <div className="col-span-6">
+                    <FormControl >
                       <Input placeholder={newvalues.city} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -389,10 +399,12 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       State
                     </FormLabel>
+                    <div className="col-span-6">
                     <FormControl className="col-span-6">
                       <Input placeholder={newvalues.state} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -405,10 +417,12 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       Zip
                     </FormLabel>
-                    <FormControl className="col-span-6">
+                    <div className="col-span-6">
+                    <FormControl >
                       <Input placeholder={newvalues.zip} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -421,14 +435,16 @@ const EditForm: React.FC<EditFormProps> = ({
                     <FormLabel className="col-span-2 grid place-content-end">
                       Country
                     </FormLabel>
+                    <div className="col-span-6">
                     <FormControl className="col-span-6">
                       <Input placeholder={newvalues.city} {...field} />
                     </FormControl>
                     <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
-              <div className="flex gap-4">
+              <div className="flex justify-end gap-4 right-0">
                 <Link href={`/user/photographer/${userId}/profile`}>
                   <Button  variant="outline">
                     View Profile

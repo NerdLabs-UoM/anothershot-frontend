@@ -107,9 +107,8 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                         },
                     },
                 }}
-                uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
-            >
-                {({ open }) => {
+                uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}>
+                {({open}) => {
                     return (
                         <Button variant="default" onClick={() => open()}>
                             <div className="flex gap-2 my-3">

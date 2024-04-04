@@ -7,7 +7,7 @@ type UserManagementLayoutProps = {
 const UserManagementLayout = (props: UserManagementLayoutProps) => {
 
     return (
-        <div className="w-full mx-9">
+        <div className="w-full px-20">
             {props.children}
         </div>
     );

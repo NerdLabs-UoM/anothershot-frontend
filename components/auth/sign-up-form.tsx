@@ -67,8 +67,8 @@ const SignUpForm = () => {
                     userRole: values.userRole,
                 });
 
-                if (response.data.error) {
-                    toast.error(response.data.error);
+                if (response.status === 409) {
+                    toast.error("Email or Username already exists");
                 }
 
                 if (response.data) {
@@ -90,7 +90,9 @@ const SignUpForm = () => {
                 }
             }
         } catch (error: any) {
-            toast.error(error.message);
+            if (error.response.status === 409) {
+                toast.error("Email or Username already exists");
+            }
         } finally {
             setLoading(false);
         }

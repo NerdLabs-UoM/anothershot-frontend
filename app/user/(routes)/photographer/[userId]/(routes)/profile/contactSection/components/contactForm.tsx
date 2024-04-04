@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -7,7 +7,6 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
-
 import {
   Dialog,
   DialogTrigger,
@@ -29,12 +28,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ContactDetails } from "@/app/lib/types";
 interface ContactDetailsFormProps {
-  contactDets: ContactDetails;
-  setContactDets: React.Dispatch<React.SetStateAction<ContactDetails | undefined>>;
+  contactDets: ContactDetails | null;
+  setContactDets: React.Dispatch<React.SetStateAction<ContactDetails | null>>;
 }
 
 const formSchema = z.object({
-  contactNum1: z.string().min(9).max(12).regex(/^[0-9]+$/),
+  contactNum1: z.string().min(9).max(12).regex(/^[0-9+]+$/),
   contactNum2: z.string().min(9).regex(/^[0-9]+$/).nullable(),
   email: z.string().email().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
   street: z.string(),
@@ -44,7 +43,6 @@ const formSchema = z.object({
   country: z.string(),
   instagram: z.string().nullable(),
   facebook: z.string().nullable(),
-  // facebook: z.string().regex(/^(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:profile\.php\?id=\d+|[a-zA-Z0-9.]+)\/?$/i).nullable(),
   youtube: z.string().nullable(),
   tiktok: z.string().nullable(),
 });
@@ -57,10 +55,10 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contactNum1: contactDets.phoneNum1,
-      contactNum2: contactDets.phoneNum2 || "",
-      email: contactDets.email,
-      street: contactDets.address?.street || "",
+      contactNum1: contactDets?.phoneNum1 || "",
+      contactNum2: contactDets?.phoneNum2 || "",
+      email: contactDets?.email || "",
+      street: contactDets?.address?.street || "",
       city: contactDets?.address?.city || "",
       state: contactDets?.address?.state || "",
       zip: contactDets?.address?.zip || "",
@@ -73,7 +71,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try{
+    try {
       const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/contactdetails`, {
         userId: userId,
         phoneNum1: values.contactNum1,
@@ -93,40 +91,41 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
           tiktok: values.tiktok,
         },
       });
-    
 
-    if (res.status === 200) {
-      setContactDets({
-        ...contactDets,
-        phoneNum1: values.contactNum1,
-        phoneNum2: values.contactNum2,
-        email: values.email,
-        address: {
-          street: values.street,
-          city: values.city,
-          state: values.state,
-          zip: values.zip,
-          country: values.country,
-        },
-        socialMedia: {
-          instagram: values.instagram,
-          facebook: values.facebook,
-          youtube: values.youtube,
-          tiktok: values.tiktok,
-        },
-      })
-      toast.success("Contact details updated successfully");
-    } else {
-      toast.error("Failed to update contact details");
+      if (res.status === 200) {
+        if (contactDets)
+          setContactDets({
+            ...contactDets,
+            phoneNum1: values.contactNum1,
+            phoneNum2: values.contactNum2,
+            email: values.email,
+            address: {
+              street: values.street,
+              city: values.city,
+              state: values.state,
+              zip: values.zip,
+              country: values.country,
+            },
+            socialMedia: {
+              instagram: values.instagram,
+              facebook: values.facebook,
+              youtube: values.youtube,
+              tiktok: values.tiktok,
+            },
+          })
+        toast.success("Contact details updated successfully");
+      } else {
+        toast.error("Failed to update contact details");
+      }
+    }
+    catch (err) {
+      toast.error("An error occured. Please try again.")
     }
   }
-  catch(err){
-    toast.error("An error occured. Please try again.")
-  }
- 
-  }
+        
   const renderEditButton = () => {
     if (session?.user?.id === userId) {
+      console.log("session", session?.user?.id);
       return (
         <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
           <Button
@@ -140,7 +139,6 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
       );
     } return null;
   };
-
 
   return (
     <Dialog>
