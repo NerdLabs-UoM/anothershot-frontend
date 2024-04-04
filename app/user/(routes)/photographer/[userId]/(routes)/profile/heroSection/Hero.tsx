@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Avatar , AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Settings, PenSquare, Camera } from "lucide-react";
 
 import {
@@ -76,7 +76,7 @@ const Hero = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try{
+      try {
         const res = await axios.get<Photographer>(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`
         );
@@ -106,7 +106,7 @@ const Hero = () => {
     }
     setProfileImage(photographer?.user.image ?? "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878461/defaultImages/default-profile-image_grcgcd.png");
     if (coverImageURL != null) {
-    setCoverImageURL(photographer?.coverPhoto ?? "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878041/defaultImages/default-coverImage_sdmwpt.png");
+      setCoverImageURL(photographer?.coverPhoto ?? "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878041/defaultImages/default-coverImage_sdmwpt.png");
     }
 
   }, [photographer]);
@@ -125,20 +125,34 @@ const Hero = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsOpen(false);
     setValues({ name: values.name, description: values.bio });
-    async function Update() {
+    const updatedPhotographer = {
+      name: values.name,
+      bio: values.bio,
+    };
+    const update = async () => {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/update`,
-        values
-      );
+        `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}`,
+        updatedPhotographer
+      )
+        .then((res) => {
+          toast.success("Profile updated successfully");
+        })
+        .catch((error) => {
+          toast.error("Failed to update profile");
+        })
     }
-    Update();
+    await update();
     handleRefresh();
   };
 
   const handleCreateChat = async () => {
+    if (!session) {
+      toast.error("You must be logged in to send a message");
+      return;
+    }
     const newChat = {
       senderId: sessionId,
       receiverId: userId,
@@ -215,11 +229,12 @@ const Hero = () => {
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",
                       showAdvancedOptions: false,
+                      singleUploadAutoClose: false,
                       cropping: true,
                       multiple: false,
                       defaultSource: "local",
                       resourceType: "image",
-                      folder: `${userId}/profile`,
+                      folder: `anothershot/${userId}/profile`,
                       styles: {
                         palette: {
                           window: "#ffffff",
@@ -290,6 +305,7 @@ const Hero = () => {
               options={{
                 tags: ["cover image", `${session?.user.id}`],
                 sources: ["local"],
+                singleUploadAutoClose: false,
                 googleApiKey: "<image_search_google_api_key>",
                 showAdvancedOptions: false,
                 cropping: true,
@@ -298,7 +314,7 @@ const Hero = () => {
                 multiple: false,
                 defaultSource: "local",
                 resourceType: "image",
-                folder: `${userId}/cover-image`,
+                folder: `anothershot/${userId}/cover-image`,
                 styles: {
                   palette: {
                     window: "#ffffff",
@@ -318,7 +334,7 @@ const Hero = () => {
                 },
               }}
               uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
-              >
+            >
               {({ open }) => {
                 return (
                   <Button
@@ -413,7 +429,7 @@ const Hero = () => {
         )}
         {!isPhotographer && (
           <Button variant="destructive" className="w-4/5" asChild>
-            <Link href="/photographer/Bookings">Book Now</Link>
+            <Link href="/photographer/bookings">Book Now</Link>
           </Button>
         )}
 
