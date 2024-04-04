@@ -1,43 +1,25 @@
-'use server'
+"use server";
 
 import axios from "axios";
 
-interface User {
-    id: string;
-    userRole: string;
-    name: string;
-    email: string;
-    status: string;
-}
-export const fetchData = async (page: number): Promise<User[]> => {
+export const fetchData = async (page: number) => {
     try {
-        const users = await axios.get<User[]>(
-            `http://localhost:8000/api/admin/getallusers?page=${page}`
+        const users = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/admin/getallusers?page=${page}`
         );
-
-        const mappedUsers = users.data.map((user) => ({
-            id: user.id,
-            userRole: user.userRole,
-            name: user.name,
-            email: user.email,
-            status: user.status,
-        }));
-
-        return mappedUsers;
+        return users.data;
     } catch (error) {
-        console.error("Error fetching data:", error);
-        throw error;
+        throw new Error("Error fetching users");
     }
 };
 
 export const fetchLastPage = async (): Promise<number> => {
     try {
         const lastPage = await axios.get<number>(
-            `http://localhost:8000/api/admin/getlastpage`
+            `${process.env.NEXT_PUBLIC_API_URL}/api/admin/getlastpage`
         );
         return lastPage.data;
     } catch (error) {
-        console.error("Error fetching data:", error);
-        throw error;
+        throw new Error("Error Fetching Users");
     }
 };

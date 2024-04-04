@@ -28,20 +28,7 @@ const SignInFormSchema = z.object({
 const SignInForm = () => {
 
     const router = useRouter();
-    const session = useSession();
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (session?.status === "authenticated") {
-            if (session.data.user.userRole === "ADMIN") {
-                router.push(`/user/admin/${session.data.user.id}`);
-            } else if (session.data.user.userRole === "PHOTOGRAPHER") {
-                router.push(`/user/photographer/${session.data.user.id}`);
-            } else if (session.data.user.userRole === "CLIENT") {
-                router.push(`/user/client/${session.data.user.id}`);
-            }
-        }
-    }, [session, router])
 
     const form = useForm<z.infer<typeof SignInFormSchema>>({
         resolver: zodResolver(SignInFormSchema),
@@ -61,13 +48,13 @@ const SignInForm = () => {
             password: values.password,
         });
 
-        if (res?.error) {
-            toast.error(res.error);
+        if (res?.status === 401) {
+            toast.error("Invalid email or password");
         }
 
         if (res?.status === 200) {
             toast.success("Signed in successfully");
-            router.push("/home");
+            router.push("/");
         }
         setLoading(false);
     }

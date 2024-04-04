@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { BiSolidPlusSquare } from "react-icons/bi";
@@ -14,6 +15,7 @@ const AddButton = () => {
     const { userId } = useParams();
     const { data: session } = useSession();
     const [photographer, setPhotographer] = React.useState<Photographer>();
+
     useEffect(() => {
         async function fetchPhotographer() {
             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/feed/header`);
@@ -21,6 +23,7 @@ const AddButton = () => {
         }
         fetchPhotographer();
     }, [userId]);
+
     const renderNavigateButton = () => {
         if (session?.user.id === userId) {
             return null;
@@ -41,11 +44,12 @@ const AddButton = () => {
             )
         }
     }
+    
     const renderAddButton = () => {
         if (session?.user.id === userId) {
             return (
                 <CldUploadWidget
-                uploadPreset='dymz9yfzv'
+                uploadPreset={`${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`}
                 onSuccess={(results: CldUploadWidgetResults) => {
                     const uploadedResult =
                         results.info as CldUploadWidgetInfo;
@@ -60,6 +64,7 @@ const AddButton = () => {
                         }
 
                         );
+                        window.location.reload();
                     }
                     handleUploadSuccess();
                 }}
@@ -67,11 +72,12 @@ const AddButton = () => {
                     sources: ["local"],
                     googleApiKey: "<image_search_google_api_key>",
                     showAdvancedOptions: false,
+                    singleUploadAutoClose: false,
                     cropping: true,
                     multiple: false,
                     defaultSource: "local",
                     resourceType: "image",
-                    folder: `${userId}/${photographer?.name}/feed`,
+                    folder: `anothershot/${userId}/feed/`,
                     styles: {
                         palette: {
                             window: "#ffffff",

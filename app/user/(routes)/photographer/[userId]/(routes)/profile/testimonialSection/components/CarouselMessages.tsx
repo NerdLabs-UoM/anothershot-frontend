@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Carousel,
   type CarouselApi,
@@ -16,9 +17,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Testimonial } from "@/app/lib/types";
-
-
-
 interface CarouselMessagesProps {
   testimonialsData: Testimonial[];
 }
@@ -26,7 +24,6 @@ interface CarouselMessagesProps {
 const CarouselMessages: React.FC<CarouselMessagesProps> = ({
   testimonialsData,
 }) => {
-
   const [visibleTestimonials, setVisibleTestimonials] = useState<Testimonial[]>(testimonialsData);
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -93,6 +90,7 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
     }
     return stars;
   };
+
   return (
     <div className="flex flex-col ml-3 sm:ml-0">
       {visibleTestimonials.length > 0 ? (
@@ -147,4 +145,5 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
     </div>
   );
 };
+
 export default CarouselMessages;

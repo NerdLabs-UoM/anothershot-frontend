@@ -8,14 +8,14 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 
-const Faq =() =>{
+const FaqSection =() =>{
     return(
-        <Card className="border-none ">
+        <Card className="border-none md:w-[400px]">
             <CardHeader>
                 <CardTitle className="text-5xl font-['Inter']">FAQ</CardTitle>
             </CardHeader>
             <CardContent>
-                <Accordion type="single" collapsible>
+                <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-1">
                         <AccordionTrigger>How do I get started?</AccordionTrigger>
                         <AccordionContent>
@@ -40,4 +40,4 @@ const Faq =() =>{
 
     );
 }
-export default Faq;
+export default FaqSection;
