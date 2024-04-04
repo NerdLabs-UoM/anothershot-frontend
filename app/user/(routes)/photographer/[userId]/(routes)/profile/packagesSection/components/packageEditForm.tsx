@@ -166,7 +166,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
 
     const renderEditButton = () => {
         if (session && session.user && session.user.id === userId) {
-            console.log("session", session)
             return (
                 <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
                     <Button

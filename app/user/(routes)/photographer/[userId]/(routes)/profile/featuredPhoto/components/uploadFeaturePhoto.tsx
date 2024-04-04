@@ -54,7 +54,7 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                             sources: ["local"],
                             googleApiKey: "<image_search_google_api_key>",
                             showAdvancedOptions: false,
-                            singleUploadAutoClose: false,
+                            singleUploadAutoClose: true,
                             cropping: true,
                             croppingCoordinatesMode: "custom",
                             croppingAspectRatio: handleAspectRation(index),
