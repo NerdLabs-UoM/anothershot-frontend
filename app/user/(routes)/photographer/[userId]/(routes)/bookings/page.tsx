@@ -62,12 +62,12 @@ const PhotographerBookingsPage = () => {
 
   return (
     <div className="w-full flex justify-center py-5" >
-      <div className="lg:w-3/5 ">
+      <div className=" pl-4 lg:w-3/5 ">
         <FullCalendarComp
           events={events}
         />
       </div>
-      <div className="flex pr-20">
+      <div className="flex pr-6">
         {session && session.user && session.user.id === userId &&
           <Form />}
       </div>
