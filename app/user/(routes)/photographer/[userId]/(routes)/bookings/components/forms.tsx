@@ -58,6 +58,12 @@ const formSchema = z.object({
       message: "Username must be at least 2 characters long",
     })
     .max(50),
+  description: z
+    .string()
+    .min(2, {
+      message: "Username must be at least 2 characters long",
+    })
+    .max(50),
   startDate: z.date(),
   endDate: z.date(),
   startTime: z.string(),
@@ -72,10 +78,12 @@ const forms = () => {
   const [event, setEvent] = useState<Event[]>([]);
   const today = new Date();
   const defaultDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      description: "",
       startDate: defaultDate,
       endDate: defaultDate,
       startTime: "HH:mm",
@@ -83,17 +91,17 @@ const forms = () => {
     }
   });
 
-
   const renderEditButton = () => {
     if (session && session.user && session.user.id === userId) {
       return (
-        <DialogTrigger className="pl-32 gap-10 sm:col-span-4 sm:flex sm:justify-end ">
-          <PlusSquare size={56} style={{ color: 'black' }} />
+        <DialogTrigger className="flex justify-end items-end">
+          <PlusSquare size={42} style={{ color: 'black' }} />
         </DialogTrigger>
       );
     }
     return null;
   };
+
   function handleDeleteEvent(): void {
     throw new Error('Function not implemented.')
   }
@@ -168,6 +176,22 @@ const forms = () => {
                 />
                 <FormField
                   control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
+                      <FormLabel className="col-span-2 grid place-content-end">Description</FormLabel>
+                      <FormControl className="col-span-6">
+                        <Input
+                          type="description"
+                          placeholder="description"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="startDate"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
@@ -175,7 +199,7 @@ const forms = () => {
                         Date
                       </FormLabel>
                       <FormControl className="col-span-3">
-                        <Input type="startDate" placeholder="2024-04-11"  />
+                        <Input type="startDate" placeholder="startDate" />
                       </FormControl>
                       <FormMessage />
                       <FormField
@@ -184,7 +208,7 @@ const forms = () => {
                         render={({ field }) => (
                           <FormItem className="col-span-3">
                             <FormControl className="w-full">
-                              <Input type="end Date" placeholder="2024-04-11"  />
+                              <Input type="end Date" placeholder="endDate" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -192,7 +216,7 @@ const forms = () => {
                       />
                     </FormItem>
                   )} />
-                  <FormField
+                <FormField
                   control={form.control}
                   name="startTime"
                   render={({ field }) => (
@@ -201,7 +225,7 @@ const forms = () => {
                         Time
                       </FormLabel>
                       <FormControl className="col-span-3">
-                        <Input type="endTime" placeholder="HH:mm"  />
+                        <Input type="startTime" placeholder="startTime" />
                       </FormControl>
                       <FormMessage />
                       <FormField
@@ -210,7 +234,7 @@ const forms = () => {
                         render={({ field }) => (
                           <FormItem className="col-span-3">
                             <FormControl className="w-full">
-                            <Input type="endTime" placeholder="HH:mm" />
+                              <Input type="endTime" placeholder="endTime" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -218,7 +242,7 @@ const forms = () => {
                       />
                     </FormItem>
                   )} />
-                  
+
 
               </form>
             </Form>
