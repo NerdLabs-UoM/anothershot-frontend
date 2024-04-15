@@ -129,15 +129,16 @@ export interface Photographer {
 }
 
 export interface Client {
-    id: string;
-    user: User;
-    userId: string;
-    name: string;
-    testimonial: Testimonial[];
-    Booking: Booking[];
-    Report: Report[];
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  user: User;
+  userId: string;
+  name: string;
+  bio?: string;
+  testimonial: Testimonial[];
+  Booking: Booking[];
+  Report: Report[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Admin {
