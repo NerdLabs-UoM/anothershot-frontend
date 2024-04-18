@@ -21,35 +21,35 @@ import { Event } from "@/app/lib/types";
 import FullCalendarComp from "@/components/fullCalendar";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import Form from '../bookings/components/forms';
+import Events from './components/events';
 
 const sampleEvents: Event[] = [
   {
     id: '1',
-    title: 'event 1',
-    start: new Date(2024, 2, 1, 19, 30,),
-    end: new Date(2024, 2, 1, 21, 30),
+    name: 'event 1',
+    startDate: new Date(2024, 2, 1, 19, 30,),
+    endDate: new Date(2024, 2, 1, 21, 30),
     allDay: false,
   },
   {
     id: '2',
-    title: 'event 2',
-    start: new Date(2024, 2, 2, 17, 30,),
-    end: new Date(2024, 2, 2, 19, 30),
+    name: 'event 2',
+    startDate: new Date(2024, 2, 2, 17, 30,),
+    endDate: new Date(2024, 2, 2, 19, 30),
     allDay: false,
   },
   {
     id: '3',
-    title: 'event 3',
-    start: new Date(2024, 2, 2, 19, 30,),
-    end: new Date(2024, 2, 2, 21, 30),
+    name: 'event 3',
+    startDate: new Date(2024, 2, 2, 19, 30,),
+    endDate: new Date(2024, 2, 2, 21, 30),
     allDay: false,
   },
   {
     id: '4',
-    title: 'event 4',
-    start: new Date(),
-    end: new Date(),
+    name: 'event 4',
+    startDate: new Date(),
+    endDate: new Date(),
     allDay: true,
   },
 ]
@@ -69,7 +69,7 @@ const PhotographerBookingsPage = () => {
       </div>
       <div className="flex pr-6">
         {session && session.user && session.user.id === userId &&
-          <Form />}
+          <Events />}
       </div>
     </div >
   );
