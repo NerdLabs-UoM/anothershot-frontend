@@ -5,6 +5,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormDescription,
   FormMessage,
   FormControl,
 } from "@/components/ui/form";
@@ -42,6 +43,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -49,9 +55,12 @@ import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { PlusSquare } from "lucide-react";
+import { CalendarIcon } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns"
+import { cn } from "@/app/lib/utils"
 
 const formSchema = z.object({
-
   name: z
     .string()
     .min(2, {
@@ -66,12 +75,11 @@ const formSchema = z.object({
     .max(50),
   startDate: z.date(),
   endDate: z.date(),
-  startTime: z.string(),
-  endTime: z.string()
-
+  start: z.string(),
+  end: z.string()
 });
 
-const forms = () => {
+const events = () => {
   const { data: session } = useSession()
   const [isNew, setIsNew] = useState<boolean>(false)
   const { userId } = useParams();
@@ -86,8 +94,8 @@ const forms = () => {
       description: "",
       startDate: defaultDate,
       endDate: defaultDate,
-      startTime: "HH:mm",
-      endTime: "HH:mm",
+      start: "HH:mm",
+      end: "HH:mm",
     }
   });
 
@@ -102,34 +110,99 @@ const forms = () => {
     return null;
   };
 
-  function handleDeleteEvent(): void {
-    throw new Error('Function not implemented.')
-  }
+  const handleDeleteEvent = async () => {
+    if (!session?.user?.id) return;
+    const data = {
+      photographerId: session.user.id,
+      name: form.getValues("name"),
+      description: form.getValues("description"),
+      startDate: form.getValues("startDate"),
+      endDate: form.getValues("endDate"),
+      start: form.getValues("start"),
+      end: form.getValues("end"),
+    };
+    try {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/event/create`, { data });
+      const newEvent: Event = response.data
+      console.log(response.data);
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+  //   const handleBookingChange = (value: string) => {
+  //     const selectedBooking = event.find((bookingItems) => bookingItems.id === value)
+  //     if (selectedBooking) {
 
-  function handleSaveChanges(): void {
-    throw new Error('Function not implemented.')
-  }
-  function handleCreateEvent(): void {
-    throw new Error('Function not implemented.')
-  }
+  //     }
+  //     setSelectedBookingId(value);
+  // }
+  const handleSaveChanges = async () => {
+    if (!session?.user?.id) return;
+    const data = {
+      photographerId: session.user.id,
+      name: form.getValues("name"),
+      description: form.getValues("description"),
+      startDate: form.getValues("startDate"),
+      endDate: form.getValues("endDate"),
+      start: form.getValues("start"),
+      end: form.getValues("end"),
+    };
+    try {
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/event/update`, data);
+      const newEvent: Event = response.data
+      console.log(response.data);
+      toast.success("Package details updated successfully.")
+
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+  const handleCreateEvent = async () => {
+    if (!session?.user?.id) return;
+    const data = {
+      photographerId: session.user.id,
+      name: form.getValues("name"),
+      description: form.getValues("description"),
+      startDate: form.getValues("startDate"),
+      endDate: form.getValues("endDate"),
+      start: form.getValues("start"),
+      end: form.getValues("end"),
+    };
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/event/create`, data);
+      const newEvent: Event = response.data
+      console.log(response.data);
+      //   if (event.some((event: Event) => event.name === newEvent.name)) {
+      //       toast.error("event already exists.");
+      //   } else {
+      //     (event => [...prevEvent, newEvent]);
+      //     toast.success("Package created successfully.");
+      // }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    }
+  };
   function handleCancel(): void {
     setIsNew(false);
     // Reset the form fields
   }
+
 
   return (
     <main>
       <div className="w-full sm:pr-10">
         <Dialog>
           {renderEditButton()}
-          <DialogContent className="max-w-[300px] sm:max-w-[420px]">
+          <DialogContent className="max-w-[300px] sm:max-w-[450px]">
             <DialogHeader>
               <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit event Details</DialogTitle>
               <DialogDescription className="sm:mt-2 sm:mb-4">
                 Make changes to your event details here. Click save when you're done.
               </DialogDescription>
             </DialogHeader>
+
             <Button variant={"default"} size={"lg"} onClick={() => setIsNew(true)}><PlusSquare />Add New Event</Button>
+
             <Form {...form} >
               <form onSubmit={form.handleSubmit(handleSaveChanges)}>
                 <FormField
@@ -141,7 +214,7 @@ const forms = () => {
                       <Select onValueChange={(value: string) => (value)}>
                         <FormControl className="col-span-6">
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a event" />
+                            <SelectValue placeholder="Select a Booking" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent >
@@ -195,30 +268,90 @@ const forms = () => {
                   name="startDate"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
-                      <FormLabel className="col-span-2 grid place-content-end">
-                        Date
-                      </FormLabel>
-                      <FormControl className="col-span-3">
-                        <Input type="startDate" placeholder="startDate" />
-                      </FormControl>
+                      <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="col-span-6">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[296px] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            // disabled={(date) =>
+                            //   date > new Date() || date < new Date("1900-01-01")
+                            // }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      {/* <FormDescription>
+                        Enter the event start date
+                      </FormDescription> */}
                       <FormMessage />
-                      <FormField
-                        control={form.control}
-                        name="endDate"
-                        render={({ field }) => (
-                          <FormItem className="col-span-3">
-                            <FormControl className="w-full">
-                              <Input type="end Date" placeholder="endDate" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    </FormItem>
+                  )} />
+                  <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
+                      <FormLabel className="col-span-2 grid place-content-end">End Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl className="col-span-6">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[296px] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            // disabled={(date) =>
+                            //   date > new Date() || date < new Date("1900-01-01")
+                            // }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      {/* <FormDescription>
+                        Enter the event end date
+                      </FormDescription> */}
+                      <FormMessage />
                     </FormItem>
                   )} />
                 <FormField
                   control={form.control}
-                  name="startTime"
+                  name="start"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">
@@ -230,7 +363,7 @@ const forms = () => {
                       <FormMessage />
                       <FormField
                         control={form.control}
-                        name="endTime"
+                        name="end"
                         render={({ field }) => (
                           <FormItem className="col-span-3">
                             <FormControl className="w-full">
@@ -288,4 +421,4 @@ const forms = () => {
     </main >
   );
 };
-export default forms;
+export default events;

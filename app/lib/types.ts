@@ -192,6 +192,11 @@ export interface Booking {
     package: Package;
     packageId: string;
     payment?: string | null;
+    startDate?: Date;
+    endDate?: Date;
+    start?: Date;
+    end?: Date;
+    location?: string
     event: Event;
     status: BookingStatus;
     createdAt: Date;
@@ -217,10 +222,12 @@ export interface Offer {
 
 export interface Event {
     id: string;
-    title: string;
+    name: string;
     description?: string;
-    start?: Date;
-    end?: Date;
+    startDate?: Date;
+    endDate?: Date;
+    start?: string;
+    end?: string;
     allDay?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
