@@ -6,6 +6,8 @@ export type ReportStatus = "PENDING" | "RESOLVED" | "DISMISSED";
 
 export type TestimonialVisibility = "PUBLIC" | "PRIVATE";
 
+export type AlbumVisibility = "PUBLIC" | "PRIVATE";
+
 export type Suspended = "SUSPENDED" | "NOT_SUSPENDED";
 
 export type PaymentStatus = "PENDING" | "PAID" | "UNPAID";
@@ -350,6 +352,7 @@ export interface Album {
     name: string;
     description: string;
     images: AlbumImage[];
+    visibility: AlbumVisibility;
     createdAt?: Date;
     updatedAt?: Date;
 }
