@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Masonry from "react-masonry-css";
 import { Trash2 } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -14,6 +15,7 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog";
 import { AlbumImage } from "@/app/lib/types";
+import { useEffect } from "react";
 
 interface MasonrygridProps {
     images: AlbumImage[];
@@ -22,6 +24,11 @@ interface MasonrygridProps {
 }
 
 export const Masonrygrid: React.FC<MasonrygridProps> = ({ images,albumName,canView }) => {
+    const [image, setImage] = useState<AlbumImage[]>(images);
+
+    useEffect(() => {
+        setImage(images);
+    }, [images])
 
     const handleClick = async(img:AlbumImage) => {
         try {
@@ -70,7 +77,7 @@ export const Masonrygrid: React.FC<MasonrygridProps> = ({ images,albumName,canVi
                             src={img.image}
                             alt="image"
                             height="auto"
-                            className="my-3 cursor-pointer rounded-3xl placeholder:blur hover:opacity-70"
+                            className="my-3 rounded-3xl placeholder:blur hover:opacity-70 hover:opacity-80 transition-opacity duration-300 ease-in-out"
                         />
                     </div>
                 ))}
