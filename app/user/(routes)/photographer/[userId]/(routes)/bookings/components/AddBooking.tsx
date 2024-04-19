@@ -49,7 +49,7 @@ import toast from 'react-hot-toast';
 
 const formSchema = z.object({
     eventName: z.string().min(2, "Event name should be between 5-50 characters").max(50, "Event name should be between 2-50 characters"),
-    eventLocation: z.string().min(2, "Event location should be between 5-50 characters").max(50, "Event location should be between 2-50 characters"),
+    eventLocation: z.string().min(5, "Event location should be between 5-75 characters").max(75, "Event location should be between 5-75 characters"),
     sdate: z.date({required_error: "A date is required.",}),
     edate: z.date({required_error: "A date is required.",}),
     stime: z.string().refine(value => /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
@@ -77,6 +77,8 @@ const AddBooking = () => {
             eventLocation: "",
             stime: "",
             etime: "",
+            eventType: "",
+            package: "",
         },
     });
 
