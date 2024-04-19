@@ -133,7 +133,7 @@ export interface Client {
   user: User;
   userId: string;
   name: string;
-  bio?: string;
+  bio?: string | null;
   testimonial: Testimonial[];
   Booking: Booking[];
   Report: Report[];
@@ -193,6 +193,11 @@ export interface Booking {
     package: Package;
     packageId: string;
     payment?: string | null;
+    startdate?: Date | null;
+    enddate?: Date | null;
+    start?: String | null;
+    end?: String | null;
+    location?: String | null;
     event: Event;
     status: BookingStatus;
     createdAt: Date;

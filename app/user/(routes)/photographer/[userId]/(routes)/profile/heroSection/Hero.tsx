@@ -477,7 +477,7 @@ const Hero = () => {
         )}
         {!isPhotographer && (
           <Button variant="destructive" className="w-4/5" asChild>
-            <Link href="/photographer/bookings">Book Now</Link>
+            <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
           </Button>
         )}
 

@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Bookings from "./components/page";
 
 function CLientBookings() {
   const { data: session } = useSession();
@@ -45,35 +46,38 @@ function CLientBookings() {
   }, []);
 
   return (
-    <div className="grid text-center content-center h-full ">
-      <div className="md:border rounded-[20px] md:p-10 min-w-[350px]">
-        <h1 className="text-3xl font-bold m-4">Bookings</h1>
+    <div>
+      <div className="grid text-center content-center h-full">
+        <div className="md:border rounded-[20px] md:p-10 min-w-[350px]">
+          <h1 className="text-3xl font-bold m-4">Bookings</h1>
+        </div>
+        <div className="flex">
+          {values?.map((value: Offer) => {
+            return (
+              <Card key={value.id} className="w-1/2 m-5">
+                <CardHeader>
+                  <CardTitle>{value?.clientName}</CardTitle>
+                  <CardDescription>{value?.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-row justify-end">
+                  <p>{value?.price}/=</p>
+                </CardContent>
+                <CardFooter>
+                  <p>{session?.user.name}</p>
+                  <Button
+                    variant="default"
+                    className="w-1/2"
+                    onClick={() => handleClick()}
+                  >
+                    <span className="ml-2">Check Out</span>
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
       </div>
-      <div className="flex">
-        {values?.map((value: Offer) => {
-          return (
-            <Card key={value.id} className="w-1/2 m-5">
-              <CardHeader>
-                <CardTitle>{value?.clientName}</CardTitle>
-                <CardDescription>{value?.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-row justify-end">
-                <p>{value?.price}/=</p>
-              </CardContent>
-              <CardFooter>
-                <p>{session?.user.name}</p>
-                <Button
-                  variant="default"
-                  className="w-1/2"
-                  onClick={() => handleClick()}
-                >
-                  <span className="ml-2">Check Out</span>
-                </Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
-      </div>
+      <Bookings />
     </div>
   );
 }
