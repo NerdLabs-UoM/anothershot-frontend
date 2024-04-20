@@ -189,9 +189,9 @@ export interface Booking {
     photographer: Photographer;
     photographerId: string;
     subject: string;
-    category: PhotographerCategory;
+    category: PhotographerCategory | null;
     package: Package;
-    packageId: string;
+    packageId: string | null;
     payment?: string | null;
     offer?: Offer | null;
     startdate?: string;
