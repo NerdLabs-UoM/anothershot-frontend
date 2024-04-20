@@ -48,17 +48,32 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React from "react";
 import { PlusSquare } from "lucide-react";
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import { cn } from "@/app/lib/utils"
+import { Booking, Event } from "@/app/lib/types";
+
+
+interface EventFormProps {
+  id?: string;
+  name?: string;
+  bookingId?: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  start?: string;
+  end?: string;
+  eventItems: Event[];
+  eventProp: React.Dispatch<React.SetStateAction<Event[]>>;
+}
 
 const formSchema = z.object({
   name: z
@@ -79,11 +94,12 @@ const formSchema = z.object({
   end: z.string()
 });
 
-const events = () => {
+const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
   const { data: session } = useSession()
   const [isNew, setIsNew] = useState<boolean>(false)
   const { userId } = useParams();
-  const [event, setEvent] = useState<Event[]>([]);
+  const[booking, setBooking] = useState<Booking[]>([]);
+
   const today = new Date();
   const defaultDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
@@ -92,6 +108,7 @@ const events = () => {
     defaultValues: {
       name: "",
       description: "",
+
       startDate: defaultDate,
       endDate: defaultDate,
       start: "HH:mm",
@@ -99,10 +116,26 @@ const events = () => {
     }
   });
 
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
+        );
+        const data = response.data;
+        setBooking(data)
+        console.log(response.data);
+      } catch (error) {
+        toast.error("Cannot fetch Bookings.Please try again.");
+      }
+    };
+    fetchBookings();
+  }, [userId]);
+
   const renderEditButton = () => {
     if (session && session.user && session.user.id === userId) {
       return (
-        <DialogTrigger className="flex justify-end items-end">
+        <DialogTrigger className="flex justify-center items-center">
           <PlusSquare size={42} style={{ color: 'black' }} />
         </DialogTrigger>
       );
@@ -122,7 +155,7 @@ const events = () => {
       end: form.getValues("end"),
     };
     try {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/event/create`, { data });
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`, { data });
       const newEvent: Event = response.data
       console.log(response.data);
     } catch (error) {
@@ -148,10 +181,10 @@ const events = () => {
       end: form.getValues("end"),
     };
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/event/update`, data);
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
       const newEvent: Event = response.data
       console.log(response.data);
-      toast.success("Package details updated successfully.")
+      toast.success("Event details updated successfully.")
 
     } catch (error) {
       toast.error("An error occurred. Please try again.");
@@ -169,24 +202,19 @@ const events = () => {
       end: form.getValues("end"),
     };
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/event/create`, data);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`, data);
       const newEvent: Event = response.data
       console.log(response.data);
-      //   if (event.some((event: Event) => event.name === newEvent.name)) {
-      //       toast.error("event already exists.");
-      //   } else {
-      //     (event => [...prevEvent, newEvent]);
-      //     toast.success("Package created successfully.");
-      // }
+      if (eventItems.some((event: Event) => event.name === newEvent.name)) {
+        toast.error("event already exists.");
+      } else {
+        (event: Event) => [...eventItems, newEvent];
+        toast.success("event created successfully.");
+      }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     }
   };
-  function handleCancel(): void {
-    setIsNew(false);
-    // Reset the form fields
-  }
-
 
   return (
     <main>
@@ -210,7 +238,7 @@ const events = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ml-0 pl-0 ">
-                      <FormLabel className="col-span-2 grid place-content-end">Events</FormLabel>
+                      <FormLabel className="col-span-2 grid place-content-end">Bookings</FormLabel>
                       <Select onValueChange={(value: string) => (value)}>
                         <FormControl className="col-span-6">
                           <SelectTrigger>
@@ -218,12 +246,20 @@ const events = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent >
+                          {/* <SelectGroup>
+                            {eventItems.map((events) => (
+                              <SelectItem key={events.id} value={events.id}>
+                                <SelectLabel>{events.name}</SelectLabel>
+                              </SelectItem>
+                            ))}
+                          </SelectGroup> */}
+
                           <SelectGroup>
-                            {/* {event.map((eventItems) => (
-                                                            // <SelectItem key={eventItems.id} value={eventItems.id}>
-                                                            //     <SelectLabel>{eventItems.name}</SelectLabel>
-                                                            // </SelectItem>
-                                                        ))} */}
+                            {booking.map((bookings) => (
+                              <SelectItem key={bookings.id} value={bookings.id}>
+                                <SelectLabel>{bookings.subject}</SelectLabel>
+                              </SelectItem>
+                            ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -306,7 +342,7 @@ const events = () => {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField
+                <FormField
                   control={form.control}
                   name="endDate"
                   render={({ field }) => (
@@ -421,4 +457,4 @@ const events = () => {
     </main >
   );
 };
-export default events;
+export default Events;
