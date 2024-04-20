@@ -39,6 +39,17 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import axios from 'axios';
 import { useParams } from "next/navigation";
@@ -132,11 +143,11 @@ const AddBooking = () => {
       
               if (response.status === 201) {
                 setLoading(false);
-                e.target.reset();
                 toast.success("Booking request sent successfully!");
               }
             }
           } catch (error) {
+            console.error('Error submitting booking:', error);
             setLoading(false);
             toast.error("Error booking requesting");
           } finally {
@@ -194,7 +205,8 @@ const AddBooking = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
+                                <div className='grid grid-cols-4 gap-4'>
+                                    <FormField
                                     control={form.control}
                                     name="sdate"
                                     render={({ field }) => (
@@ -270,6 +282,8 @@ const AddBooking = () => {
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                                <div className='grid grid-cols-2'>
                                 <FormField
                                     control={form.control}
                                     name="stime"
@@ -296,6 +310,7 @@ const AddBooking = () => {
                                         </FormItem>
                                     )}
                                 />
+                                </div>
                                 <FormField
                                     control={form.control}
                                     name="eventType"
@@ -350,7 +365,24 @@ const AddBooking = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="submit">Request</Button>
+                                <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                          <Button>Request</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the image.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={form.handleSubmit(onSubmit)}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                                
                             </form>
                         </Form>
 
