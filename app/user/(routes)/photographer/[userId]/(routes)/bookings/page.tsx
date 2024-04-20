@@ -4,13 +4,15 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 import Offers from "@/components/offer/offers";
+import AddBooking from "./components/AddBooking";
 
 function BookingPage() {
   const { data: session } = useSession();
   const userId  = session?.user.id
   return (
-    <div className = "flex flex-col justify-center">
+    <div className = "flex flex-col justify-center items-center">
       <Offers/>
+      <AddBooking/>
     </div>
   );
 }

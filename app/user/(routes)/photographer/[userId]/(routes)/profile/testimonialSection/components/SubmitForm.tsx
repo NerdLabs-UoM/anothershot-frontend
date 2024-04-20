@@ -70,7 +70,7 @@ const SubmitForm: React.FC = ({
   };
 
   const renderForm = () => {
-    if (session?.user?.id === userId) {
+    if (session?.user?.userRole === 'PHOTOGRAPHER' || session?.user?.userRole === 'ADMIN') {
       return null;
     }
     return (<Form {...form}>

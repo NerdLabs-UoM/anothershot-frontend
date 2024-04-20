@@ -129,15 +129,16 @@ export interface Photographer {
 }
 
 export interface Client {
-    id: string;
-    user: User;
-    userId: string;
-    name: string;
-    testimonial: Testimonial[];
-    Booking: Booking[];
-    Report: Report[];
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  user: User;
+  userId: string;
+  name: string;
+  bio?: string | null;
+  testimonial: Testimonial[];
+  Booking: Booking[];
+  Report: Report[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Admin {
@@ -192,6 +193,12 @@ export interface Booking {
     package: Package;
     packageId: string;
     payment?: string | null;
+    offer?: Offer | null;
+    startdate?: string;
+    enddate?: Date | null;
+    start?: String | null;
+    end?: String | null;
+    location?: String | null;
     event: Event;
     status: BookingStatus;
     createdAt: Date;
