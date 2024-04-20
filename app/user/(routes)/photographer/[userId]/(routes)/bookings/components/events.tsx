@@ -98,7 +98,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
   const { data: session } = useSession()
   const [isNew, setIsNew] = useState<boolean>(false)
   const { userId } = useParams();
-  const[booking, setBooking] = useState<Booking[]>([]);
+  const [booking, setBooking] = useState<Booking[]>([]);
 
   const today = new Date();
   const defaultDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -246,14 +246,6 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent >
-                          {/* <SelectGroup>
-                            {eventItems.map((events) => (
-                              <SelectItem key={events.id} value={events.id}>
-                                <SelectLabel>{events.name}</SelectLabel>
-                              </SelectItem>
-                            ))}
-                          </SelectGroup> */}
-
                           <SelectGroup>
                             {booking.map((bookings) => (
                               <SelectItem key={bookings.id} value={bookings.id}>
