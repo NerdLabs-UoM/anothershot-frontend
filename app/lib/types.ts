@@ -194,7 +194,7 @@ export interface Booking {
     packageId: string;
     payment?: string | null;
     offer?: Offer | null;
-    startdate?: string | null;
+    startdate?: string;
     enddate?: Date | null;
     start?: String | null;
     end?: String | null;

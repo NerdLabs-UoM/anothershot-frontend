@@ -153,7 +153,7 @@ const AddBooking = () => {
 
     return (
         <div className='flex justify-end'>
-            {session?.user.id !== userId && (
+            {session?.user.userRole === 'CLIENT' && (
                 <Dialog open={isOpened} onOpenChange={setIsOpened}>
                     <DialogTrigger>
                         <BiSolidPlusSquare size={50} />

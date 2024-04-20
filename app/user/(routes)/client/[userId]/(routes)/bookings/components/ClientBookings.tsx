@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -232,7 +231,7 @@ const ClientBookings = () => {
                 <CardContent>
                   <div className="flex justify-between">
                     <div className="flex flex-col text-xs sm:text-sm">
-                      <p>Date:{booking.startdate ? formatDate(booking.startdate) : ''}</p>
+                      <p>Date: {booking.startdate ? formatDate(booking.startdate) : ''}</p>
                       {booking.status === "CONFIRMED" || booking.status === "COMPLETED" ? (
                         <p className="font-semibold text-slate-600">Total cost: {booking.offer?.price} Rs</p>
                       ) : booking.status === "CANCELLED" ? (
