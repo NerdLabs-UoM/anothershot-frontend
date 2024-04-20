@@ -198,6 +198,7 @@ export interface Booking {
     end?: Date;
     location?: string
     event: Event;
+    offer:Offer;
     status: BookingStatus;
     createdAt: Date;
     updatedAt: Date;
