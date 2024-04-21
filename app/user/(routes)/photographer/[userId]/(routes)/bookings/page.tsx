@@ -67,11 +67,11 @@ const PhotographerBookingsPage = () => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/events/get`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/get`
         );
         const data = response.data;
         setEventList(data);
-        console.log(response.data);
+        console.log(data);
       } catch (error) {
         toast.error("Cannot fetch events. Please try again.");
       }
@@ -101,7 +101,7 @@ const PhotographerBookingsPage = () => {
                   id={eventItem.id}
                   name={eventItem.name}
                   description={eventItem.description}
-                  startDate="2024-03-01T19:30:00"
+                  startDate="2024-03-01T19:30:00"                
                   endDate="2024-03-01T21:30:00"
                 />
 
