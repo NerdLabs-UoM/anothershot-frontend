@@ -88,8 +88,12 @@ const formSchema = z.object({
       message: "Username must be at least 2 characters long",
     })
     .max(50),
-  startDate: z.date(),
-  endDate: z.date(),
+  startDate: z.date({
+    required_error: "A date of event start is required.",
+  }),
+  endDate: z.date({
+    required_error: "A date of event end is required.",
+  }),
   start: z.string(),
   end: z.string()
 });
@@ -99,6 +103,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
   const [isNew, setIsNew] = useState<boolean>(false)
   const { userId } = useParams();
   const [booking, setBooking] = useState<Booking[]>([]);
+  const [selectedBookingId, setSelectedBookingId] = useState<string>("")
 
   const today = new Date();
   const defaultDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -108,7 +113,6 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
     defaultValues: {
       name: "",
       description: "",
-
       startDate: defaultDate,
       endDate: defaultDate,
       start: "HH:mm",
@@ -143,46 +147,46 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
     return null;
   };
 
+  const handleBookingChange = (value: string) => {
+    const selectedBooking = booking.find((bookings) => bookings.id === value)
+    if (selectedBooking) {
+      form.setValue("name", selectedBooking.subject)
+    }
+    setSelectedBookingId(value);
+
+  }
+
   const handleDeleteEvent = async () => {
     if (!session?.user?.id) return;
     const data = {
       photographerId: session.user.id,
-      name: form.getValues("name"),
-      description: form.getValues("description"),
-      startDate: form.getValues("startDate"),
-      endDate: form.getValues("endDate"),
-      start: form.getValues("start"),
-      end: form.getValues("end"),
+      eventId: selectedBookingId
     };
     try {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`, { data });
-      const newEvent: Event = response.data
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/delete`, { data });
+      eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id !== selectedBookingId));
       console.log(response.data);
+      toast.success("Event deleted successfully");
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     }
   };
-  //   const handleBookingChange = (value: string) => {
-  //     const selectedBooking = event.find((bookingItems) => bookingItems.id === value)
-  //     if (selectedBooking) {
 
-  //     }
-  //     setSelectedBookingId(value);
-  // }
   const handleSaveChanges = async () => {
     if (!session?.user?.id) return;
     const data = {
       photographerId: session.user.id,
       name: form.getValues("name"),
       description: form.getValues("description"),
-      startDate: form.getValues("startDate"),
-      endDate: form.getValues("endDate"),
+      startDate: new Date(form.getValues("startDate")).toISOString(),
+  endDate: new Date(form.getValues("endDate")).toISOString(),
       start: form.getValues("start"),
       end: form.getValues("end"),
     };
     try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
-      const newEvent: Event = response.data
+      const updatedEvent: Event = response.data;
+      eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id === updatedEvent.id ? updatedEvent : eventItems))
       console.log(response.data);
       toast.success("Event details updated successfully.")
 
@@ -190,28 +194,76 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
       toast.error("An error occurred. Please try again.");
     }
   };
+
+  // const handleCreateEvent = async () => {
+  //   if (!session?.user?.id) return;
+  //   const data = {
+  //     photographerId: session.user.id,
+  //     bookingId: selectedBookingId,
+  //     name: form.getValues("name"),
+  //     description: form.getValues("description"),
+  //     startDate: new Date(form.getValues("startDate")).toISOString(),
+  //     endDate: new Date(form.getValues("endDate")).toISOString(),
+  //     start: form.getValues("start"),
+  //     end: form.getValues("end"),
+  //   };
+  //   try {
+  //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`, data);
+  //     const newEvent: Event = response.data
+  //     console.log(response.data);
+  //     if (eventItems.some((eventItems: Event) => eventItems.name === newEvent.name)) {
+  //       toast.error("event already exists.");
+  //     } else {
+  //       eventProp(prevEventList => [...prevEventList, newEvent]);
+  //       toast.success("event created successfully.");
+  //     }
+  //   } catch (error) {
+  //     toast.error("An error occurred. Please try again.");
+  //   }
+  // };
   const handleCreateEvent = async () => {
-    if (!session?.user?.id) return;
+    if (!session?.user?.id) {
+      console.error("Session user ID is not available");
+      return;
+    }
+  
     const data = {
       photographerId: session.user.id,
+      bookingId: selectedBookingId,
       name: form.getValues("name"),
       description: form.getValues("description"),
-      startDate: form.getValues("startDate"),
-      endDate: form.getValues("endDate"),
+      startDate: new Date(form.getValues("startDate")).toISOString(),
+      endDate: new Date(form.getValues("endDate")).toISOString(),
       start: form.getValues("start"),
       end: form.getValues("end"),
     };
+  
+    console.log("Form data:", data);
+  
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`, data);
-      const newEvent: Event = response.data
-      console.log(response.data);
-      if (eventItems.some((event: Event) => event.name === newEvent.name)) {
-        toast.error("event already exists.");
+  
+      if (response.status !== 200) {
+        console.error(`Server responded with status code ${response.status}`);
+        toast.error("An error occurred. Please try again.");
+        return;
+      }
+  
+      const newEvent: Event = response.data;
+      console.log("Response data:", newEvent);
+  
+      if (eventItems.some((eventItem: Event) => eventItem.name === newEvent.name)) {
+        toast.error("Event already exists.");
       } else {
-        (event: Event) => [...eventItems, newEvent];
-        toast.success("event created successfully.");
+        eventProp(prevEventList => {
+          const newList = [...prevEventList, newEvent];
+          console.log("Updated event list:", newList);
+          return newList;
+        });
+        toast.success("Event created successfully.");
       }
     } catch (error) {
+      console.error(error);
       toast.error("An error occurred. Please try again.");
     }
   };
@@ -239,7 +291,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ml-0 pl-0 ">
                       <FormLabel className="col-span-2 grid place-content-end">Bookings</FormLabel>
-                      <Select onValueChange={(value: string) => (value)}>
+                      <Select onValueChange={(value: string) => handleBookingChange(value)}>
                         <FormControl className="col-span-6">
                           <SelectTrigger>
                             <SelectValue placeholder="Select a Booking" />
