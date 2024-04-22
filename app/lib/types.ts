@@ -189,7 +189,7 @@ export interface Booking {
     photographer: Photographer;
     photographerId: string;
     subject: string;
-    category: PhotographerCategory | null;
+    category: PhotographerCategory;
     package: Package;
     packageId: string | null;
     payment?: string | null;

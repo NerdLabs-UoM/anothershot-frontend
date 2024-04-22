@@ -60,17 +60,17 @@ import toast from 'react-hot-toast';
 
 const formSchema = z.object({
     eventName: z.string().min(2, "Event name should be between 5-50 characters").max(50, "Event name should be between 2-50 characters"),
-    eventLocation: z.string().min(5, "Event location should be between 5-75 characters").max(75, "Event location should be between 5-75 characters"),
+    eventLocation: z.string(),
     sdate: z.date({required_error: "A date is required.",}),
     edate: z.date({required_error: "A date is required.",}),
     stime: z.string().refine(value => /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-        message: "Invalid time string! Should be in the format HH:mm.",
+        message: "Should be in HH:mm.",
       }),
     etime: z.string().refine(value => /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-        message: "Invalid time string! Should be in the format HH:mm.",
+        message: "Should be in HH:mm.",
       }),
-    eventType: z.string(),
-    package: z.string(),
+    eventType: z.string({required_error: "Event type is required."}),
+    package: z.string({required_error: "Package is required."}),
 
 });
 
@@ -88,8 +88,6 @@ const AddBooking = () => {
             eventLocation: "",
             stime: "",
             etime: "",
-            eventType: "",
-            package: "",
         },
     });
 
@@ -162,23 +160,31 @@ const AddBooking = () => {
     const categories = photographer?.map((photographerItem: Photographer) => photographerItem.category);
     console.log("Categories:", categories);
 
+    const eventMenuStyle = {
+        maxHeight: categories && categories.length > 4 ? '100px' : 'auto',
+      };
+
+    const packageMenuStyle = {
+        maxHeight: packages && packages.length > 4 ? '100px' : 'auto',
+    };
+
     return (
         <div className='flex justify-end'>
             {session?.user.userRole === 'CLIENT' && (
                 <Dialog open={isOpened} onOpenChange={setIsOpened}>
-                    <DialogTrigger>
+                    <DialogTrigger> 
                         <BiSolidPlusSquare size={50} />
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Add Booking</DialogTitle>
                             <DialogDescription>
-                                Add a booking
+                                Check the availability of the photographer before booking.
                             </DialogDescription>
                         </DialogHeader>
 
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 text-xs">
                                 <FormField
                                     control={form.control}
                                     name="eventName"
@@ -197,20 +203,20 @@ const AddBooking = () => {
                                     name="eventLocation"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Location</FormLabel>
+                                            <FormLabel>Location*</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Event Location" {...field} />
+                                                <Input placeholder="eg:- Light House, Galle (optional)" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <div className='grid grid-cols-4 gap-4'>
-                                    <FormField
+                                <div className='grid grid-cols-2 gap-2'>
+                                <FormField
                                     control={form.control}
                                     name="sdate"
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-col">
+                                        <FormItem className='flex flex-col'>
                                             <FormLabel>Start Date</FormLabel>
                                             <Popover>
                                                 <PopoverTrigger asChild>
@@ -218,7 +224,7 @@ const AddBooking = () => {
                                                         <Button
                                                             variant={"outline"}
                                                             className={cn(
-                                                                "w-[240px] pl-3 text-left font-normal",
+                                                                "w-full pl-3 text-left font-normal",
                                                                 !field.value && "text-muted-foreground"
                                                             )}
                                                         >
@@ -248,7 +254,7 @@ const AddBooking = () => {
                                     control={form.control}
                                     name="edate"
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-col">
+                                        <FormItem className='flex flex-col'>
                                             <FormLabel>End Date</FormLabel>
                                             <Popover>
                                                 <PopoverTrigger asChild>
@@ -256,7 +262,7 @@ const AddBooking = () => {
                                                         <Button
                                                             variant={"outline"}
                                                             className={cn(
-                                                                "w-[240px] pl-3 text-left font-normal",
+                                                                "w-full pl-3 text-left font-normal",
                                                                 !field.value && "text-muted-foreground"
                                                             )}
                                                         >
@@ -283,7 +289,7 @@ const AddBooking = () => {
                                     )}
                                 />
                                 </div>
-                                <div className='grid grid-cols-2'>
+                                <div className='grid grid-cols-2 gap-2'>
                                 <FormField
                                     control={form.control}
                                     name="stime"
@@ -291,7 +297,7 @@ const AddBooking = () => {
                                         <FormItem>
                                             <FormLabel>Start Time</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="HH:mm" {...field} />
+                                                <Input placeholder="HH:mm (00:00)" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -304,7 +310,7 @@ const AddBooking = () => {
                                         <FormItem>
                                             <FormLabel>End Time</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="HH:mm" {...field} />
+                                                <Input placeholder="HH:mm (00:00)" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -316,14 +322,14 @@ const AddBooking = () => {
                                     name="eventType"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Evet Type</FormLabel>
+                                            <FormLabel>Event Type</FormLabel>
                                             <Select onValueChange={field.onChange}>
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select the event type" />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent >
+                                                <SelectContent className=' overflow-y-auto' style={eventMenuStyle} >
                                                     <SelectGroup>
                                                         {categories?.map((cat: string[]) => (
                                                             cat.map((item: string, index: number) => (
@@ -351,7 +357,7 @@ const AddBooking = () => {
                                                         <SelectValue placeholder="Select a package" />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent >
+                                                <SelectContent className='overflow-y-auto' style={packageMenuStyle}>
                                                     <SelectGroup>
                                                         {packages.map((packageItem) => (
                                                             <SelectItem key={packageItem.id} value={packageItem.id}>
@@ -373,7 +379,7 @@ const AddBooking = () => {
                             <AlertDialogHeader>
                               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                               <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the image.
+                                This action cannot be undone. You can't change the booking again.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

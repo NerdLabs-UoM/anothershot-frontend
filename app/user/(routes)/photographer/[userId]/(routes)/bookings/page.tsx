@@ -11,8 +11,8 @@ function BookingPage() {
   const userId  = session?.user.id
   return (
     <div className = "flex flex-col justify-center items-center">
-      <Offers/>
       <AddBooking/>
+      <Offers/>
     </div>
   );
 }
