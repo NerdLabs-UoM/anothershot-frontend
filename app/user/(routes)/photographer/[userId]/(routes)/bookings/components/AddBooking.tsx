@@ -97,7 +97,6 @@ const AddBooking = () => {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/bookingsPackage`);
                 setPackages(response.data);
             } catch (error: any) {
-                console.error('Error fetching packages:', error);
                 toast.error('Error fetching packages:', error);
             }
         };
@@ -109,9 +108,7 @@ const AddBooking = () => {
             try {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/bookingsCategory`);
                 setPhotographer(response.data);
-                console.log(response.data);
             } catch (error: any) {
-                console.error('Error fetching photographer:', error);
                 toast.error('Error fetching photographer:', error);
             }
         };
@@ -122,7 +119,6 @@ const AddBooking = () => {
 
         const sdateString = values.sdate.toISOString();
         const edateString = values.edate.toISOString();
-        console.log(sdateString);
         try {
             setLoading(true);
             if (values) {
@@ -145,20 +141,17 @@ const AddBooking = () => {
               }
             }
           } catch (error) {
-            console.error('Error submitting booking:', error);
             setLoading(false);
             toast.error("Error booking requesting");
           } finally {
             setLoading(false);
           }
       
-        console.log(values);
         setIsOpened(false);
         form.reset();
 
     };
     const categories = photographer?.map((photographerItem: Photographer) => photographerItem.category);
-    console.log("Categories:", categories);
 
     const eventMenuStyle = {
         maxHeight: categories && categories.length > 4 ? '100px' : 'auto',
