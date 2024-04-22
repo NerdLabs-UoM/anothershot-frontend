@@ -70,6 +70,10 @@ const ClientBookings = () => {
     router.push(`/user/photographer/${photographerId}/bookings`);
   };
 
+  const handleClick = () => {
+    router.push(`/user/client/${userId}/bookings/checkout`);
+  };
+
   return (
 
     <div className="flex flex-col items-center w-11/12 lg:w-2/3 h-screen lg:h-[550px]">
@@ -156,7 +160,7 @@ const ClientBookings = () => {
                       </div>
                       <div className="grid grid-cols-1">
                         {booking.status === "CONFIRMED" ? (
-                          <Button className="text-xs sm:text-sm h-[30px] sm:h-auto">Pay Now</Button>
+                          <Button className="text-xs sm:text-sm h-[30px] sm:h-auto" onClick={() => handleClick()}>Pay Now</Button>
                         ) : booking.status === "COMPLETED" ? (
                           <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto bg-green-500"><Check className="w-3 h-3" strokeWidth={3} />Paid</Button>
                         ) : <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto">Pay</Button>}
