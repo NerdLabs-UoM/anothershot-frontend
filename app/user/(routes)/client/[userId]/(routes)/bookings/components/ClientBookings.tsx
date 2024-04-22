@@ -33,109 +33,6 @@ import { View, Check } from "lucide-react";
 import { Booking } from "@/app/lib/types";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-// interface Booking {
-//   id: string;
-//   subject: string;
-//   category: string;
-//   startdate: string;
-//   status: string;
-//   location: string | null;
-//   client: {
-//     name: string;
-//   };
-//   photographer: {
-//     name: string;
-//   };
-//   offer: {
-//     price: number;
-//   };
-//   package: {
-//     name: string;
-//   };
-// }
-
-// const bookingsData: Booking[] = [
-//   {
-//     id: "1",
-//     subject: "Family Photoshoot",
-//     category: "PHOTOSHOOT",
-//     startdate: "2024-04-25T10:00:00.000Z",
-//     status: "CONFIRMED",
-//     location: "Central Park",
-//     client: {
-//       name: "John Doe",
-//     },
-//     photographer: {
-//       name: "Jane Smith",
-//     },
-//     offer: {
-//       price: 200,
-//     },
-//     package: {
-//       name: "Premium Package",
-//     },
-//   },
-//   {
-//     id: "2",
-//     subject: "Product Launch Event",
-//     category: "MARKETING",
-//     startdate: "2024-05-10T14:30:00.000Z",
-//     status: "PENDING",
-//     location: "Convention Center",
-//     client: {
-//       name: "Alice Johnson",
-//     },
-//     photographer: {
-//       name: "Michael Brown",
-//     },
-//     offer: {
-//       price: 500,
-//     },
-//     package: {
-//       name: "Gold Package",
-//     },
-//   },
-//   {
-//     id: "3",
-//     subject: "Wedding Ceremony",
-//     category: "WEDDING",
-//     startdate: "2024-06-15T12:00:00.000Z",
-//     status: "CANCELLED",
-//     location: "Beach Resort",
-//     client: {
-//       name: "Emily Wilson",
-//     },
-//     photographer: {
-//       name: "David Miller",
-//     },
-//     offer: {
-//       price: 800,
-//     },
-//     package: {
-//       name: "Silver Package",
-//     },
-//   },
-//   {
-//     id: "4",
-//     subject: "Birthday Party",
-//     category: "EVENT",
-//     startdate: "2024-07-20T16:00:00.000Z",
-//     status: "COMPLETED",
-//     location: "Community Center",
-//     client: {
-//       name: "Robert Brown",
-//     },
-//     photographer: {
-//       name: "Sarah Johnson",
-//     },
-//     offer: {
-//       price: 300,
-//     },
-//     package: {
-//       name: "Basic Package",
-//     },
-//   },
-// ];
 const ClientBookings = () => {
   const { userId } = useParams();
   const router = useRouter();
@@ -161,7 +58,6 @@ const ClientBookings = () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/client/${userId}/clientBookings`);
         setBookings(response.data);
-        console.log(response.data);
       } catch (error: any) {
         toast.error("Error fetching bookings", error);
       }
