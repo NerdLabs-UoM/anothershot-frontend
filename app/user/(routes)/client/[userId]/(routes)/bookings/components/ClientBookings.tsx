@@ -40,15 +40,6 @@ const ClientBookings = () => {
   const [isOpened, setIsOpened] = useState(false);
   const [openedBookingId, setOpenedBookingId] = useState<string | null>(null);
 
-  const formatDate = (isoDate: string | null): string => {
-    if (!isoDate) return '';
-    const date = new Date(isoDate);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    return `${year}.${month}.${day}`;
-  };
-
   const formatCategory = (category: string): string => {
     return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
   };
@@ -57,7 +48,21 @@ const ClientBookings = () => {
     const fetchBookings = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/client/${userId}/clientBookings`);
-        setBookings(response.data);
+
+        const bookingsWithDateObjects = response.data.map((booking: Booking) => {
+          if (booking.startdate) {
+            const startDate = new Date(booking.startdate);
+            const startDateString = startDate.toISOString().split('T')[0];
+            return {
+              ...booking,
+              startdate: startDateString,
+            };
+          } else {
+            return booking;
+          }
+        });
+        setBookings(bookingsWithDateObjects);
+        
       } catch (error: any) {
         toast.error("Error fetching bookings", error);
       }
@@ -149,7 +154,7 @@ const ClientBookings = () => {
                   <CardContent>
                     <div className="flex justify-between">
                       <div className="flex flex-col text-xs sm:text-sm">
-                        <p>Date: {booking.startdate ? formatDate(booking.startdate) : ''}</p>
+                        <p>Date: {booking.startdate ? booking.startdate.toLocaleString() : ''}</p>
                         {booking.status === "CONFIRMED" || booking.status === "COMPLETED" ? (
                           <p className="font-semibold text-slate-600">Total cost: {booking.offer?.price} Rs</p>
                         ) : booking.status === "CANCELLED" ? (
