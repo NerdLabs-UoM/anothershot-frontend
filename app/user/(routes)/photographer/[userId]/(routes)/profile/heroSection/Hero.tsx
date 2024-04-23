@@ -265,7 +265,7 @@ const Hero = () => {
                     }}
 
                     options={{
-                      publicId:`${session?.user.id}.profile`,
+                      // publicId:`${session?.user.id}.profile`,
                       tags: ["profile image", `${session?.user.id}`],
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",

@@ -106,8 +106,8 @@ export default function FeaturedPhoto() {
         <div>
           <Link href={`/user/photographer/${userId}/feed`}>
             <Button
-              variant="default"
-              className="rounded-md bg-black-600 text-white-300 flex justify-center items-center">
+              variant="outline"
+              className="">
               View Feed
             </Button>
           </Link>
@@ -179,7 +179,7 @@ export default function FeaturedPhoto() {
           </div>
         </div>
       </div>
-      <div>{renderFeedButton()}</div>
+      <div className="flex justify-center">{renderFeedButton()}</div>
       </div>
   );
 }
