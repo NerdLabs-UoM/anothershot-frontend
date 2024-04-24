@@ -43,7 +43,7 @@ const ContactSectionContent = () => {
               variant={"outline"}
               size={"icon"}
             >
-              {(session && session.user && session.user.id === userId && contactDets) && <ContactForm contactDets={contactDets} setContactDets={setContactDets} />}
+              {(session && session.user && session.user.id === userId ) && <ContactForm contactDets={contactDets} setContactDets={setContactDets} />}
             </Button>
           </div>
           <div className="grid grid-cols-1 gap-20 sm:grid-cols-3 grid-rows-3 sm:grid-rows-1 sm:gap-10 sm:ml-16 mt-6">
