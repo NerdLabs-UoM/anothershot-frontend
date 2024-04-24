@@ -380,3 +380,14 @@ export interface PaymentArray {
     amount: number;
     type: PaymentType;
 }
+
+export interface Notification {
+    id:string;
+    receiver:User;
+    receiverId:string;
+    type:string;
+    title: string;
+    description?:string;
+    read:boolean;
+    createdAt:Date;
+  }
