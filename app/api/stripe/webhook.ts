@@ -22,8 +22,10 @@ export default async function handler(
 ){
     try{
         console.log(req.headers)
-        if(req.method !== 'POST')
-            return res.status(400).send('Method not allowed')
+        if(req.method !== 'POST'){
+            return res.status(405).send('Method not allowed')
+        }
+            
         
         const sig:any = req.headers['stripe-signature'];
         const rawBody = await getRawBody(req);
@@ -38,6 +40,7 @@ export default async function handler(
         console.log("event.type",JSON.stringify(event.type));
 
         if(event.type === 'checkout.session.completed'){
+            console.log("Completed")
             const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
                 event.data.object.id,{
                     expand:['line_items'],
