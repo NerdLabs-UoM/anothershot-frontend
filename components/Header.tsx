@@ -102,7 +102,7 @@ const Header = () => {
                           <Button
                             variant="default"
                             className="w-3/12 h-7 sm:w-2/12"
-                            onClick={() => router.push("/")}
+                            onClick={() => router.push(`/notification`)}
                           >
                             view
                           </Button>
