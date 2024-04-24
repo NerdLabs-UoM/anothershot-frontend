@@ -61,7 +61,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                             const packageImageURL = {
                                 image: uploadedResult.secure_url,
                             };
-                            async function Update() {
+                            async function update() {
                                 const data = {
                                     coverPhotos: [packageImageURL.image]
                                 };
@@ -74,6 +74,10 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                     toast.error("An error occured. Please try again.")
                                 }
                             }
+
+                            update()
+                            setCoverPhoto({ url: uploadedResult.secure_url });
+
                         }}
                         options={{
                             tags: ["cover image", `${session?.user.id}`],
