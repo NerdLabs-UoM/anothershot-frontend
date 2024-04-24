@@ -13,12 +13,12 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { AlbumImage } from "@/app/lib/types";
 
-interface AlbumImageProp {
+interface ImageUploadProps {
     albumId: string | string[];
     onImageUpdate: (images: AlbumImage[]) => void;
 }
 
-const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ albumId, onImageUpdate }) => {
     const [image, setImage] = useState<AlbumImage[]>([]);
     const { userId } = useParams();
 
@@ -113,7 +113,6 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                         <Button variant="default" onClick={() => open()}>
                             <div className="flex gap-2 my-3">
                                 <Upload size={20} color="#fff" />
-                                <span className="text-1xl">Upload</span>
                             </div>
                         </Button>
                     );
