@@ -2,7 +2,7 @@
 
 import {
   Carousel,
-  type CarouselApi,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
