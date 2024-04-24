@@ -15,8 +15,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+import ViewOffer from "./offers/viewOffer";
 import Bookings from "./components/page";
 
+//form start
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  price: z.coerce.number(),
+});
+//form end
 function CLientBookings() {
   const { data: session } = useSession();
   const params = useParams();
@@ -27,25 +46,63 @@ function CLientBookings() {
     router.push(`/user/client/${userId}/bookings/checkout`);
   };
 
-  useEffect(() => {
-    console.log(userId);
-    const fetchOffers = async () => {
-      try {
-        const data = await axios.get<Offer[]>(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/offer/${userId}/client/offers`
-        );
-        setValues(data.data);
-      } catch (err) {
-        toast.error("Error fetching offers");
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      price: 200,
+    },
+  });
+
+  function redirectToExternalLink(link: string) {
+    window.location.href = link;
+  }
+
+  const createCheckout = async (values: any) => {
+    console.log(values);
+    try {
+      const url = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/payment/create-checkout-session`,
+        values
+      );
+      console.log(url);
+
+      if (url.data) {
+        redirectToExternalLink(url.data);
+      } else {
+        toast.error("Error creating checkout");
       }
-      if (values?.length == 0) {
-        toast.error("No offers found");
-      }
-    };
-    fetchOffers();
-  }, []);
+    } catch (err) {
+      console.log("error");
+    }
+  };
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    toast.success(JSON.stringify(values.price));
+    createCheckout(values);
+  }
+
+  // useEffect(() => {
+  //   console.log(userId);
+  //   const fetchOffers = async () => {
+  //     try {
+  //       const data = await axios.get<Offer[]>(
+  //         `${process.env.NEXT_PUBLIC_API_URL}/api/offer/${userId}/client/offers`
+  //       );
+  //       setValues(data.data);
+  //     } catch (err) {
+  //       toast.error("Error fetching offers");
+  //     }
+  //     if (values?.length == 0) {
+  //       toast.error("No offers found");
+  //     }
+  //   };
+  //   fetchOffers();
+  // }, []);
+  const bookingId:string = "660908040e2a16260d825d18"
 
   return (
+
     <div>
       <div className="grid text-center content-center h-full">
         <div className="md:border rounded-[20px] md:p-10 min-w-[350px]">
