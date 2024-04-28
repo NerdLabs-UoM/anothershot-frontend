@@ -104,7 +104,7 @@ function CLientBookings() {
   return (
 
     <div>
-      <div className="grid text-center content-center h-full">
+      {/* <div className="grid text-center content-center h-full">
         <div className="md:border rounded-[20px] md:p-10 min-w-[350px]">
           <h1 className="text-3xl font-bold m-4">Bookings</h1>
         </div>
@@ -133,7 +133,7 @@ function CLientBookings() {
             );
           })}
         </div>
-      </div>
+      </div> */}
       <Bookings />
     </div>
   );
