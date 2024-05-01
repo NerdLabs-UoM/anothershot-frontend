@@ -18,9 +18,10 @@ import {
 
 interface PaymentDetails {
     price: number | undefined,
+    bookingId: string | undefined
 }
 
-function PayNow({price}: PaymentDetails) {
+function PayNow({price,bookingId}: PaymentDetails) {
   const params = useParams();
   const router = useRouter();
   const userId = params.userId;
@@ -35,7 +36,8 @@ function PayNow({price}: PaymentDetails) {
       const url = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/payment/create-checkout-session`,
         {
-          price: values,
+          price: values.price,
+          bookingId: values.bookingId,
         }
       );
       console.log(url);
@@ -53,14 +55,14 @@ function PayNow({price}: PaymentDetails) {
   function onSubmit(values: any) {
     console.log(values.price);
     toast.success(JSON.stringify(values.price));
-    createCheckout(values.price);
+    createCheckout(values);
   }
 
   return (
     <div className="grid text-center content-center h-full ">
       <Button
         onClick={() => {
-          onSubmit({ price: price });
+          onSubmit({ price: price ,bookingId: bookingId});
         }}
         type="submit"
       >

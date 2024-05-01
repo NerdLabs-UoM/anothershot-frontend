@@ -59,6 +59,7 @@ const formSchema = z.object({
 });
 
 const Hero = () => {
+  
   const [photographer, setPhotographer] = useState<Photographer>();
   const { userId } = useParams();
   const { data: session } = useSession();

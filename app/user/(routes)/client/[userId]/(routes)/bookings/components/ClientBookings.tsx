@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import ViewOffer from "../offers/viewOffer"
 import {
   Card,
   CardContent,
@@ -78,7 +79,7 @@ const ClientBookings = () => {
   const handleClick = () => {
     router.push(`/user/client/${userId}/bookings/checkout`);
   };
-
+  console.log(bookings);
   return (
 
     <div className="flex flex-col items-center w-11/12 lg:w-2/3 h-screen lg:h-[550px]">
@@ -165,10 +166,10 @@ const ClientBookings = () => {
                       </div>
                       <div className="grid grid-cols-1">
                         {booking.status === "CONFIRMED" ? (
-                          <Button className="text-xs sm:text-sm h-[30px] sm:h-auto" onClick={() => handleClick()}>Pay Now</Button>
+                          <ViewOffer bookingId={booking.id}/>
                         ) : booking.status === "COMPLETED" ? (
                           <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto bg-green-500"><Check className="w-3 h-3" strokeWidth={3} />Paid</Button>
-                        ) : <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto">Pay</Button>}
+                        ) : <ViewOffer bookingId={booking.id}/>}
                       </div>
                     </div>
                   </CardContent>
