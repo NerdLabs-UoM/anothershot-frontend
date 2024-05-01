@@ -53,7 +53,7 @@ const ProfileGallery = () => {
   return (
 
     <Tabs defaultValue="like" className="flex flex-col items-center w-11/12 lg:w-2/3 h-screen lg:h-[550px]">
-        <TabsList className="my-5 bg-slate-200">
+        <TabsList className="my-5 bg-slate-100">
           <TabsTrigger value="save" className="text-xs md:text-sm">
             Saved Photos
           </TabsTrigger>
