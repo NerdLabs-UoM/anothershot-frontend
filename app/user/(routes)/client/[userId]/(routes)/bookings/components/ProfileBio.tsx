@@ -42,7 +42,7 @@ const ProfileBio = () => {
   return (
     <div className=" rounded-lg bg-slate-100 drop-shadow-xl w-11/12 lg:w-1/3 h-full p-3 lg:mr-5 lg:mt-20">
       <div className="flex justify-between">
-        <Avatar className="w-20 h-20">
+        <Avatar className="w-20 h-20 lg:w-24 lg:h-24">
           <AvatarImage
             src={profileImage}
             alt="@shadcn"
