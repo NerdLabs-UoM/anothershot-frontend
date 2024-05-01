@@ -119,7 +119,6 @@ export default function FeaturedPhoto() {
   const defaultImage = "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711975294/defaultImages/fearuredDefault_snh844.avif"
 
   return (
-    <div>
       <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10 space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg gap-5">
         <div className="flex -space-x-4 xl:-space-x-14 md:-space-x-16">
           <div className="relative flex mt-10 sm:mt-20 md:mt-20 lg:mt-20 sm:mb-14">
@@ -179,7 +178,6 @@ export default function FeaturedPhoto() {
           </div>
         </div>
       </div>
-      <div className="flex justify-center">{renderFeedButton()}</div>
-      </div>
+      
   );
 }
