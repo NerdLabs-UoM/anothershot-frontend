@@ -123,7 +123,7 @@ const ClientBookings = () => {
           <ScrollArea className="h-[512px] lg:h-[450px] p-4">
             <div className="grid grid-cols-1 mx-0 md:mx-12 xl:mx-24">
               {bookings.map((booking) => (
-                <Card key={booking.id} className="m-2 px-2 bg-slate-50 border-0 drop-shadow-md">
+                <Card key={booking.id} className="m-2 px-2 border-t border-slate-50 shadow-inner drop-shadow-lg hover:bg-slate-50">
                   <CardHeader>
                     <CardTitle className="flex justify-between text-base sm:text-lg">{booking.subject}
                       <Dialog open={isOpened} onOpenChange={setIsOpened}>
@@ -184,7 +184,7 @@ const ClientBookings = () => {
                     <CardDescription className="text-xs sm:text-base">{formatCategory(booking.category)}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex justify-between">
+                    <div className="flex flex-col sm:flex-row sm:justify-between">
                       <div className="flex flex-col text-xs sm:text-sm">
                         <p>Date: {booking.startdate ? booking.startdate.toLocaleString() : ''}</p>
                         {booking.status === "CONFIRMED" || booking.status === "COMPLETED" ? (
@@ -195,7 +195,7 @@ const ClientBookings = () => {
                           <p className="font-medium text-red-500">! In review</p>
                         )}
                       </div>
-                      <div className="flex gap-1">
+                      <div className="flex items-center gap-1 mt-2 sm:mt-0">
                         <div>
                           {booking.status === "CONFIRMED" ? (
                             <Button className="text-xs sm:text-sm h-[30px] sm:h-auto w-full  bg-green-500" onClick={() => handleClick()}>Pay Now</Button>
