@@ -40,6 +40,7 @@ interface UserRole {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onSearchClick:() => void;
   onSearchValueChange: (value: string) => void;
   userRole: UserRole[];
   onCheckInputChange: (newUserRole: UserRole[]) => void;
@@ -48,6 +49,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onSearchClick,
   onSearchValueChange,
   userRole,
   onCheckInputChange
@@ -135,6 +137,10 @@ export function DataTable<TData, TValue>({
             }
             className="max-w-sm"
           />
+          <Button>
+          <Search className="mx-4 bg-gray-100 bg-transparent hover:cursor-pointor" onClick={() => onSearchClick()}/>
+          </Button>
+
         </div>
         
       </div>
