@@ -3,36 +3,29 @@
 import { ColumnDef } from "@tanstack/react-table"
 
 export type Payment = {
-    clientName: string,
-    invoiceId: string,
-    date: string,
-    paymentStatus: string,
+    name: string,
+    bookingsId: string,
+    updatedAt: string,
+    status: string,
     amount: number,
-    type: string,
+    category: string,
 }
 
 export const columns: ColumnDef<Payment>[] = [
     {
-        accessorKey: "clientName",
-        header:"Client Name",
-        cell:({row}) =>{
-            return(
-                <div className="text-gray-900">
-                    {row.original.clientName}
-                </div>
-            );
-        }
+        accessorKey: "client.name",
+    header: "Client Name",
     },
     {
-        accessorKey: "invoiceId",
-        header: "Invoice ID",
+        accessorKey: "bookingsId",
+        header: "Booking ID",
     },
     {
-        accessorKey: "date",
+        accessorKey: "updatedAt",
         header: "Date",
     },
     {
-        accessorKey: "paymentStatus",
+        accessorKey: "booking.status",
         header: "Payment Status",
     },
     {
@@ -40,7 +33,7 @@ export const columns: ColumnDef<Payment>[] = [
         header: "Amount",
     },
     {
-        accessorKey: "type",
-        header: "Type",
+        accessorKey: "booking.category",
+        header: "Category",
     }
 ]

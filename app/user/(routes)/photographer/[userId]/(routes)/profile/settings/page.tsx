@@ -6,46 +6,23 @@ import AddCategorySection from "./components/add_category";
 import BankDetailsSection from "./components/bank_details";
 import ReportSection from "./components/report";
 import FaqSection from "./components/faq";
+import { useParams } from "next/navigation";
 import { Payment, columns } from "./components/paymentColumns";
 import { DataTable } from "./components/data-table";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
-const getData: Payment[] = [
-    {
-        clientName: "John Doe",
-        invoiceId: "INV-1234",
-        date: "Feb 2,2024",
-        paymentStatus: "Paid",
-        amount: 2500,
-        type: "Album Payment",
-    },
-    {
-        clientName: "Jane Doe",
-        invoiceId: "INV-1235",
-        date: "Jan 4,2024",
-        paymentStatus: "UnPaid",
-        amount: 1000,
-        type: "Booking",
-    },
-    {
-        clientName: "client name3",
-        invoiceId: "INV-1485",
-        date: "Jan 4,2024",
-        paymentStatus: "Pending",
-        amount: 1500,
-        type: "Booking",
-    },
-];
-
-export default function Settings() {
-    const [filteredUsers, setFilteredUsers] = useState<Payment[]>([]);
+const Settings = () => {
+    const [payments,setPayments] = useState<Payment[]>([]);
+    const { userId } = useParams();
 
     useEffect(() => {
-        const fetchUsers = () => {
-            const data = getData;
-            setFilteredUsers(data);
+        const fetchPayments = async() => {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/getpayments`)
+            setPayments(res.data);
+            console.log("payment data",res.data);
         };
-        fetchUsers();
+        fetchPayments();
 
     }, []);
 
@@ -68,7 +45,7 @@ export default function Settings() {
             </div>
             <div>
                 <BankDetailsSection />
-                <DataTable columns={columns} data={filteredUsers} />
+                <DataTable columns={columns} data={payments} />
             </div>
             <div className="grid md:flex grid mb-4 md:flex md:justify-center lg:gap-[40px]">
                 <ReportSection />
@@ -77,3 +54,5 @@ export default function Settings() {
         </div>
     );
 }
+
+export default Settings;

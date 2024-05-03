@@ -49,7 +49,7 @@ import {
 const FormSchema = z.object({
     category: z.string({
         required_error: "Please select a category.",
-    }),
+    }).optional(),
 });
 
 const AddCategorySection = () => {
