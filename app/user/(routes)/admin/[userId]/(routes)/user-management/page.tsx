@@ -81,7 +81,7 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
   };
 
   const handleSearchValueChange = (value: string) => {
-    if (value) {
+    if (!value) {
       setFetch(!fetch);
     }
     setName(value);
@@ -91,9 +91,13 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
     setPage(currentPage);
   };
 
+  const handleSearch = () => {
+    setFetch(!fetch);
+
+  }
 
   const onCheckInputChange = (newUserRole: UserRole[]) => {
-    if (newUserRole) {
+    if (!newUserRole) {
       setFetch(!fetch);
     }
     setUserRole(newUserRole);
@@ -106,6 +110,7 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
     <div className="w-full">
       <DataTable
         columns={columns}
+        onSearchClick={handleSearch}
         onSearchValueChange={handleSearchValueChange}
         onCheckInputChange={onCheckInputChange}
         userRole={userRole}
