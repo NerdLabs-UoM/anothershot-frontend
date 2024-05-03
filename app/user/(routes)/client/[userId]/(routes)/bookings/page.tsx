@@ -99,7 +99,6 @@ function CLientBookings() {
   //   };
   //   fetchOffers();
   // }, []);
-  const bookingId:string = "660908040e2a16260d825d18"
 
   return (
 

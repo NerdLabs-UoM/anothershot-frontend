@@ -47,13 +47,15 @@ const roles = [
   { label: "Graduation", value: "GRADUATION" },
 ] as const;
 
+interface bookingDetails{
+  bookingId:string
+}
 
-const OfferForm = () =>{
+const OfferForm = ({bookingId}:bookingDetails) =>{
     const {data:session} = useSession();
     const userId = session?.user?.id;
     const clientId = "660e8eab6d1eab907ef79067"
     const clientName = "Client"
-    const bookingId = "660908040e2a16260d825d17" 
     const date = new Date();
 
     const onSubmit =async (values: z.infer<typeof formSchema>) =>{

@@ -76,10 +76,6 @@ const ClientBookings = () => {
     router.push(`/user/photographer/${photographerId}/bookings`);
   };
 
-  const handleClick = () => {
-    router.push(`/user/client/${userId}/bookings/checkout`);
-  };
-  console.log(bookings);
   return (
 
     <div className="flex flex-col items-center w-11/12 lg:w-2/3 h-screen lg:h-[550px]">
@@ -138,7 +134,7 @@ const ClientBookings = () => {
                                     ) : (
                                       <p className="text-slate-500"><b>Location :</b> No location specified</p>
                                     )}
-                                    <p><b>Package :</b> {booking.package.name}</p>
+                                    <p><b>Package :</b> {booking.package?.name}</p>
                                   </div>
                                 </div>
                               )
