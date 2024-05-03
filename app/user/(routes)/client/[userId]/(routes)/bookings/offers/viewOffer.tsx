@@ -30,7 +30,7 @@ interface bookingDetails{
     bookingId:string;
 }
 
-const viewOffer=({bookingId}:bookingDetails)=>{
+const ViewOffer=({bookingId}:bookingDetails)=>{
 
   const [value, setValues] = useState<Offer|null>(null);
   const { data: session } = useSession();
@@ -84,4 +84,4 @@ const viewOffer=({bookingId}:bookingDetails)=>{
   );
 }
 
-export default viewOffer;
+export default ViewOffer;
