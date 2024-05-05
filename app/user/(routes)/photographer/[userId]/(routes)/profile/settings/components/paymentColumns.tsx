@@ -25,7 +25,7 @@ export const columns: ColumnDef<Payment>[] = [
         header: "Date",
     },
     {
-        accessorKey: "booking.status",
+        accessorKey: "status",
         header: "Payment Status",
     },
     {
