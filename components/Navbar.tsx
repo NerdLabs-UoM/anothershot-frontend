@@ -77,7 +77,6 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
     else if(session?.user.userRole ==="CLIENT"){
       router.push(`/user/client/${session?.user.id}`);
     }
-    
   }
 
   const handleDirectionClient = (dir: string) => {

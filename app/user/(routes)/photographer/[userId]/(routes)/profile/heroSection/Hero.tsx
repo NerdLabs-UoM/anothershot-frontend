@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Settings, PenSquare, Camera } from "lucide-react";
+import { Settings, PenSquare, Camera, History } from "lucide-react";
 
 import {
   CldUploadWidgetResults,
@@ -59,6 +59,7 @@ const formSchema = z.object({
 });
 
 const Hero = () => {
+  
   const [photographer, setPhotographer] = useState<Photographer>();
   const { userId } = useParams();
   const { data: session } = useSession();
@@ -265,7 +266,7 @@ const Hero = () => {
                     }}
 
                     options={{
-                      publicId:`${session?.user.id}.profile`,
+                      // publicId:`${session?.user.id}.profile`,
                       tags: ["profile image", `${session?.user.id}`],
                       sources: ["local"],
                       googleApiKey: "<image_search_google_api_key>",
@@ -475,9 +476,9 @@ const Hero = () => {
             Message
           </Button>
         )}
-        {!isPhotographer && (
+        {session?.user.userRole === 'CLIENT' && (
           <Button variant="destructive" className="w-4/5" asChild>
-            <Link href="/photographer/bookings">Book Now</Link>
+            <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
           </Button>
         )}
 
@@ -487,6 +488,14 @@ const Hero = () => {
             className="relative px-2 pt-2"
           >
             <Settings />
+          </Link>
+        )}
+        {isPhotographer && (
+          <Link
+            href={`/user/photographer/${userId}/profile/history`}
+            className="relative px-2 pt-2"
+          >
+            <History />
           </Link>
         )}
       </div>

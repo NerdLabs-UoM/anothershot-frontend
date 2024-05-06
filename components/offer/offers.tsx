@@ -15,38 +15,15 @@ import {
 } from "@/components/ui/dialog";
 import OfferForm from "./OfferFrom";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+interface bookingDetails{
+  bookingId: string;
+}
 
-const items = [
-  {
-    id: "1",
-    name: "item 1",
-    price: 100,
-    currency: "usd",
-    quantity: 1,
-  },
-  {
-    id: "2",
-    name: "item 2",
-    price: 200,
-    currency: "usd",
-    quantity: 1,
-  },
-];
+function Offers({bookingId}: bookingDetails) {
 
-function Offers() {
-  const {data:session} = useSession();
   const [values, setValues] = useState<Offer[]>();
   
   const params = useParams(); 
-  console.log(params)
   const userId = params.userId;
 
   useEffect(() => {
@@ -68,7 +45,6 @@ function Offers() {
 
 
   return (
-    <>
       <div className="flex flex-col">
         <Dialog>
           <DialogTrigger className="">Create Offer</DialogTrigger>
@@ -76,30 +52,12 @@ function Offers() {
             <DialogHeader>
               <DialogTitle>Make an Offer</DialogTitle>
               <DialogDescription>
-                <OfferForm />
+                <OfferForm bookingId = {bookingId} />
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
         </Dialog>
-
-        {values?.map((value:Offer)=>{
-          return (
-            <Card key={value.id} className="w-1/2 m-5">
-              <CardHeader>
-                <CardTitle>{value?.clientName}</CardTitle>
-                <CardDescription>{value?.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-row justify-end">
-                <p>{value?.price}/=</p>
-              </CardContent>
-              <CardFooter >
-                <p>{session?.user.name}</p>
-              </CardFooter>
-            </Card>
-          )
-        })}
       </div>
-    </>
   );
 }
 
