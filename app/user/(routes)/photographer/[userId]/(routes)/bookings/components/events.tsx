@@ -76,26 +76,24 @@ interface EventFormProps {
 }
 
 const formSchema = z.object({
-  name: z
+  title: z
     .string()
     .min(2, {
-      message: "Username must be at least 2 characters long",
+      message: "Title must be at least 2 characters long",
     })
     .max(50),
   description: z
     .string()
     .min(2, {
-      message: "Username must be at least 2 characters long",
+      message: "Description must be at least 2 characters long",
     })
     .max(50),
-  startDate: z.date({
+  start: z.date({
     required_error: "A date of event start is required.",
   }),
-  endDate: z.date({
+  end: z.date({
     required_error: "A date of event end is required.",
   }),
-  start: z.string(),
-  end: z.string()
 });
 
 const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
@@ -111,12 +109,12 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      title: "",
       description: "",
-      startDate: defaultDate,
-      endDate: defaultDate,
-      start: "HH:mm",
-      end: "HH:mm",
+      // startDate: defaultDate,
+      // endDate: defaultDate,
+      start: defaultDate,
+      end: defaultDate,
     }
   });
 
@@ -128,13 +126,13 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
         );
         const data = response.data;
         setBooking(data)
-        console.log(response.data);
+        console.log("Bookings Data", response.data);
       } catch (error) {
         toast.error("Cannot fetch Bookings.Please try again.");
       }
     };
     fetchBookings();
-  }, [userId]);
+  }, []);
 
   const renderEditButton = () => {
     if (session && session.user && session.user.id === userId) {
@@ -150,7 +148,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
   const handleBookingChange = (value: string) => {
     const selectedBooking = booking.find((bookings) => bookings.id === value)
     if (selectedBooking) {
-      form.setValue("name", selectedBooking.subject)
+      form.setValue("title", selectedBooking.subject)
     }
     setSelectedBookingId(value);
 
@@ -176,12 +174,12 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
     if (!session?.user?.id) return;
     const data = {
       photographerId: session.user.id,
-      name: form.getValues("name"),
+      title: form.getValues("title"),
       description: form.getValues("description"),
-      startDate: new Date(form.getValues("startDate")).toISOString(),
-  endDate: new Date(form.getValues("endDate")).toISOString(),
-      start: form.getValues("start"),
-      end: form.getValues("end"),
+      // startDate: new Date(form.getValues("startDate")).toISOString(),
+      // endDate: new Date(form.getValues("endDate")).toISOString(),
+      start: new Date(form.getValues("start")).toISOString(),
+      end: new Date(form.getValues("end")).toISOString(),
     };
     try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
@@ -226,33 +224,33 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
       console.error("Session user ID is not available");
       return;
     }
-  
+
     const data = {
       photographerId: session.user.id,
       bookingId: selectedBookingId,
-      name: form.getValues("name"),
+      title: form.getValues("title"),
       description: form.getValues("description"),
-      startDate: new Date(form.getValues("startDate")).toISOString(),
-      endDate: new Date(form.getValues("endDate")).toISOString(),
-      start: form.getValues("start"),
-      end: form.getValues("end"),
+      // startDate: new Date(form.getValues("startDate")).toISOString(),
+      // endDate: new Date(form.getValues("endDate")).toISOString(),
+      start: new Date(form.getValues("start")).toISOString(),
+      end: new Date(form.getValues("end")).toISOString(),
     };
-  
+
     console.log("Form data:", data);
-  
+
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`, data);
-  
+
       if (response.status !== 200) {
         console.error(`Server responded with status code ${response.status}`);
         toast.error("An error occurred. Please try again.");
         return;
       }
-  
+
       const newEvent: Event = response.data;
       console.log("Response data:", newEvent);
-  
-      if (eventItems.some((eventItem: Event) => eventItem.name === newEvent.name)) {
+
+      if (eventItems.some((eventItem: Event) => eventItem.title === newEvent.title)) {
         toast.error("Event already exists.");
       } else {
         eventProp(prevEventList => {
@@ -287,7 +285,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
               <form onSubmit={form.handleSubmit(handleSaveChanges)}>
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="title"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ml-0 pl-0 ">
                       <FormLabel className="col-span-2 grid place-content-end">Bookings</FormLabel>
@@ -313,14 +311,14 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
                 />
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="title"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">Name</FormLabel>
                       <FormControl className="col-span-6">
                         <Input
-                          type="name"
-                          placeholder="event name"
+                          type="title"
+                          placeholder="event title"
                           {...field}
                         />
                       </FormControl>
@@ -345,7 +343,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
                 />
                 <FormField
                   control={form.control}
-                  name="startDate"
+                  name="start"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
@@ -388,7 +386,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
                   )} />
                 <FormField
                   control={form.control}
-                  name="endDate"
+                  name="end"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">End Date</FormLabel>

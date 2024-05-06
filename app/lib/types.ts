@@ -223,12 +223,12 @@ export interface Offer {
 
 export interface Event {
     id: string;
-    name: string;
+    title: string;
     description?: string;
-    startDate?: Date;
-    endDate?: Date;
-    start?: string;
-    end?: string;
+    // startDate?: Date;
+    // endDate?: Date;
+    start?: Date;
+    end?: Date;
     allDay?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
