@@ -14,21 +14,21 @@ const bookingTable = () => {
     const [isNew, setIsNew] = useState<boolean>(false)
     const { userId } = useParams();
     const [booking, setBooking] = useState<Booking[]>([]);
-    useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
-                );
-                const data = response.data;
-                setBooking(data)
-                console.log(response.data);
-            } catch (error) {
-                toast.error("Cannot fetch Bookings.Please try again.");
-            }
-        };
-        fetchBookings();
-    }, [userId]);
+    // useEffect(() => {
+    //     const fetchBookings = async () => {
+    //         try {
+    //             const response = await axios.get(
+    //                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
+    //             );
+    //             const data = response.data;
+    //             setBooking(data)
+    //             console.log("Bookings",response.data);
+    //         } catch (error) {
+    //             toast.error("Cannot fetch Bookings.Please try again.");
+    //         }
+    //     };
+    //     fetchBookings();
+    // }, []);
 
     return (
         <div>
