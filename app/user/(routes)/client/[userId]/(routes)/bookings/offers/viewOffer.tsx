@@ -24,14 +24,15 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 
 import PayNow from "./paynow"
+import { values } from "lodash";
 
 interface bookingDetails{
     bookingId:string;
 }
 
-const viewOffer=({bookingId}:bookingDetails)=>{
+const ViewOffer=({bookingId}:bookingDetails)=>{
 
-  const [value, setValues] = useState<Offer>();
+  const [value, setValues] = useState<Offer|null>(null);
   const { data: session } = useSession();
 
   
@@ -43,6 +44,7 @@ const viewOffer=({bookingId}:bookingDetails)=>{
         const data = await axios.get<Offer>(
           `${process.env.NEXT_PUBLIC_API_URL}/api/offer/${bookingId}`
         );
+        console.log(data.data);
         setValues(data.data);
       } catch (err) {
         toast.error("Error fetching offers");
@@ -50,29 +52,30 @@ const viewOffer=({bookingId}:bookingDetails)=>{
     };
     fetchOffers();
   }, []);
+  
   return (
     <div>
       <Dialog>
-        <DialogTrigger className="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-sm text-white bg-red-500 hover:bg-red-400 focus:outline-none focus:border-red-700 focus:ring-red-300 disabled:opacity-25 transition ease-in-out duration-150">
+        <DialogTrigger className="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-sm text-white bg-black hover:bg-slate-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150">
           View Offer
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Offer</DialogTitle>
             <DialogDescription>
-              <Card className="m-5">
+              {value?.price?<Card className="m-5">
                 <CardHeader>
                   <CardTitle>{value?.clientName}</CardTitle>
                   <CardDescription>{value?.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col justify-end ">
-                  <p className = "pb-3">{value?.price}</p>
-                  <PayNow price ={value?.price}/>
+                  <p className = "pb-3 font-bold">{value?.price}/=</p>
+                  <PayNow price ={value?.price} bookingId={bookingId}/>
                 </CardContent>
                 <CardFooter>
                   <p>{session?.user.name}</p>
                 </CardFooter>
-              </Card>
+              </Card>:<p>No offers yet</p>}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
@@ -81,4 +84,4 @@ const viewOffer=({bookingId}:bookingDetails)=>{
   );
 }
 
-export default viewOffer;
+export default ViewOffer;

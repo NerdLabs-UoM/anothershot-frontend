@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import ViewOffer from "../offers/viewOffer"
 import {
   Card,
   CardContent,
@@ -86,6 +87,7 @@ const ClientBookings = () => {
     router.push(`/user/photographer/${photographerId}/bookings`);
   };
 
+
   const handleClick = () => {
     router.push(`/user/client/${userId}/bookings/checkout`);
   };
@@ -165,11 +167,13 @@ const ClientBookings = () => {
                                     ) : (
                                       <p className="text-slate-500"><b>Location :</b> No location specified</p>
                                     )}
+
                                     {booking.package ? (
                                       <p><b>Package :</b> {booking.package.name}</p>
                                     ) : (
                                       <p className="text-slate-500"><b>Package :</b> Selected package not available</p>
                                     )}
+
                                   </div>
                                 </div>
                               )
@@ -195,13 +199,14 @@ const ClientBookings = () => {
                           <p className="font-medium text-red-500">! In review</p>
                         )}
                       </div>
+
                       <div className="flex items-center gap-1 mt-2 sm:mt-0">
                         <div>
                           {booking.status === "CONFIRMED" ? (
-                            <Button className="text-xs sm:text-sm h-[30px] sm:h-auto w-full  bg-green-500" onClick={() => handleClick()}>Pay Now</Button>
-                          ) : booking.status === "COMPLETED" ? (
-                            <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto bg-green-500"><Check className="w-3 h-3" strokeWidth={3} />Paid</Button>
-                          ) : <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto w-full">Pay</Button>}
+                          <ViewOffer bookingId={booking.id}/>
+                        ) : booking.status === "COMPLETED" ? (
+                          <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto bg-green-500"><Check className="w-3 h-3" strokeWidth={3} />Paid</Button>
+                        ) : <ViewOffer bookingId={booking.id}/>}
                         </div>
                         <AlertDialog>
                           <AlertDialogTrigger> 
