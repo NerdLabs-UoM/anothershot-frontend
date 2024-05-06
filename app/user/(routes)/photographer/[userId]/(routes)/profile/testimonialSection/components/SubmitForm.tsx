@@ -46,7 +46,7 @@ const SubmitForm: React.FC = ({
     try {
       setLoading(true);
       if (values) {
-        const response = await axios.post(`http://localhost:8000/api/photographer/${userId}/profile/testimonial`, {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonial`, {
           review: values.review,
           rating: selectedRating,
           clientId: session?.user?.id,

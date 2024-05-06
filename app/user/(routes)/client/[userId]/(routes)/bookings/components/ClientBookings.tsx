@@ -26,6 +26,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -63,7 +74,7 @@ const ClientBookings = () => {
           }
         });
         setBookings(bookingsWithDateObjects);
-        
+
       } catch (error: any) {
         toast.error("Error fetching bookings", error);
       }
@@ -75,6 +86,28 @@ const ClientBookings = () => {
     toast('Redirecting to photographer booikings');
     router.push(`/user/photographer/${photographerId}/bookings`);
   };
+
+
+  const handleClick = () => {
+    router.push(`/user/client/${userId}/bookings/checkout`);
+  };
+
+  const handleCancel = async (bookingId: string, clientId: string) => {
+    try {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/client/${clientId}/deleteBooking`, {
+        data: {
+          bookingId: bookingId,
+        },
+      });
+      if (response.status === 200) {
+        console.log(response.status);
+        toast.success("Booking has been cancelled");
+        setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
+      }
+    } catch (error: any) {
+      toast.error("Error cancelling booking", error);
+    }
+  }
 
   return (
 
@@ -92,7 +125,7 @@ const ClientBookings = () => {
           <ScrollArea className="h-[512px] lg:h-[450px] p-4">
             <div className="grid grid-cols-1 mx-0 md:mx-12 xl:mx-24">
               {bookings.map((booking) => (
-                <Card key={booking.id} className="m-2 px-2 bg-slate-50 border-0 drop-shadow-md">
+                <Card key={booking.id} className="m-2 px-2 border-t border-slate-50 shadow-inner drop-shadow-lg hover:bg-slate-50">
                   <CardHeader>
                     <CardTitle className="flex justify-between text-base sm:text-lg">{booking.subject}
                       <Dialog open={isOpened} onOpenChange={setIsOpened}>
@@ -134,7 +167,13 @@ const ClientBookings = () => {
                                     ) : (
                                       <p className="text-slate-500"><b>Location :</b> No location specified</p>
                                     )}
-                                    <p><b>Package :</b> {booking.package?.name}</p>
+
+                                    {booking.package ? (
+                                      <p><b>Package :</b> {booking.package.name}</p>
+                                    ) : (
+                                      <p className="text-slate-500"><b>Package :</b> Selected package not available</p>
+                                    )}
+
                                   </div>
                                 </div>
                               )
@@ -149,7 +188,7 @@ const ClientBookings = () => {
                     <CardDescription className="text-xs sm:text-base">{formatCategory(booking.category)}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex justify-between">
+                    <div className="flex flex-col sm:flex-row sm:justify-between">
                       <div className="flex flex-col text-xs sm:text-sm">
                         <p>Date: {booking.startdate ? booking.startdate.toLocaleString() : ''}</p>
                         {booking.status === "CONFIRMED" || booking.status === "COMPLETED" ? (
@@ -160,12 +199,36 @@ const ClientBookings = () => {
                           <p className="font-medium text-red-500">! In review</p>
                         )}
                       </div>
-                      <div className="grid grid-cols-1">
-                        {booking.status === "CONFIRMED" ? (
+
+                      <div className="flex items-center gap-1 mt-2 sm:mt-0">
+                        <div>
+                          {booking.status === "CONFIRMED" ? (
                           <ViewOffer bookingId={booking.id}/>
                         ) : booking.status === "COMPLETED" ? (
                           <Button disabled className="text-xs sm:text-sm h-[30px] sm:h-auto bg-green-500"><Check className="w-3 h-3" strokeWidth={3} />Paid</Button>
                         ) : <ViewOffer bookingId={booking.id}/>}
+                        </div>
+                        <AlertDialog>
+                          <AlertDialogTrigger> 
+                          <div>
+                            {booking.status === "CONFIRMED" || booking.status === 'PENDING' ? (
+                              <Button className="text-xs sm:text-sm h-[30px] sm:h-auto w-full bg-red-600">Cancel</Button>
+                            ) : null}
+                          </div>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently cancel your booking.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Undo</AlertDialogCancel>
+                              <AlertDialogAction  onClick={() => handleCancel(booking.id, booking.clientId)}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </CardContent>
