@@ -56,6 +56,8 @@
     "emoji-mart": "^5.5.2",
     "framer-motion": "^11.0.3",
     "handlebars": "^4.7.8",
+    "js-file-download": "^0.4.12",
+    "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.354.0",
     "next": "^14.1.0",

@@ -26,9 +26,11 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
-import { Album } from "@/app/lib/types";
+import { Album, AlbumImage } from "@/app/lib/types";
 import Masonry from "react-masonry-css";
-
+import fileDownload from "js-file-download";
+import axios from "axios";
+import JSZip from 'jszip';
 
 type AlbumCardProps = {
     albumData: Album[];
@@ -41,6 +43,34 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ albumData, isPhotographer, delete
     if (!isPhotographer) {
         albumData = albumData.filter((album) => album.visibility === "PUBLIC");
     }
+
+    const handleDownload = async (images: AlbumImage[], filename: string) => {
+        const zip = new JSZip();
+
+        // Create a promise for each image download
+        const promises = images.map(async (image, index) => {
+            const parts = image.image.split('/upload/');
+
+            let modifiedUrl = `${parts[0]}/upload/w_400,f_auto,q_auto/l_text:helvetica_50_bold:Anothershot,g_north,y_100,o_50/${parts[1]}`
+
+            try {
+                const response = await axios.get(modifiedUrl, {
+                    responseType: 'blob',
+                });
+                // Add the downloaded image to the zip file
+                zip.file(`${index + 1}_${image.id}.jpg`, response.data);
+            } catch (error) {
+                console.error(`Error downloading image ${image.id}:`, error);
+            }
+        });
+
+        await Promise.all(promises);
+
+        // Generate the zip file
+        zip.generateAsync({ type: 'blob' }).then((content) => {
+            fileDownload(content, filename);
+        });
+    };
 
     return (
         <Masonry
@@ -143,6 +173,15 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ albumData, isPhotographer, delete
                                             >
                                                 View Album
                                             </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <button
+                                                onClick={() => {
+                                                    handleDownload(album.images, `${album.id}.zip`);
+                                                }}
+                                            >
+                                                Download Album
+                                            </button>
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
                                 </DropdownMenuContent>
