@@ -1,3 +1,4 @@
+
 'use client'
 
 import Head from "next/head";
@@ -12,30 +13,30 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CircleDollarSign } from 'lucide-react';
+import { Frown } from 'lucide-react';
 import { useRouter } from "next/navigation";
 
-const Success = () => {
+const Cancel = () => {
   const router = useRouter();
   return (
     <>
       <Head>
-        <title>Success Page</title>
+        <title>Cancel Page</title>
       </Head>
       <div className="h-[80vh] flex justify-center items-center">
       <Card className="w-[350px]">
       <CardHeader>
-      <CircleDollarSign className="text-green-400 w-full " />
-        <CardTitle className="flex justify-center">Thank You</CardTitle>
+      <Frown className="text-red-500 w-full " />
+        <CardTitle className="flex justify-center">Try Again</CardTitle>
         <CardDescription className="flex justify-center">
-          Payment done Successfully
+          Payment has been Declined
         </CardDescription>
       </CardHeader>
       <CardContent>
         
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button variant='outline' onClick={()=>{router.push("/")}}>Back to the Site</Button>
+        <Button variant='outline' onClick={()=>{router.push("/")}}>Back to Home</Button>
       </CardFooter>
     </Card>
       </div>
@@ -43,4 +44,4 @@ const Success = () => {
   );
 };
 
-export default Success;
+export default Cancel;
