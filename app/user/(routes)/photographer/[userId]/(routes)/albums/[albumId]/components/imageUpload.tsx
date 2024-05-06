@@ -51,6 +51,22 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ albumId, onImageUpdate }) => 
         onImageUpdate(image);
     }, [image,onImageUpdate]);
 
+    const UploadFunc = async(image:string) => {
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
+                {
+                    images: [image],
+                    albumId: albumId,
+                }
+            );
+            toast.success("Images uploaded successfully");
+            fetchImages2();
+        } catch (e) {
+            toast.error("Images uploading failed");
+        }
+    }
+
     return (
         <div>
             <CldUploadWidget
@@ -60,24 +76,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ albumId, onImageUpdate }) => 
                     const imageURL = {
                         image: uploadedResult.secure_url,
                     };
-
-                    async function Upload() {
-                        try {
-                            const res = await axios.post(
-                                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
-                                {
-                                    images: [imageURL.image],
-                                    albumId: albumId,
-                                }
-                            );
-                            toast.success("Images uploaded successfully");
-                            fetchImages2();
-                        } catch (e) {
-                            toast.error("Images uploading failed");
-                        }
-                    }
-
-                    Upload();
+                    UploadFunc(imageURL.image);
                 }}
                 options={{
                     sources: ["local"],
