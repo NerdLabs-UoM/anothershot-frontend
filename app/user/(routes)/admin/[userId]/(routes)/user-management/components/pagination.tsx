@@ -48,11 +48,11 @@ const PaginationSection: React.FC<PaginationProps> = ({
                         )
                     )}
                 </PaginationItem>
+                <PaginationItem>
                 {currentPage !== lastPage && (
-                    <PaginationItem>
                         <PaginationEllipsis />
-                    </PaginationItem>
                 )}
+                </PaginationItem>
                 <PaginationItem>
                     <PaginationLink
                         isActive={lastPage === currentPage}
