@@ -193,7 +193,7 @@ export interface Booking {
     subject: string;
     category: PhotographerCategory;
     package: Package;
-    packageId: string | null;
+    packageId?: string | null;
     payment?: string | null;
     offer?: Offer | null;
     startdate?: Date | null;

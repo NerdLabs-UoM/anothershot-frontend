@@ -34,6 +34,7 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   name: z
@@ -145,10 +146,10 @@ const ProfileBio = () => {
   };
 
   return (
-    <div className=" rounded-lg bg-slate-100 drop-shadow-xl w-11/12 lg:w-1/3 h-auto p-3 lg:mr-5">
+    <div className=" rounded-lg bg-slate-100 drop-shadow-xl w-11/12 lg:w-1/3 h-full p-3 lg:mr-5 lg:mt-20">
       <div className="flex justify-between">
-        <Avatar className="relative w-20 h-20">
-          <div className="z-20 w-full bg-black h-30 opacity-5 hover:opacity-30">
+        <Avatar className="relative w-20 h-20 lg:w-24 lg:h-24">
+          <div className="z-20 w-full bg-black h-30 opacity-5 hover:opacity-40">
             <CldUploadWidget
               onSuccess={(results: CldUploadWidgetResults) => {
                 const uploadedResult =
@@ -209,7 +210,7 @@ const ProfileBio = () => {
                 return (
                   <Button
                     variant="default"
-                    className="mt-5 ml-3 rounded-full"
+                    className="mt-5 ml-3 lg:ml-5 lg:mt-8 rounded-full"
                     onClick={() => {
                       open();
                     }}
@@ -277,6 +278,7 @@ const ProfileBio = () => {
       <div className="flex flex-col">
         <h1 className="texl-xl lg:text-2xl font-bold">{values.name}</h1>
         <p className="text-gray-700 font-normal text-xs lg:text-base leading-4">@{client?.user.userName}</p>
+        <Separator className="mt-2" />
         <p className="text-xs lg:text-sm pt-3">{values.bio}</p>
       </div>
 
