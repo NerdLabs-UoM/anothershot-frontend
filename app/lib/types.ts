@@ -202,6 +202,7 @@ export interface Booking {
     end?: String | null;
     location?: String | null;
     event: Event;
+    offer:Offer;
     status: BookingStatus;
     createdAt: Date;
     updatedAt: Date;
@@ -228,6 +229,8 @@ export interface Event {
     id: string;
     title: string;
     description?: string;
+    // startDate?: Date;
+    // endDate?: Date;
     start?: Date;
     end?: Date;
     allDay?: boolean;

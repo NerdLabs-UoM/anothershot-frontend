@@ -25,8 +25,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
     const { userId } = useParams();
     const { data: session } = useSession();
     const [isPhotographer, setIsPhotographer] = useState(true);
-    const router = useRouter();
- 
+
     useEffect(() => {
         const fetchData = async () => {
             try {
