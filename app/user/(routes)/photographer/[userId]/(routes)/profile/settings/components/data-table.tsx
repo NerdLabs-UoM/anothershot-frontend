@@ -31,10 +31,8 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className="w-full border rounded-md">
-            <div className="py-5 mx-4 text-2xl font-semibold leading-none leading-7 ">
-                Payments Summary
-            </div>
+        <div className="w-full">
+
             <Table>
                 <TableHeader className="text-xs text-gray-500 bg-gray-100">
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -45,10 +43,10 @@ export function DataTable<TData, TValue>({
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                  header.column.columnDef
-                                                      .header,
-                                                  header.getContext()
-                                              )}
+                                                header.column.columnDef
+                                                    .header,
+                                                header.getContext()
+                                            )}
                                     </TableHead>
                                 );
                             })}

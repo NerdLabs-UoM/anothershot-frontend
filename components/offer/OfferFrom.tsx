@@ -30,6 +30,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { Offer } from "@/app/lib/types"
+import axios from "axios"
+import toast from "react-hot-toast"
+import { useSession } from "next-auth/react"
 
 const formSchema = z.object({
   description: z.string().min(2,{
@@ -44,12 +47,61 @@ const roles = [
   { label: "Graduation", value: "GRADUATION" },
 ] as const;
 
+interface bookingDetails{
+  bookingId:string
+}
 
-const OfferForm = () =>{
-    const [values,setValues] = useState<Offer>();
+const OfferForm = ({bookingId}:bookingDetails) =>{
+    const {data:session} = useSession();
+    const userId = session?.user?.id;
+    const clientId = "660e8eab6d1eab907ef79067"
+    const clientName = "Client"
+    const date = new Date();
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    const onSubmit =async (values: z.infer<typeof formSchema>) =>{
+      console.log(values);
+
+        const offerDetails = {
+          clientId: clientId,
+          clientName: clientName,
+          photographerId: userId,
+          bookingsId: bookingId,
+          description: values.description,
+          price: values.price,
+          packageName: values.package,
+          date: "2024-03-26T10:30:00.000Z"
+        }
+        const createOffer = async()=>{
+          console.log({
+            clientId: clientId,
+            photographerId: userId,
+            description: values.description,
+            packageName: values.package,
+            bookingsId: bookingId,
+            clientName: clientName,
+            price: values.price,
+            date: "2024-03-26T10:30:00.000Z"
+          })
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/offer/create-offer`,
+            offerDetails
+          ).then((res) => {
+            toast.success("offer created successfully",res.data);
+          })
+          .catch((error) => {
+            toast.error("Failed to create offer",error);
+          })
+        }
+        await createOffer();
+        // try{
+        //  axios.post(
+        //     `${process.env.NEXT_PUBLIC_API_URL}/api/offer/create-offer`,
+        //     offerDetails
+        //   )
+        //   toast.success("offer created successfully");
+        // }catch(error){
+        //   toast.error("Failed to create offer");
+        // }
     };
 
     const form = useForm<z.infer<typeof formSchema>>({

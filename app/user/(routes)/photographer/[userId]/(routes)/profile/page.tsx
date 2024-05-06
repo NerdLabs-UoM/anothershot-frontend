@@ -6,7 +6,6 @@ import FeaturedPhotoSection from "./featuredPhoto/featuredPhotoSection";
 import Hero from "./heroSection/Hero";
 import TestMonialsSection from "./testimonialSection/testimonialSection";
 import { useEffect, useState } from "react";
-import EditPhoto from "./featuredPhoto/components/editPhoto";
 import PackagesSection from "./packagesSection/packagesSection";
 
 const PhotographerProfile = () => {

@@ -13,12 +13,12 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { AlbumImage } from "@/app/lib/types";
 
-interface AlbumImageProp {
+interface ImageUploadProps {
     albumId: string | string[];
     onImageUpdate: (images: AlbumImage[]) => void;
 }
 
-const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ albumId, onImageUpdate }) => {
     const [image, setImage] = useState<AlbumImage[]>([]);
     const { userId } = useParams();
 
@@ -51,6 +51,22 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
         onImageUpdate(image);
     }, [image,onImageUpdate]);
 
+    const UploadFunc = async(image:string) => {
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
+                {
+                    images: [image],
+                    albumId: albumId,
+                }
+            );
+            toast.success("Images uploaded successfully");
+            fetchImages2();
+        } catch (e) {
+            toast.error("Images uploading failed");
+        }
+    }
+
     return (
         <div>
             <CldUploadWidget
@@ -60,24 +76,7 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                     const imageURL = {
                         image: uploadedResult.secure_url,
                     };
-
-                    async function Upload() {
-                        try {
-                            const res = await axios.post(
-                                `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/addimages`,
-                                {
-                                    images: [imageURL.image],
-                                    albumId: albumId,
-                                }
-                            );
-                            toast.success("Images uploaded successfully");
-                            fetchImages2();
-                        } catch (e) {
-                            toast.error("Images uploading failed");
-                        }
-                    }
-
-                    Upload();
+                    UploadFunc(imageURL.image);
                 }}
                 options={{
                     sources: ["local"],
@@ -113,7 +112,6 @@ const ImageUpload: React.FC<AlbumImageProp> = ({ albumId, onImageUpdate }) => {
                         <Button variant="default" onClick={() => open()}>
                             <div className="flex gap-2 my-3">
                                 <Upload size={20} color="#fff" />
-                                <span className="text-1xl">Upload</span>
                             </div>
                         </Button>
                     );

@@ -206,7 +206,7 @@ const FeedComponent = () => {
               alt="Background Image"
               width={400}
               height={400}
-              className=" rounded-[35px] h-[400px] w-[400px]"
+              className=" rounded-[35px] h-[400px] w-[400px] hover:scale-110 transform transition duration-500"
             />
             <div className="absolute z-10 grid grid-cols-6 items-center justify-center w-full bg-gradient-to-t from-black to-transparent rounded-b-[40px]">
               <div className="col-span-4 flex flex-start items-center justify-start pl-4">
@@ -226,7 +226,7 @@ const FeedComponent = () => {
                       variant={null}
                       role="heart"
                       size="sm"
-                      className="flex items-center justify-center gap-2"
+                      className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
                       onClick={() => handleLike(feedImage.id, feedImage.likedUserIds != null && feedImage.likedUserIds.includes(sessionUserId), feedImage.photographerId)}
                       disabled={isLikingMap[feedImage.id]}
                     >
@@ -245,7 +245,7 @@ const FeedComponent = () => {
                       variant={null}
                       role="save"
                       size="sm"
-                      className="flex items-center justify-center gap-2"
+                      className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
                       onClick={() => handleSave(feedImage.id, feedImage.savedUserIds != null && feedImage.savedUserIds.includes(sessionUserId), feedImage.photographerId)}
                       disabled={isSavingMap[feedImage.id]}
                     >

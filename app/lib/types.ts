@@ -6,6 +6,8 @@ export type ReportStatus = "PENDING" | "RESOLVED" | "DISMISSED";
 
 export type TestimonialVisibility = "PUBLIC" | "PRIVATE";
 
+export type AlbumVisibility = "PUBLIC" | "PRIVATE";
+
 export type Suspended = "SUSPENDED" | "NOT_SUSPENDED";
 
 export type PaymentStatus = "PENDING" | "PAID" | "UNPAID";
@@ -129,15 +131,16 @@ export interface Photographer {
 }
 
 export interface Client {
-    id: string;
-    user: User;
-    userId: string;
-    name: string;
-    testimonial: Testimonial[];
-    Booking: Booking[];
-    Report: Report[];
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  user: User;
+  userId: string;
+  name: string;
+  bio?: string | null;
+  testimonial: Testimonial[];
+  Booking: Booking[];
+  Report: Report[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Admin {
@@ -190,13 +193,14 @@ export interface Booking {
     subject: string;
     category: PhotographerCategory;
     package: Package;
-    packageId: string;
+    packageId?: string | null;
     payment?: string | null;
-    startDate?: Date;
-    endDate?: Date;
-    start?: Date;
-    end?: Date;
-    location?: string
+    offer?: Offer | null;
+    startdate?: Date | null;
+    enddate?: Date | null;
+    start?: String | null;
+    end?: String | null;
+    location?: String | null;
     event: Event;
     offer:Offer;
     status: BookingStatus;
@@ -358,6 +362,7 @@ export interface Album {
     name: string;
     description: string;
     images: AlbumImage[];
+    visibility: AlbumVisibility;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -378,3 +383,14 @@ export interface PaymentArray {
     amount: number;
     type: PaymentType;
 }
+
+export interface Notification {
+    id:string;
+    receiver:User;
+    receiverId:string;
+    type:string;
+    title: string;
+    description?:string;
+    read:boolean;
+    createdAt:Date;
+  }
