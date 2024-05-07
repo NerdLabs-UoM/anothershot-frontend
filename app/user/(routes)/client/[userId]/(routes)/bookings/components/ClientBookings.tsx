@@ -62,12 +62,12 @@ const ClientBookings = () => {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/client/${userId}/clientBookings`);
 
         const bookingsWithDateObjects = response.data.map((booking: Booking) => {
-          if (booking.startdate) {
-            const startDate = new Date(booking.startdate);
+          if (booking.start) {
+            const startDate = new Date(booking.start);
             const startDateString = startDate.toISOString().split('T')[0];
             return {
               ...booking,
-              startdate: startDateString,
+              start: startDateString,
             };
           } else {
             return booking;
@@ -87,7 +87,6 @@ const ClientBookings = () => {
     router.push(`/user/photographer/${photographerId}/bookings`);
   };
 
-
   const handleClick = () => {
     router.push(`/user/client/${userId}/bookings/checkout`);
   };
@@ -100,7 +99,6 @@ const ClientBookings = () => {
         },
       });
       if (response.status === 200) {
-        console.log(response.status);
         toast.success("Booking has been cancelled");
         setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
       }
@@ -190,7 +188,7 @@ const ClientBookings = () => {
                   <CardContent>
                     <div className="flex flex-col sm:flex-row sm:justify-between">
                       <div className="flex flex-col text-xs sm:text-sm">
-                        <p>Date: {booking.startdate ? booking.startdate.toLocaleString() : ''}</p>
+                        <p>Date: {booking.start ? booking.start.toLocaleString() : ''}</p>
                         {booking.status === "CONFIRMED" || booking.status === "COMPLETED" ? (
                           <p className="font-semibold text-slate-600">Total cost: {booking.offer?.price} Rs</p>
                         ) : booking.status === "CANCELLED" ? (
@@ -199,7 +197,6 @@ const ClientBookings = () => {
                           <p className="font-medium text-red-500">! In review</p>
                         )}
                       </div>
-
                       <div className="flex items-center gap-1 mt-2 sm:mt-0">
                         <div>
                           {booking.status === "CONFIRMED" ? (
