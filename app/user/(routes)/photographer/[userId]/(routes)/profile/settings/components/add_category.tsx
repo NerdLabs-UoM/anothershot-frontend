@@ -45,6 +45,11 @@ const FormSchema = z.object({
     }).optional(),
 });
 
+const convertToSentenceCase = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+}
+
 const AddCategorySection = () => {
     const [categoryList, setCategoryList] = useState<
         { label: string; value: PhotographerCategory }[]
@@ -61,9 +66,8 @@ const AddCategorySection = () => {
                 const data = await fetchCategories();
                 setCategoryList(
                     Object.entries(data).map(([key, value]) => ({
-                        label:
-                            key.toLowerCase().charAt(0).toUpperCase() +
-                            key.toLowerCase().slice(1),
+                        label:convertToSentenceCase(key),
+                            
                         value: value as PhotographerCategory, // Ensure value is of type PhotographerCategory
                     }))
                 );
@@ -76,7 +80,7 @@ const AddCategorySection = () => {
         const fetchCatById = async () => {
             try {
                 const data = await fetchCategoryById(userId);
-                setSelectedCategories(data);
+                setSelectedCategories(data.category.map(category => convertToSentenceCase(category)));
             } catch (e) {
                 toast.error("Error fetching categories");
             }
@@ -148,7 +152,7 @@ const AddCategorySection = () => {
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-[200px] p-0">
+                                        <PopoverContent className="w-[100%] p-0">
                                             <Command>
                                                 <CommandInput placeholder="Search category..." />
                                                 <ScrollArea className="border rounded-md h-72">
@@ -244,12 +248,12 @@ const AddCategorySection = () => {
                             </Badge>
                         ))}
                     </FormItem>
-                        <Button
-                            className="w-[80px] text-center bg-red-600 mt-4" 
-                            type="submit"
-                        >
-                            Save
-                        </Button>
+                    <Button
+                        className="w-[80px] text-center bg-red-600 mt-4"
+                        type="submit"
+                    >
+                        Save
+                    </Button>
                 </form>
             </Form>
         </div>

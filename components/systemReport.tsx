@@ -1,11 +1,13 @@
+
 "use client"
 
 import React from "react";
 import { useParams } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import {zodResolver} from "@hookform/resolvers/zod"
+import {useForm} from "react-hook-form"
 import * as z from "zod"
-import { Button } from "@/components/ui/button"
+import {Button} from "@/components/ui/button"
+import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
 import {
     Form,
     FormControl,
@@ -14,19 +16,19 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea";
+import {Input} from "@/components/ui/input"
+import {Textarea} from "@/components/ui/textarea";
 import toast from "react-hot-toast";
-import { submitReport } from "../serviceData";
+import axios from "axios";
 
 const ReportFormSchema = z.object({
-    subject: z.string().regex(/^[A-Za-z0-9 ]+$/, { message: "Enter valid Report" }).max(100).min(1, { message: "Enter a subject" }),
-    description: z.string().max(300,).regex(/^[A-Za-z0-9 ]+$/, { message: "Enter valid Description" }).min(1, { message: "Enter a Description" }),
+    subject: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Report"}).max(100).min(1,{message: "Enter a subject"}),
+    description: z.string().max(300, ).regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Description"}).min(1,{message: "Enter a Description"}),
 });
 
-const ReportSection = () => {
+const SystemReportSection = () => {
     const { userId } = useParams();
-
+    
     const form = useForm<z.infer<typeof ReportFormSchema>>({
         resolver: zodResolver(ReportFormSchema),
         defaultValues: {
@@ -34,17 +36,17 @@ const ReportSection = () => {
             description: "",
         },
     });
-
-    const handleSubmit = (val: z.infer<typeof ReportFormSchema>) => {
-        try {
-            submitReport(userId, val);
+    
+    const handleSubmit = async(val: z.infer<typeof ReportFormSchema>) => {
+        try{
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/report/${userId}`, val);
             toast.success("Report successfully submitted");
-        } catch (e) {
+        }catch(e){
             toast.error("Error submitting report");
         }
         form.reset();
     }
-
+    
     return (
         <div className="w-[100%]">
             <Form {...form}>
@@ -96,4 +98,4 @@ const ReportSection = () => {
     )
 }
 
-export default ReportSection;
+export default SystemReportSection;

@@ -9,6 +9,8 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { User } from "@/app/lib/types";
 import toast from "react-hot-toast";
+import SystemReportSection from "@/components/systemReport";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ProfileGallery = () => {
   const [savedImages, setSavedImages] = useState<User[]>([]);
@@ -59,6 +61,9 @@ const ProfileGallery = () => {
           </TabsTrigger>
           <TabsTrigger value="like" className="text-xs md:text-sm">
             Liked Photos
+          </TabsTrigger>
+          <TabsTrigger value="report" className="text-xs md:text-sm">
+            Report
           </TabsTrigger>
         </TabsList>
         <Separator className="mb-2 h-0.5" />
@@ -118,6 +123,19 @@ const ProfileGallery = () => {
                   )))}
           </div>
         </ScrollArea>
+      </TabsContent>
+      <TabsContent value="report" className="w-2/3 min-w-full">
+          <div className="grid grid-cols-1 gap-4">
+            <Card className="border-none">
+              <CardHeader >
+                <CardTitle>System Report</CardTitle>
+                <CardDescription>You can report your system issues from here. We prioritize you.</CardDescription>
+                <CardContent>
+                <SystemReportSection />
+                </CardContent>
+              </CardHeader>
+            </Card>
+          </div>
       </TabsContent>
     </Tabs>
   );

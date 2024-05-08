@@ -37,7 +37,7 @@ const AdminPage = () => {
   const [fetch, setFetch] = useState<boolean>(false);
 
   const [userRole, setUserRole] = useState<UserRole[]>(userRoles);
-const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT");
+  const [rolesString, setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT");
 
   const makeStringRoles = (roles: UserRole[]) => {
     const newUserRole = roles.filter((role) => role.isChecked);
@@ -49,17 +49,14 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
   }, [fetch]);
 
   useEffect(() => {
-    console.log("user roles tika", makeStringRoles(userRole))
     const fetchUsers = async () => {
-      const data: User[] = await fetchData(page, name,rolesString);
+      const data: User[] = await fetchData(page, name, rolesString);
       setFilteredUsers(data);
     };
     fetchUsers();
   }, [page, fetch]);
 
   useEffect(() => {
-    console.log("user roles tika", makeStringRoles(userRole))
-
     const fetchLast = async () => {
       const data = await fetchLastPage(name, rolesString);
       setLast(data);
@@ -92,17 +89,16 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
   };
 
   const handleSearch = () => {
-    setFetch(!fetch);
+    console.log("search clicked")
 
+    setFetch(!fetch);
   }
 
   const onCheckInputChange = (newUserRole: UserRole[]) => {
-    if (!newUserRole) {
-      setFetch(!fetch);
-    }
+    console.log("new user role", newUserRole);
+    const rolesString = makeStringRoles(newUserRole);
     setUserRole(newUserRole);
-    setRolesString(makeStringRoles(newUserRole));
-    // console.log("newuserRole", newUserRole);
+    setRolesString(rolesString);
   };
 
 

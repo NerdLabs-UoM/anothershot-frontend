@@ -135,10 +135,10 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               onSearchValueChange(event.target.value)
             }
-            className="max-w-sm"
+            className="max-w-sm w-full"
           />
           <Button>
-          <Search className="mx-4 bg-gray-100 bg-transparent hover:cursor-pointor" onClick={() => onSearchClick()}/>
+          <Search className="mx-4 bg-gray-100 bg-transparent hover:cursor-pointor hover:bg-transparent" onClick={() => onSearchClick()}/>
           </Button>
 
         </div>

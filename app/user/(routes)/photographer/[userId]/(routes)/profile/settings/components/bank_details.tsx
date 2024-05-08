@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
-import { updateBankDetails, fetchBankDetails } from "../serviceData";
 import { BankDetails } from "@/app/lib/types";
+import axios from "axios";
 
 const bankFormSchema = z.object({
     bankName: z.string().regex(/^[A-Za-z0-9 ]+$/, { message: "Enter valid Bank Name" }).min(1, { message: "Bank name is required" }),
@@ -84,8 +84,8 @@ const BankDetailsSection = () => {
     useEffect(() => {
         const fetchBankDetail = async () => {
             try {
-                const data = await fetchBankDetails(userId);
-                setBankDets(data);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/bankdetails/${userId}`);
+                setBankDets(res.data);
             } catch (e) {
                 toast.error("Error fetching Bank Details");
             }
@@ -95,7 +95,7 @@ const BankDetailsSection = () => {
 
     async function handleSubmision(values: z.infer<typeof bankFormSchema>) {
         try {
-            await updateBankDetails(values, userId)
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/bankdetails/${userId}`, values)
             toast.success("Bank details Successfully updated");
         } catch (e) {
             toast.error("Error sending Bank Details");

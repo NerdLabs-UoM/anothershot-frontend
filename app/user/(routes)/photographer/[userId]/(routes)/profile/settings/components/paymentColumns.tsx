@@ -14,11 +14,11 @@ export type Payment = {
 export const columns: ColumnDef<Payment>[] = [
     {
         accessorKey: "client.name",
-    header: "Client Name",
+        header: "Client Name",
     },
     {
-        accessorKey: "bookingsId",
-        header: "Booking ID",
+        accessorKey: "id",
+        header: "Payment ID",
     },
     {
         accessorKey: "updatedAt",
@@ -32,8 +32,8 @@ export const columns: ColumnDef<Payment>[] = [
         accessorKey: "amount",
         header: "Amount",
     },
-    {
-        accessorKey: "booking.category",
-        header: "Category",
-    }
+    // {
+    //     accessorKey: "booking.category",
+    //     header: "Category",
+    // }
 ]

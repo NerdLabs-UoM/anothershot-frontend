@@ -82,7 +82,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ albumData, isPhotographer, delete
             }}
             className="flex gap-4"
         >
-            {albumData.map(album => (
+            {(albumData.length === 0)?"No Albums yet":(albumData.map(album => (
                 <Card
                     key={album.id}
                     className="w-[300px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative "
@@ -189,7 +189,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ albumData, isPhotographer, delete
                         </div>
                     </div>
                 </Card>
-            ))}
+            )))}
         </Masonry>
     );
 }
