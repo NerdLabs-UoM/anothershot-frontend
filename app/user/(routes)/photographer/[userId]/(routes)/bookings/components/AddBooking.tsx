@@ -169,9 +169,10 @@ const AddBooking = () => {
         }
         setIsOpened(false);
         form.reset();
-        setStartDate(defaultStartDate);
-        setEndDate(defaultEndDate);
-
+        setStartDate(new Date());
+        setEndDate(new Date());
+        console.log(startDate);
+        console.log(startDateObject);
     };
     const categories = photographer?.map((photographerItem: Photographer) => photographerItem.category);
 
