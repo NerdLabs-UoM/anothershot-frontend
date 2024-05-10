@@ -3,9 +3,7 @@
 
 import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
-import AddBooking from "./components/AddBooking";
-// import { useParams } from "next/navigation";
-import FetchBookings from "./components/fetchBookings";
+import Offers from "@/components/offer/offers";
 
 // function BookingPage() {
 //   const { data: session } = useSession();
@@ -23,50 +21,61 @@ import { Event } from "@/app/lib/types";
 import FullCalendarComp from "@/components/fullCalendar";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import Events from './components/events';
+import Events from './components/events'
 import axios from "axios";
 import toast from "react-hot-toast";
-import { title } from "process";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 
-// const sampleEvents: Event[] = [
-//   {
-//     id: '1',
-//     title: 'event 1',
-//     start: new Date(2024, 2, 1, 19, 30,),
-//     end: new Date(2024, 2, 1, 21, 30),
-//     allDay: false,
-//   },
-//   {
-//     id: '2',
-//     title: 'event 2',
-//     start: new Date(2024, 2, 2, 17, 30,),
-//     end: new Date(2024, 2, 2, 19, 30),
-//     allDay: false,
-//   },
-//   {
-//     id: '3',
-//     title: 'event 3',
-//     start: new Date(2024, 2, 2, 19, 30,),
-//     end: new Date(2024, 2, 2, 21, 30),
-//     allDay: false,
-//   },
-//   {
-//     id: '4',
-//     title: 'event 4',
-//     start: new Date(),
-//     end: new Date(),
-//     allDay: true,
-//   },
-// ]
 
+const sampleEvents = [
+  {
+    id: '1',
+    title: 'event 1',
+    // date: '2024-05-03' ,
+    // date: new Date(2024, 5, 3),
+    endDate: new Date(2024, 2, 1, 21, 30),
+    allDay: false,
+  },
+  {
+    id: '2',
+    name: 'event 2',
+    startDate: new Date(2024, 2, 2, 17, 30,),
+    endDate: new Date(2024, 2, 2, 19, 30),
+    allDay: false,
+  },
+  {
+    id: '3',
+    name: 'event 3',
+    startDate: new Date(2024, 2, 2, 19, 30,),
+    endDate: new Date(2024, 2, 2, 21, 30),
+    allDay: false,
+  },
+  // {
+  //   id: '4',
+  //   name: 'event 4',
+  //   startDate: new Date(),
+  //   endDate: new Date(),
+  //   allDay: true,
+  // },
+]
+interface EventData {
+  startDate: string;
+  endDate: string;
+  id?: string;
+  name?: string;
+  bookingId?: string;
+  description?: string;
+  start?: string;
+  end?: string;
+}
 const PhotographerBookingsPage = () => {
 
   const { userId } = useParams();
   const { data: session } = useSession();
-  const [events, setEvents] = useState<Event[]>([]);
+  // const [events, setEvents] = useState<Event[]>(sampleEvents);
   const [eventList, setEventList] = useState<Event[]>([]);
   const [sampleDate, setSampleDate] = useState<Date>(new Date());
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -74,20 +83,20 @@ const PhotographerBookingsPage = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/get`
         );
-        const data = response.data.map((event: any) => ({
-          ...event,
-          start: event.startDate ? new Date(event.startDate) : new Date(),
-          end: event.endDate ? new Date(event.endDate) : new Date(),
-          title: event.name,
+        const data = response.data.map((eventData: EventData) => ({
+          // ...eventData,
+          title: eventData.name,
+          date: eventData.startDate.split('T')[0],
+          // endDate: new Date(eventData.endDate)
         }));
         setEventList(data);
-        console.log("Event List", data);
+        console.log(data);
       } catch (error) {
         toast.error("Cannot fetch events. Please try again.");
       }
     };
     fetchEvents();
-  }, []);
+  }, [userId]);
 
   return (
     <div className="w-full flex justify-center py-5" >
@@ -131,19 +140,4 @@ const PhotographerBookingsPage = () => {
 }
 
 export default PhotographerBookingsPage;
-
-// function BookingPage() {
-//   const { data: session } = useSession();
-//   const  ParamuserId  = useParams();
-//   const userId  = session?.user.id
-//   console.log(ParamuserId);
-//   console.log(userId);
-//   return (
-//     <div className = "flex flex-col justify-center items-center">
-//       {ParamuserId.userId ==userId?<FetchBookings/>:<AddBooking/>}
-//     </div>
-//   );
-// }
-
-// export default BookingPage;
 
