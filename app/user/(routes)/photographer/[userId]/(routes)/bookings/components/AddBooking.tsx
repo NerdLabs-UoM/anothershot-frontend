@@ -171,8 +171,6 @@ const AddBooking = () => {
         form.reset();
         setStartDate(new Date());
         setEndDate(new Date());
-        console.log(startDate);
-        console.log(startDateObject);
     };
     const categories = photographer?.map((photographerItem: Photographer) => photographerItem.category);
 
