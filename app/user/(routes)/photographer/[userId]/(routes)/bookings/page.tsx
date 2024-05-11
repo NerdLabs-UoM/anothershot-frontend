@@ -75,6 +75,8 @@ const PhotographerBookingsPage = () => {
   // const [events, setEvents] = useState<Event[]>(sampleEvents);
   const [eventList, setEventList] = useState<Event[]>([]);
   const [sampleDate, setSampleDate] = useState<Date>(new Date());
+  const [startDate , setStartDate] = useState<Date>(new Date());
+  const [endDate , setEndDate] = useState<Date>(new Date());
 
 
   useEffect(() => {
@@ -111,7 +113,7 @@ const PhotographerBookingsPage = () => {
       </div>
       <div className=" pr-6">
         {session && session.user && session.user.id === userId &&
-          <Events eventItems={eventList} eventProp={setEventList} />}
+          <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate}  />}
       </div>
       {/* <div className="flex flex-wrap">
         {eventList.length > 0 ? (

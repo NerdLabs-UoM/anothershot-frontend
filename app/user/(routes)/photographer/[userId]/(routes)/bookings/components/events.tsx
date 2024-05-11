@@ -43,11 +43,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -55,12 +50,7 @@ import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
 import React from "react";
 import { PlusSquare } from "lucide-react";
-import { CalendarIcon } from "lucide-react"
-import { Calendar } from "@/components/ui/calendar"
-import { format, isBefore, startOfDay } from "date-fns"
-import { cn } from "@/app/lib/utils"
 import { Booking, Event } from "@/app/lib/types";
-import { values } from "lodash";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 
 interface EventFormProps {
@@ -68,10 +58,10 @@ interface EventFormProps {
   name?: string;
   bookingId?: string;
   description?: string;
-  startDate?: Date;
-  endDate?: Date;
-  start?: string;
-  end?: string;
+  start?: Date;
+  setStartDate:React.Dispatch<React.SetStateAction<Date>>;
+  end?: Date;
+  setEndDate:React.Dispatch<React.SetStateAction<Date>>;
   eventItems: Event[];
   eventProp: React.Dispatch<React.SetStateAction<Event[]>>;
 }
@@ -95,7 +85,7 @@ const formSchema = z.object({
   end: z.string()
 });
 
-const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
+const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setStartDate , end , setEndDate }) => {
   const { data: session } = useSession()
   const [isNew, setIsNew] = useState<boolean>(false)
   const { userId } = useParams();
@@ -123,11 +113,11 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
         );
         console.log(response);
         const data = response.data.map((eventData: EventFormProps) => {
-          if (eventData.startDate && eventData.endDate) {
+          if (eventData.start && eventData.end) {
             return {
               ...eventData,
-              startDate: new Date(eventData.startDate),
-              endDate: new Date(eventData.endDate)
+              startDate: new Date(eventData.start),
+              endDate: new Date(eventData.end)
             };
 
           } else {
@@ -336,8 +326,8 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
                       <DateTimePickerForm
-                        setDate={setSampleDate}
-                        date={sampleDate}
+                        setDate={setStartDate}
+                        date={start}
                       />
                       <FormMessage />
                     </FormItem>
@@ -349,8 +339,8 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp }) => {
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">End Date</FormLabel>
                       <DateTimePickerForm
-                        setDate={setSampleDate}
-                        date={sampleDate}
+                        setDate={setEndDate}
+                        date={end}
                       />
                       <FormMessage />
                     </FormItem>

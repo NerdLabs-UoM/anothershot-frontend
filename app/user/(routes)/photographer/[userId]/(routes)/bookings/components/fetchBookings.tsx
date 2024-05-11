@@ -35,8 +35,8 @@ function FetchBookings() {
 
         const bookingsWithDateObjects = response.data.map(
           (booking: Booking) => {
-            if (booking.startdate) {
-              const startDate = new Date(booking.startdate);
+            if (booking.start) {
+              const startDate = new Date(booking.start);
               const startDateString = startDate.toISOString().split("T")[0];
               return {
                 ...booking,
@@ -87,8 +87,8 @@ function FetchBookings() {
                       <div className="flex flex-col text-xs sm:text-sm">
                         <p>
                           Date:{" "}
-                          {booking.startdate
-                            ? booking.startdate.toLocaleString()
+                          {booking.start
+                            ? booking.start.toLocaleString()
                             : ""}
                         </p>
                         {booking.status === "CONFIRMED" ||
