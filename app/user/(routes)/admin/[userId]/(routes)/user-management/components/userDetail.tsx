@@ -2,7 +2,13 @@
 import Image from "next/image";
 import {User} from "@/app/lib/types";
 
-export const UserDetail: React.FC<Partial<User>> = ({userName, email, image}) => {
+interface UserDetailProps {
+    userName: string;
+    email?: string;
+    image: string;
+
+}
+export const UserDetail: React.FC<UserDetailProps> = ({userName, email, image}) => {
     return (
         <div className="relative flex gap-4">
             <Image

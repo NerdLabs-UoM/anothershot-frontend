@@ -22,9 +22,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AlbumImage } from "@/app/lib/types";
-import { useEffect } from "react";
 import fileDownload from "js-file-download";
-
 interface MasonrygridProps {
     images: AlbumImage[];
     albumName: string;
@@ -45,9 +43,23 @@ export const Masonrygrid: React.FC<MasonrygridProps> = ({ images, canView }) => 
         }
         window.location.reload();
     };
-    const handleCoverImage = (img: string) => {
-        setCoverImg(img);
-        console.log("img is =>", img);
+
+    const handleCoverImage = (img: string,albumId:string) => {
+        const updateCoverImage = async () => {
+            try {
+                const res = await axios.put(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/updatecoverImage`,{
+                        albumId: albumId,
+                        coverImage: img,
+                    }
+                );
+                console.log("image updated=>", res.data);
+                toast.success("Cover image updated successfully");
+            } catch (e) {
+                toast.error("Error updating cover image");
+            }
+        };
+        updateCoverImage();
     }
 
     const handleDownload = (url: string, filename: string) => {
@@ -107,7 +119,7 @@ export const Masonrygrid: React.FC<MasonrygridProps> = ({ images, canView }) => 
                                                 </AlertDialogContent>
                                             </AlertDialog>
                                             <DropdownMenuItem>
-                                                <span className="cursor-pointer" onClick={() => handleCoverImage(img.image)}>Set as Cover</span>
+                                                <span className="cursor-pointer" onClick={() => handleCoverImage(img.image,img.albumId)}>Set as Cover</span>
                                             </DropdownMenuItem>
 
                                         </>

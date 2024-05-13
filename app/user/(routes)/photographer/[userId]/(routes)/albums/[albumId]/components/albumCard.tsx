@@ -88,11 +88,11 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ albumData, isPhotographer, delete
                     className="w-[300px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative "
                 >
                     <Image
-                        src={album.images[0]?.image || "/images/albumcover.png"}
+                        src={album.coverImage || "/images/albumcover.png"}
                         alt="album cover"
                         layout="fill"
                         objectFit="cover"
-                        className="hover:opacity-80 transition-opacity duration-300 ease-in-out"
+                        className="hover:scale-110 transform transition duration-500 ease-in-out"
                     />
                     <div className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
                         <div className="flex flex-col justify-center">
