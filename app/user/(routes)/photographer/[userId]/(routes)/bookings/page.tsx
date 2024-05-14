@@ -84,12 +84,6 @@ const PhotographerBookingsPage = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/get`
         );
-        // const data = response.data.map((eventData: EventData) => ({
-        //   // ...eventData,
-        //   title: eventData.name,
-        //   date: eventData.startDate.split('T')[0],
-        //   // endDate: new Date(eventData.endDate)
-        // }));
         const data= response.data
         setEventList(data);
         console.log(data);

@@ -86,11 +86,18 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     defaultValues: {
       name: "",
       description: ""
-      // start: "",
-      // end: "",
+     
     }
   });
 
+  const defaultStartDate = new Date();
+  defaultStartDate.setHours(defaultStartDate.getHours() +5);
+  defaultStartDate.setMinutes(defaultStartDate.getMinutes()+30);
+
+  const defaultEndDate = new Date();
+  defaultEndDate.setHours(defaultEndDate.getHours() +5);
+  defaultEndDate.setMinutes(defaultEndDate.getMinutes()+30);
+  
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -98,18 +105,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
         );
         console.log(response);
-        // const data = response.data.map((eventData: EventFormProps) => {
-        //   if (eventData.start && eventData.end) {
-        //     return {
-        //       ...eventData,
-        //       startDate: new Date(eventData.start),
-        //       endDate: new Date(eventData.end)
-        //     };
-        //   } else {
-        //     return eventData;
-        //   }
-        //   console.log(data.map);
-        // });
         const data = response.data;
         setBooking(data);
         console.log(data);
@@ -132,6 +127,33 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
+
+    const startObject = start? new Date(start): new Date();
+    const endObject = end? new Date(end): new Date();
+
+    startObject.setHours(startObject.getHours() +5);
+    startObject.setMinutes(startObject.getMinutes()+30);
+
+    endObject.setHours(endObject.getHours() +5);
+    endObject.setMinutes(endObject.getMinutes()+30);
+
+    const startString = startObject.toISOString();
+    const endString = endObject.toISOString();
+
+    const startOnly = startObject.toISOString().split('T')[0];
+    const endOnly = endObject.toISOString().split('T')[0];
+    const defaultStartOnly = defaultStartDate.toISOString().split('T')[0];
+    const defaultEndOnly = defaultEndDate.toISOString().split('T')[0];
+
+    if(startOnly===defaultStartOnly){
+      toast.error("Please select a start date");
+      return;
+    }
+    if(endOnly===defaultEndOnly){
+      toast.error("Please select a end date");
+      return;
+    }
+
     try {
       setLoading(true);
       if (values) {
@@ -299,12 +321,12 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                   control={form.control}
                   name="start"
                   render={({ field }) => (
-                    <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
+                    <FormItem className="grid grid-cols-8 gap-3 mb-2  ">
                       <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
-                      <FormControl className="col-span-6">
-                        {start && <DateTimePickerForm
+                      <FormControl className="col-span-6 ml-10">
+                        {start && <DateTimePickerForm 
                           setDate={setStartDate}
-                          date={start} />
+                          date={start}/>
                           }
                       </FormControl>
                       <FormMessage />
@@ -322,7 +344,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                       <FormMessage />
                     </FormItem>
                   )} />
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="start"
                   render={({ field }) => (
@@ -346,7 +368,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           </FormItem>
                         )} />
                     </FormItem>
-                  )} />
+                  )} /> */}
               </form>
             </Form>
             <DialogFooter>
