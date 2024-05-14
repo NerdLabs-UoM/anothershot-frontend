@@ -130,7 +130,7 @@ const AddBooking = () => {
         const defaultStartDateOnly = defaultStartDate.toISOString().split('T')[0];
         
         if (startDateOnly === defaultStartDateOnly) {
-            toast.error("Please select a start date.");
+            toast.error("Please select a valid start date.");
             return;
         }
         
@@ -138,7 +138,7 @@ const AddBooking = () => {
         const defaultEndDateOnly = defaultEndDate.toISOString().split('T')[0];
         
         if (endDateOnly === defaultEndDateOnly) {
-            toast.error("Please select an end date.");
+            toast.error("Please select a valid end date.");
             return;
         }
 
