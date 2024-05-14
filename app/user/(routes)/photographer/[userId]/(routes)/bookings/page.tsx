@@ -78,19 +78,19 @@ const PhotographerBookingsPage = () => {
   const [startDate , setStartDate] = useState<Date>(new Date());
   const [endDate , setEndDate] = useState<Date>(new Date());
 
-
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/get`
         );
-        const data = response.data.map((eventData: EventData) => ({
-          // ...eventData,
-          title: eventData.name,
-          date: eventData.startDate.split('T')[0],
-          // endDate: new Date(eventData.endDate)
-        }));
+        // const data = response.data.map((eventData: EventData) => ({
+        //   // ...eventData,
+        //   title: eventData.name,
+        //   date: eventData.startDate.split('T')[0],
+        //   // endDate: new Date(eventData.endDate)
+        // }));
+        const data= response.data
         setEventList(data);
         console.log(data);
       } catch (error) {

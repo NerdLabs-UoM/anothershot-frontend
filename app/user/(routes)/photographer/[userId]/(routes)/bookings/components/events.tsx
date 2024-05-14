@@ -1,16 +1,13 @@
 "use client";
-
 import {
   Form,
   FormField,
   FormItem,
-  FormLabel,
-  FormDescription,
-  FormMessage,
-  FormControl,
+  FormLabel, FormMessage,
+  FormControl
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
+  DialogFooter
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -30,8 +27,8 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,9 +38,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { useState, useEffect, useMemo } from "react";
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
@@ -53,55 +50,44 @@ import { PlusSquare } from "lucide-react";
 import { Booking, Event } from "@/app/lib/types";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 
-interface EventFormProps {
+export interface EventFormProps {
   id?: string;
   name?: string;
   bookingId?: string;
   description?: string;
   start?: Date;
-  setStartDate:React.Dispatch<React.SetStateAction<Date>>;
+  setStartDate: React.Dispatch<React.SetStateAction<Date>>;
   end?: Date;
-  setEndDate:React.Dispatch<React.SetStateAction<Date>>;
+  setEndDate: React.Dispatch<React.SetStateAction<Date>>;
   eventItems: Event[];
   eventProp: React.Dispatch<React.SetStateAction<Event[]>>;
 }
 
-const formSchema = z.object({
+export const formSchema = z.object({
   name: z
     .string()
     .min(2, "Username must be between 2-50 characters long").max(50, "Username must be between 2-50 characters long"),
-
   description: z
     .string()
     .min(2, "Username must be between 2-100 characters long").max(100, "Username must be between 2-100 characters long"),
-
-  startDate: z.date({
-    required_error: "A date of event starting is required.",
-  }),
-  endDate: z.date({
-    required_error: "A date of event ending is required.",
-  }),
-  start: z.string(),
-  end: z.string()
+  start: z.date(),
+  end: z.date()
 });
-
-const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setStartDate , end , setEndDate }) => {
-  const { data: session } = useSession()
-  const [isNew, setIsNew] = useState<boolean>(false)
+export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start, setStartDate, end, setEndDate }) => {
+  const { data: session } = useSession();
+  const [isNew, setIsNew] = useState<boolean>(false);
   const { userId } = useParams();
   const [booking, setBooking] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState<boolean>(false)
-  const [selectedBookingId, setSelectedBookingId] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
-      // startDate: "",
-      // endDate:"" ,
-      start: "HH:mm",
-      end: "HH:mm",
+      description: ""
+      // start: "",
+      // end: "",
     }
   });
 
@@ -112,20 +98,20 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
         );
         console.log(response);
-        const data = response.data.map((eventData: EventFormProps) => {
-          if (eventData.start && eventData.end) {
-            return {
-              ...eventData,
-              startDate: new Date(eventData.start),
-              endDate: new Date(eventData.end)
-            };
-
-          } else {
-            return eventData;
-          }
-          console.log(data.map)
-        });
-        setBooking(data)
+        // const data = response.data.map((eventData: EventFormProps) => {
+        //   if (eventData.start && eventData.end) {
+        //     return {
+        //       ...eventData,
+        //       startDate: new Date(eventData.start),
+        //       endDate: new Date(eventData.end)
+        //     };
+        //   } else {
+        //     return eventData;
+        //   }
+        //   console.log(data.map);
+        // });
+        const data = response.data;
+        setBooking(data);
         console.log(data);
       } catch (error) {
         toast.error("Cannot fetch Bookings.Please try again.");
@@ -143,7 +129,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
       );
     }
     return null;
-  }
+  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
     try {
@@ -155,8 +141,6 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
           {
             name: values.name,
             bookingId: selectedBookingId,
-            startDate: values.startDate,
-            endDate: values.endDate,
             start: values.start,
             end: values.end,
             description: values.description,
@@ -175,9 +159,8 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
         console.log("Response data:", newBooking);
         // if (booking.some((booking: Booking) => booking.id === newBooking.id)) {
         //   toast.error("Event already exists.");
-        if (
-          eventItems.some((eventItem: Event) => eventItem.id !== null
-          )) {
+        if (eventItems.some((eventItem: Event) => eventItem.id !== null
+        )) {
           toast.error("Event already exists.");
 
         } else {
@@ -193,16 +176,16 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
     catch (error) {
       toast.error("An error occurred. Please try again.");
     }
-  }
+  };
 
   const handleBookingChange = (value: string) => {
-    const selectedBooking = booking.find((bookings) => bookings.id === value)
+    const selectedBooking = booking.find((bookings) => bookings.id === value);
     if (selectedBooking) {
-      form.setValue("name", selectedBooking.subject)
+      form.setValue("name", selectedBooking.subject);
     }
     setSelectedBookingId(value);
 
-  }
+  };
 
   const handleDeleteEvent = async () => {
     if (!session?.user?.id) return;
@@ -226,17 +209,15 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
       photographerId: session.user.id,
       name: form.getValues("name"),
       description: form.getValues("description"),
-      startDate: new Date(form.getValues("startDate")),
-      endDate: new Date(form.getValues("endDate")),
       start: form.getValues("start"),
       end: form.getValues("end"),
     };
     try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
       const updatedEvent: Event = response.data;
-      eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id === updatedEvent.id ? updatedEvent : eventItems))
+      eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id === updatedEvent.id ? updatedEvent : eventItems));
       console.log(response.data);
-      toast.success("Event details updated successfully.")
+      toast.success("Event details updated successfully.");
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     }
@@ -257,7 +238,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
 
             <Button variant={"default"} size={"lg"} onClick={() => setIsNew(true)}><PlusSquare />Add New Event</Button>
 
-            <Form {...form} >
+            <Form {...form}>
               <form onSubmit={form.handleSubmit(handleSaveChanges)}>
                 {isNew && (<FormField
                   control={form.control}
@@ -271,7 +252,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
                             <SelectValue placeholder="Select a Booking" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent >
+                        <SelectContent>
                           <SelectGroup>
                             {booking.map((bookings) => (
                               <SelectItem key={bookings.id} value={bookings.id}>
@@ -283,8 +264,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
                       </Select>
                       <FormMessage />
                     </FormItem>
-                  )}
-                />)}
+                  )} />)}
                 <FormField
                   control={form.control}
                   name="name"
@@ -296,12 +276,10 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
                           type="name"
                           placeholder="event name"
                           maxLength={50}
-                          {...field}
-                        />
+                          {...field} />
                       </FormControl>
                     </FormItem>
-                  )}
-                />
+                  )} />
                 <FormField
                   control={form.control}
                   name="description"
@@ -313,35 +291,34 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
                           type="description"
                           placeholder="description"
                           maxLength={100}
-                          {...field}
-                        />
+                          {...field} />
                       </FormControl>
                     </FormItem>
-                  )}
-                />
+                  )} />
                 <FormField
                   control={form.control}
-                  name="startDate"
+                  name="start"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
-                      <DateTimePickerForm
-                        setDate={setStartDate}
-                        date={start}
-                      />
+                      <FormControl className="col-span-6">
+                        {start && <DateTimePickerForm
+                          setDate={setStartDate}
+                          date={start} />
+                          }
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                 <FormField
                   control={form.control}
-                  name="endDate"
+                  name="end"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">End Date</FormLabel>
-                      <DateTimePickerForm
+                      {end && <DateTimePickerForm
                         setDate={setEndDate}
-                        date={end}
-                      />
+                        date={end} />}
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -367,8 +344,7 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
                             </FormControl>
                             <FormMessage />
                           </FormItem>
-                        )}
-                      />
+                        )} />
                     </FormItem>
                   )} />
               </form>
@@ -396,21 +372,22 @@ const Events: React.FC<EventFormProps> = ({ eventItems, eventProp , start , setS
                 </AlertDialog>
               )}
               <Button variant={"outline"} onClick={() => {
-                form.reset()
-                setIsNew(false)
+                form.reset();
+                setIsNew(false);
               }}>Cancel</Button>
               {!isNew && <Button onClick={() => (handleSaveChanges)}>
                 Update
-              </Button>
-              }
+              </Button>}
               {isNew && <Button onClick={form.handleSubmit(onSubmit)}>
                 Save
               </Button>}
             </DialogFooter>
-          </DialogContent >
-        </Dialog >
-      </div >
-    </main >
+          </DialogContent>
+        </Dialog>
+      </div>
+    </main>
   );
 };
+
+
 export default Events;
