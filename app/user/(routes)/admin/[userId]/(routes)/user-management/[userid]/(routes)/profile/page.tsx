@@ -3,7 +3,7 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import React, { use, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Photographer, User ,Suspended } from "@/app/lib/types";
+import { Photographer, User ,Suspended } from "@/lib/types";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";

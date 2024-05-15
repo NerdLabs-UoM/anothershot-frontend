@@ -26,7 +26,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
-import { Album } from "@/app/lib/types";
+import { Album } from "@/lib/types";
 import Masonry from "react-masonry-css";
 
 

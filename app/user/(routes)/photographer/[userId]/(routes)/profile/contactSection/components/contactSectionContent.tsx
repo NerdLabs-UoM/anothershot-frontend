@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import ContactForm from "./contactForm";
-import { ContactDetails } from "@/app/lib/types";
+import { ContactDetails } from "@/lib/types";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 

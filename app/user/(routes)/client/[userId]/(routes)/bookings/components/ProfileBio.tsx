@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Client } from "@/app/lib/types";
+import { Client } from "@/lib/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";

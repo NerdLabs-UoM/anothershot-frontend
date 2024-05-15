@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Offer } from "@/app/lib/types";
+import { Offer } from "@/lib/types";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";

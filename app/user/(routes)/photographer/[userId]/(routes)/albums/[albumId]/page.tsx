@@ -3,7 +3,7 @@
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { LucideArrowLeft } from 'lucide-react';
 import { useEffect, useState } from "react";
-import { AlbumImage, Album } from "@/app/lib/types";
+import { AlbumImage, Album } from "@/lib/types";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Masonrygrid } from "./components/masonrygrid";

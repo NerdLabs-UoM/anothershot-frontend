@@ -18,8 +18,9 @@ import { NotificationCard } from "./notifyCard";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { defaultNotify } from "@/app/data/defaultNotify";
-import { Notification } from "@/app/lib/types";
+import { Notification } from "@/lib/types";
 import toast from "react-hot-toast";
+import { useSocket } from "@/context/socketContext";
 
 interface NotifyProps {
     logged: boolean
@@ -30,6 +31,7 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isReadAll, setIsReadAll] = useState<boolean>(false);
     const [count, setCount] = useState<number>(0);
+    const { socket } = useSocket();
 
     useEffect(() => {
         const fetchNotify = async () => {
@@ -46,6 +48,22 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
         }
         fetchNotify();
     }, [session?.user?.id])
+
+    useEffect(() => {
+        
+        const handleReceiveNotification = (notification: Notification) => {
+            if (notification.receiverId === session?.user?.id) {
+                setNotifications(prev => [notification, ...prev]);
+                if (!notification.read) {
+                    setCount(prev => prev + 1);
+                }
+            }
+        }
+        socket?.on("receive-notify", handleReceiveNotification);
+        return () => {
+            socket?.off("receive-notify", handleReceiveNotification);
+        };
+    }, [socket, session?.user?.id]);
 
     const updateUnreadCount = (newCount: number) => {
         setCount(newCount);
@@ -65,20 +83,20 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
                     <div className="flex flex-col gap-3 mt-5">
                         {logged ? (notifications.map((notification, index) => (
                             <NotificationCard
-                                key={index} 
-                                id={notification.id} 
-                                title={notification.title} 
+                                key={index}
+                                id={notification.id}
+                                title={notification.title}
                                 description={notification.description}
-                                read={notification.read} 
+                                read={notification.read}
                                 unreadCount={count}
-                                updateUnreadCount={updateUnreadCount}/>
+                                updateUnreadCount={updateUnreadCount} />
 
                         ))) : (defaultNotify.map((notification, index) => (
-                            <NotificationCard 
-                            key={index} 
-                            title={notification.title} 
-                            description={notification.description} 
-                            read={notification.read} />
+                            <NotificationCard
+                                key={index}
+                                title={notification.title}
+                                description={notification.description}
+                                read={notification.read} />
 
                         )))}
                     </div>

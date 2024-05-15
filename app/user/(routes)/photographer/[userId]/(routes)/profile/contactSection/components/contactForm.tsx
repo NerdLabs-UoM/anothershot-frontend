@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ContactDetails } from "@/app/lib/types";
+import { ContactDetails } from "@/lib/types";
 interface ContactDetailsFormProps {
   contactDets: ContactDetails | null;
   setContactDets: React.Dispatch<React.SetStateAction<ContactDetails | null>>;

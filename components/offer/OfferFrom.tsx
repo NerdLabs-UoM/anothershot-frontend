@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   Command,
   CommandEmpty,
@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { Offer } from "@/app/lib/types"
+import { Offer } from "@/lib/types"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { useSession } from "next-auth/react"

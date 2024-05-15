@@ -16,7 +16,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { Testimonial } from "@/app/lib/types";
+import { Testimonial } from "@/lib/types";
 interface CarouselMessagesProps {
   testimonialsData: Testimonial[];
 }

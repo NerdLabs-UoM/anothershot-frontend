@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-import {User} from "@/app/lib/types";
+import {User} from "@/lib/types";
 
 export const UserDetail: React.FC<Partial<User>> = ({userName, email, image}) => {
     return (
