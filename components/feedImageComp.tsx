@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare, MoreVertical, Bookmark } from "lucide-react";
-import { FeedImage } from "@/app/lib/types";
+import { FeedImage } from "@/lib/types";
 import axios from 'axios';
 import { useSession } from "next-auth/react";
 import { toast } from 'react-hot-toast';

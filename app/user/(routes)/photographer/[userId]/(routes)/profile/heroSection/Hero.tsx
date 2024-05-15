@@ -38,7 +38,7 @@ import {
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Photographer, Suspended, User } from "@/app/lib/types";
+import { Photographer, Suspended, User } from "@/lib/types";
 import { addYears } from "date-fns";
 
 const formSchema = z.object({
@@ -201,7 +201,6 @@ const Hero = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/chat/create`,
         newChat
       );
-      console.log(res);
       if (res.data.error) {
         toast.error(res.data.error);
       }

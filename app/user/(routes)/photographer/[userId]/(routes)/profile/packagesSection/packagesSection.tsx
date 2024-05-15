@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { PackageCard } from "./components/packageCard";
-import { Package } from "@/app/lib/types";
+import { Package } from "@/lib/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import PackageEditForm from "./components/packageEditForm";

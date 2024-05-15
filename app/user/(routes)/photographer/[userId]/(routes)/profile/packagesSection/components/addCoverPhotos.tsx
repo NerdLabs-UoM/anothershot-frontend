@@ -10,7 +10,7 @@ import {
     CldUploadWidget,
 } from "next-cloudinary";
 import { useParams, useRouter } from "next/navigation";
-import { Photographer } from "@/app/lib/types";
+import { Photographer } from "@/lib/types";
 import { PlusSquare } from "lucide-react";
 
 interface PackageEditFormProps {

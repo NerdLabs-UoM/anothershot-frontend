@@ -13,11 +13,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Photographer, User } from "@/app/lib/types";
+import { Photographer, User } from "@/lib/types";
 import Link from "next/link";
 import axios from "axios";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   Command,
   CommandEmpty,

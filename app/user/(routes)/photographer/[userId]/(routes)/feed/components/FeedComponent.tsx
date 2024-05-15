@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import Image from 'next/image';
-import { FeedImage } from "@/app/lib/types";
+import { FeedImage } from "@/lib/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";

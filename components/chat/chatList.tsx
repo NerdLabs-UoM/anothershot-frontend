@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CldImage } from "next-cloudinary";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ChatBottombar from "./chatBottomBar";
-import { Chat, Message } from "@/app/lib/types";
-import { cn } from "@/app/lib/utils";
+import { Chat, Message } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 interface ChatListProps {

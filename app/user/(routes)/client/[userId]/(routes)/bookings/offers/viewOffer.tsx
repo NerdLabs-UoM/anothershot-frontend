@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Offer } from "@/app/lib/types";
+import { Offer } from "@/lib/types";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";

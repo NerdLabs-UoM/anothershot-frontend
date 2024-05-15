@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Offer } from "@/app/lib/types";
+import { Offer } from "@/lib/types";
 import toast from "react-hot-toast";
 import {
   Card,

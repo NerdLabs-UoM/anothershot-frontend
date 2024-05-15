@@ -6,7 +6,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ import {
 } from "@/components/ui/popover";
 import toast from "react-hot-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PhotographerCategory } from "@/app/lib/types";
+import { PhotographerCategory } from "@/lib/types";
 import {
     fetchCategories,
     updateCategories,

@@ -18,8 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { Photographer } from "@/app/lib/types";
-import { cn } from "@/app/lib/utils";
+import { Photographer } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
 
 const Client = () => {

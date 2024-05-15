@@ -24,7 +24,7 @@ import {
 import {Input} from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { updateBankDetails,fetchBankDetails } from "../serviceData";
-import { BankDetails } from "@/app/lib/types";
+import { BankDetails } from "@/lib/types";
 
 const bankFormSchema = z.object({
     bankName: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Bank Name"}).min(1,{message: "Bank name is required"}),
