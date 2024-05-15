@@ -32,11 +32,11 @@ function AdminHeader() {
     }
   };
   return (
-    <NavigationMenu className={`w-full flex-col sm:flex-row justify-between ${isPathProfile ? "hidden" : ""}`}>
+    <NavigationMenu className={`w-full flex-col sm:flex-row justify-between bg-zinc-100 rounded-md ${isPathProfile ? "hidden" : ""}`}>
       <NavigationMenuItem className="list-none">
         <NavigationMenuLink
           onClick={() => handleDirection("dashboard")}
-          className={`${path("dashboard") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
+          className={`m-1  ${path("dashboard") ? 'bg-white hover:bg-white text-gray-900 shadow-sm' : 'bg-transparent'} ${navigationMenuTriggerStyle()} cursor-pointer `}
         >
           Dashboard
         </NavigationMenuLink>
@@ -44,7 +44,7 @@ function AdminHeader() {
       <NavigationMenuItem className="list-none">
         <NavigationMenuLink
           onClick={() => handleDirection("user-management")}
-          className={`${path("user-management") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
+          className={`m-1  ${path("user-management") ? 'bg-white hover:bg-white text-gray-900 shadow-sm' : 'bg-transparent'} ${navigationMenuTriggerStyle()} cursor-pointer `}
         >
           User Management
         </NavigationMenuLink>
@@ -52,7 +52,7 @@ function AdminHeader() {
       <NavigationMenuItem className="list-none">
         <NavigationMenuLink
           onClick={() => handleDirection("report-handling")}
-          className={`${path("report-handling") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
+          className={`m-1  ${path("report-handling") ? 'bg-white hover:bg-white text-gray-900 shadow-sm' : 'bg-transparent'} ${navigationMenuTriggerStyle()} cursor-pointer `}
         >
           Report Handling
         </NavigationMenuLink>
@@ -60,7 +60,7 @@ function AdminHeader() {
       <NavigationMenuItem className="list-none">
         <NavigationMenuLink
           onClick={() => handleDirection("payment-handling")}
-          className={`${path("payment-handling") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer`}
+          className={`m-1  ${path("payment-handling") ? 'bg-white hover:bg-white text-gray-900 shadow-sm' : 'bg-transparent'} ${navigationMenuTriggerStyle()} cursor-pointer`}
         >
           Payment Handling
         </NavigationMenuLink>
@@ -68,7 +68,7 @@ function AdminHeader() {
       <NavigationMenuItem className="list-none">
         <NavigationMenuLink
           onClick={() => handleDirection("inbox")}
-          className={`${path("inbox") ? 'bg-slate-100 text-gray-900' : ''} ${navigationMenuTriggerStyle()} cursor-pointer `}
+          className={`m-1 ${path("inbox") ? 'bg-white hover:bg-white text-gray-900 shadow-sm' : 'bg-transparent'} ${navigationMenuTriggerStyle()} cursor-pointer `}
         >
           Inbox
         </NavigationMenuLink>

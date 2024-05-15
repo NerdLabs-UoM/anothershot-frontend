@@ -224,6 +224,21 @@ export interface Offer {
   updatedAt: Date;
 }
 
+export interface Payment{
+    id: String;               
+    client: Client;             
+    clientId: String;              
+    photographer: Photographer;        
+    photographerId: String;              
+    booking: Booking;            
+    bookingsId: String;        
+    amount: number;
+    currency: String;
+    status: PaymentStatus;       
+    createdAt: Date;             
+    updatedAt: Date;           
+}
+
 export interface Event {
     id: string;
     title: string;
