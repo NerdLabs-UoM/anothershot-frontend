@@ -30,7 +30,7 @@ import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { View, Check } from "lucide-react";
-import { Booking } from "@/lib/types";
+import { Booking } from "@/app/lib/types";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 const ClientBookings = () => {

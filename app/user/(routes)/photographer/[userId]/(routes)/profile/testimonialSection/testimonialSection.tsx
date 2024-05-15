@@ -5,7 +5,7 @@ import axios from "axios";
 import CarouselMessages from "./components/CarouselMessages";
 import EditButton from "./components/EditButton";
 import SubmitForm from "./components/SubmitForm";
-import { Testimonial } from "@/lib/types";
+import { Testimonial } from "@/app/lib/types";
 
 const TestMonialsSection = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);

@@ -29,7 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { PenSquare, Camera } from "lucide-react";
-import { Client, Suspended, User } from "@/lib/types";
+import { Client, Suspended, User } from "@/app/lib/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";

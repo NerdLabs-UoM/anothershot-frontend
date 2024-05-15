@@ -14,7 +14,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog";
-import { AlbumImage } from "@/lib/types";
+import { AlbumImage } from "@/app/lib/types";
 import { useEffect } from "react";
 
 interface MasonrygridProps {

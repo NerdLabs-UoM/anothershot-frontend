@@ -1,7 +1,7 @@
 'use server'
 
 import axios from 'axios'
-import {BankDetails, Photographer, PhotographerCategory, Report} from "@/lib/types";
+import {BankDetails, Photographer, PhotographerCategory, Report} from "@/app/lib/types";
 
 
 export const fetchCategories = async() => {

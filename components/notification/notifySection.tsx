@@ -18,7 +18,7 @@ import { NotificationCard } from "./notifyCard";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { defaultNotify } from "@/app/data/defaultNotify";
-import { Notification } from "@/lib/types";
+import { Notification } from "@/app/lib/types";
 import toast from "react-hot-toast";
 import { useSocket } from "@/context/socketContext";
 

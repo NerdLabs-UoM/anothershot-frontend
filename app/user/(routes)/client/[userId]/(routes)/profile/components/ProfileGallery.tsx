@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
-import { User } from "@/lib/types";
+import { User } from "@/app/lib/types";
 import toast from "react-hot-toast";
 
 const ProfileGallery = () => {

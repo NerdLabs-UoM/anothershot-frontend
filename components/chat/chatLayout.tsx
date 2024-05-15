@@ -10,10 +10,10 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import ChatSidebar from "./chatSideBar";
 import { ChatView } from "./chatView";
-import { Chat } from "@/lib/types";
+import { Chat } from "@/app/lib/types";
 import { useSocket } from "@/context/socketContext";
 
 interface ChatLayoutProps {

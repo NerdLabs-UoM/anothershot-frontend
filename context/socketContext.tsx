@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 
 import { Socket } from 'socket.io-client';
 
-import { connectSocket, disconnectSocket, getSocket } from '@/lib/socket';
+import { connectSocket, disconnectSocket, getSocket } from '@/app/lib/socket';
 
 interface SocketContextType {
     socket: Socket | null;
