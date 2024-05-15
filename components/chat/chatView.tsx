@@ -1,26 +1,25 @@
-// import { Message, UserData } from "@/app/data";
 import React, { useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Chat, Message } from "@/app/lib/types";
 import ChatTopbar from "./chatTopBar";
 import { ChatList } from "./chatList";
-import { Socket } from "socket.io-client";
 import { useSession } from "next-auth/react";
+import { useSocket } from "@/context/socketContext";
 
 interface ChatProps {
     messages?: Message[];
     selectedChat: Chat;
     isMobile: boolean;
-    socket: React.MutableRefObject<Socket | undefined>
     setSelectedChat: React.Dispatch<React.SetStateAction<Chat | undefined>>;
 }
 
-export function ChatView({ messages, selectedChat, isMobile, socket, setSelectedChat }: ChatProps) {
+export function ChatView({ messages, selectedChat, isMobile, setSelectedChat }: ChatProps) {
 
     const [tempSelectedChat, setTempSelectedChat] = React.useState<Chat>(selectedChat);
     const [messagesState, setMessages] = React.useState<Message[]>(messages ?? []);
     const { data: session } = useSession()
+    const { socket } = useSocket()
 
     useEffect(() => {
         setTempSelectedChat(selectedChat);
@@ -28,7 +27,7 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
     }, [selectedChat, messages]);
 
     useEffect(() => {
-        const currentSocket = socket.current;
+        const currentSocket = socket;
         const handleReceiveMessage = (message: Message) => {
             if (selectedChat.id === message.chatId) {
                 if (session?.user.id !== message.senderId) {
@@ -96,13 +95,15 @@ export function ChatView({ messages, selectedChat, isMobile, socket, setSelected
                 }
             );
             if (response.status === 201) {
-                socket.current?.emit("send-message", {
-                    senderId: newMessage.senderId,
-                    receiverId: newMessage.receiverId,
-                    message: newMessage.message,
-                    chatId: tempSelectedChat.id,
-                    attachments: newMessage.attachments,
-                });
+                if (socket) {
+                    socket.emit("send-message", {
+                        senderId: newMessage.senderId,
+                        receiverId: newMessage.receiverId,
+                        message: newMessage.message,
+                        chatId: tempSelectedChat.id,
+                        attachments: newMessage.attachments,
+                    });
+                }
                 setSelectedChat((prev) => {
                     if (prev && prev.id === newMessage.chatId) {
                         return {

@@ -202,7 +202,6 @@ const Hero = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/chat/create`,
         newChat
       );
-      console.log(res);
       if (res.data.error) {
         toast.error(res.data.error);
       }
