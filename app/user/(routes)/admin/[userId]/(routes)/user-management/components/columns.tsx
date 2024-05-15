@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { UserDetail } from "./userDetail";
 import Link from "next/link";
-import {User} from "@/lib/types";
+import {User} from "@/app/lib/types";
 
 export const columns: ColumnDef<User>[] = [
     {

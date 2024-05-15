@@ -5,7 +5,7 @@ import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { fetchData, fetchLastPage } from "./serviceData";
 import PaginationSection from "./components/pagination";
-import { User } from "@/lib/types";
+import { User } from "@/app/lib/types";
 
 const AdminPage = () => {
   const [page, setPage] = useState(1);

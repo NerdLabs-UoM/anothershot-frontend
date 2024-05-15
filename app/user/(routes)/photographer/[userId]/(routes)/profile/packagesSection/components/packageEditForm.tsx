@@ -44,7 +44,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Pencil } from "lucide-react";
-import { Package } from "@/lib/types";
+import { Package } from "@/app/lib/types";
 import { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";

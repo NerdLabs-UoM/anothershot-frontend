@@ -40,9 +40,9 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { isEqual, set } from 'lodash';
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import Image from "next/image";
-import { Testimonial } from "@/lib/types";
+import { Testimonial } from "@/app/lib/types";
 
 interface EditButtonProps {
   testimonialsData: Testimonial[];

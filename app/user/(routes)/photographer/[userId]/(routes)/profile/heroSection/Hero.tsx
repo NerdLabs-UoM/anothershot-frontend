@@ -38,7 +38,7 @@ import {
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Photographer, Suspended, User } from "@/lib/types";
+import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
 
 const formSchema = z.object({

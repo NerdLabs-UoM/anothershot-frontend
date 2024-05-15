@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Album } from "@/lib/types";
+import { Album } from "@/app/lib/types";
 import { Pencil } from "lucide-react";
 
 const albumFormSchema = z.object({

@@ -7,7 +7,7 @@ import { CldUploadWidget, CldUploadWidgetInfo, CldUploadWidgetResults } from 'ne
 import axios from 'axios';
 import { useParams } from "next/navigation";
 import { useSession } from 'next-auth/react';
-import { Photographer } from "@/lib/types";
+import { Photographer } from "@/app/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from 'next/link';
 

@@ -11,10 +11,10 @@ import { useSession } from "next-auth/react";
 import { CldUploadWidget, CldUploadWidgetResults } from "next-cloudinary";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { EmojiPicker } from "./emojiPicker";
-import { Attachment, Chat, Message } from "@/lib/types";
+import { Attachment, Chat, Message } from "@/app/lib/types";
 
 interface ChatBottombarProps {
     sendMessage: (newMessage: Message) => void;

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { AlbumImage } from "@/lib/types";
+import { AlbumImage } from "@/app/lib/types";
 
 interface ImageUploadProps {
     albumId: string | string[];

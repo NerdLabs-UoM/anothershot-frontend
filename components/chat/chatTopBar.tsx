@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button';
-import { Chat } from '@/lib/types';
+import { Chat } from '@/app/lib/types';
 import {
     AlertDialog,
     AlertDialogAction,

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Album } from "@/lib/types";
+import { Album } from "@/app/lib/types";
 import AlbumCard from "./[albumId]/components/albumCard";
 import AlbumForm from "./[albumId]/components/albumForm";
 

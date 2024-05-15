@@ -54,8 +54,8 @@ import { Input } from "@/components/ui/input"
 import axios from 'axios';
 import { useParams } from "next/navigation";
 import { useSession } from 'next-auth/react';
-import { Package } from "@/lib/types";
-import { Photographer } from "@/lib/types";
+import { Package } from "@/app/lib/types";
+import { Photographer } from "@/app/lib/types";
 import toast from 'react-hot-toast';
 
 const formSchema = z.object({

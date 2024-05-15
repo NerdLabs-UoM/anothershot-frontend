@@ -10,9 +10,9 @@ import {
     TooltipTrigger,
     TooltipProvider,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Message } from "@/lib/types";
+import { Message } from "@/app/lib/types";
 
 interface SidebarProps {
     isCollapsed: boolean;
