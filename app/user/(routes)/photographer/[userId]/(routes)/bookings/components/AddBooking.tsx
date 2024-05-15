@@ -3,15 +3,6 @@
 import React, { useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { BiSolidPlusSquare } from "react-icons/bi";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-import cn from "classnames";
-import { Calendar } from "@/components/ui/calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-  } from "@/components/ui/popover";
 import {
     Dialog,
     DialogContent,
@@ -57,20 +48,15 @@ import { useSession } from 'next-auth/react';
 import { Package } from "@/app/lib/types";
 import { Photographer } from "@/app/lib/types";
 import toast from 'react-hot-toast';
+import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 
 const formSchema = z.object({
     eventName: z.string().min(2, "Event name should be between 5-50 characters").max(50, "Event name should be between 2-50 characters"),
     eventLocation: z.string(),
-    sdate: z.date({required_error: "A date is required.",}),
-    edate: z.date({required_error: "A date is required.",}),
-    stime: z.string().refine(value => /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-        message: "Should be in HH:mm.",
-      }),
-    etime: z.string().refine(value => /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-        message: "Should be in HH:mm.",
-      }),
-    eventType: z.string({required_error: "Event type is required."}),
-    package: z.string({required_error: "Package is required."}),
+    sdate: z.date(),
+    edate: z.date(),
+    eventType: z.string({ required_error: "Event type is required." }),
+    package: z.string({ required_error: "Package is required." }),
 
 });
 
@@ -81,15 +67,26 @@ const AddBooking = () => {
     const [photographer, setPhotographer] = React.useState<Photographer[]>([]);
     const [packages, setPackages] = React.useState<Package[]>([]);
     const [loading, setLoading] = React.useState(false);
+
+    const defaultStartDate = new Date();
+    defaultStartDate.setHours(defaultStartDate.getHours() + 5);
+    defaultStartDate.setMinutes(defaultStartDate.getMinutes() + 30);
+
+    const defaultEndDate = new Date();
+    defaultEndDate.setHours(defaultEndDate.getHours() + 5);
+    defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
+    
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             eventName: "",
             eventLocation: "",
-            stime: "",
-            etime: "",
+            sdate: defaultStartDate,
+            edate: defaultEndDate,
         },
     });
+    const [startDate, setStartDate] = React.useState<Date>(new Date());
+    const [endDate, setEndDate] = React.useState<Date>(new Date());
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -117,45 +114,69 @@ const AddBooking = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
 
-        const sdateString = values.sdate.toISOString();
-        const edateString = values.edate.toISOString();
+        const startDateObject = startDate ? new Date(startDate) : new Date();
+        const endDateObject = endDate ? new Date(endDate) : new Date();
+
+        startDateObject.setHours(startDateObject.getHours() + 5);
+        startDateObject.setMinutes(startDateObject.getMinutes() + 30);
+
+        endDateObject.setHours(endDateObject.getHours() + 5);
+        endDateObject.setMinutes(endDateObject.getMinutes() + 30);
+
+        const sdateString = startDateObject.toISOString();
+        const edateString = endDateObject.toISOString();
+
+        const startDateOnly = startDateObject.toISOString().split('T')[0];
+        const defaultStartDateOnly = defaultStartDate.toISOString().split('T')[0];
+        
+        if (startDateOnly === defaultStartDateOnly) {
+            toast.error("Please select a start date.");
+            return;
+        }
+        
+        const endDateOnly = endDateObject.toISOString().split('T')[0];
+        const defaultEndDateOnly = defaultEndDate.toISOString().split('T')[0];
+        
+        if (endDateOnly === defaultEndDateOnly) {
+            toast.error("Please select an end date.");
+            return;
+        }
+
+        setLoading(true);
         try {
-            setLoading(true);
             if (values) {
-              const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBooking`, {
-                clientId: session?.user?.id,
-                photographerId: userId,
-                eventName: values.eventName,
-                eventLocation: values.eventLocation,
-                startDate: sdateString,
-                endDate: edateString,
-                startTime: values.stime,
-                endTime: values.etime,
-                category: values.eventType,
-                packageId: values.package,
-              });
-      
-              if (response.status === 201) {
-                setLoading(false);
-                toast.success("Booking request sent successfully!");
-              }
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBooking`, {
+                    clientId: session?.user?.id,
+                    photographerId: userId,
+                    eventName: values.eventName,
+                    eventLocation: values.eventLocation,
+                    start: sdateString,
+                    end: edateString,
+                    category: values.eventType,
+                    packageId: values.package,
+                });
+
+                if (response.status === 201) {
+                    setLoading(false);
+                    toast.success("Booking request sent successfully!");
+                }
             }
-          } catch (error) {
+        } catch (error) {
             setLoading(false);
             toast.error("Error booking requesting");
-          } finally {
+        } finally {
             setLoading(false);
-          }
-      
+        }
         setIsOpened(false);
         form.reset();
-
+        setStartDate(new Date());
+        setEndDate(new Date());
     };
     const categories = photographer?.map((photographerItem: Photographer) => photographerItem.category);
 
     const eventMenuStyle = {
         maxHeight: categories && categories.length > 4 ? '100px' : 'auto',
-      };
+    };
 
     const packageMenuStyle = {
         maxHeight: packages && packages.length > 4 ? '100px' : 'auto',
@@ -165,7 +186,7 @@ const AddBooking = () => {
         <div className='flex justify-end'>
             {session?.user.userRole === 'CLIENT' && (
                 <Dialog open={isOpened} onOpenChange={setIsOpened}>
-                    <DialogTrigger> 
+                    <DialogTrigger>
                         <BiSolidPlusSquare size={50} />
                     </DialogTrigger>
                     <DialogContent>
@@ -191,7 +212,7 @@ const AddBooking = () => {
                                         </FormItem>
                                     )}
                                 />
-                                 <FormField
+                                <FormField
                                     control={form.control}
                                     name="eventLocation"
                                     render={({ field }) => (
@@ -204,41 +225,16 @@ const AddBooking = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <div className='grid grid-cols-2 gap-2'>
                                 <FormField
                                     control={form.control}
                                     name="sdate"
                                     render={({ field }) => (
                                         <FormItem className='flex flex-col'>
                                             <FormLabel>Start Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full pl-3 text-left font-normal",
-                                                                !field.value && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "PPP")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={field.onChange}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
+                                            <DateTimePickerForm
+                                                setDate={setStartDate}
+                                                date={startDate}
+                                            />
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -247,69 +243,16 @@ const AddBooking = () => {
                                     control={form.control}
                                     name="edate"
                                     render={({ field }) => (
-                                        <FormItem className='flex flex-col'>
+                                        <FormItem>
                                             <FormLabel>End Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full pl-3 text-left font-normal",
-                                                                !field.value && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "PPP")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={field.onChange}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
+                                            <DateTimePickerForm
+                                                setDate={setEndDate}
+                                                date={endDate}
+                                            />
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                </div>
-                                <div className='grid grid-cols-2 gap-2'>
-                                <FormField
-                                    control={form.control}
-                                    name="stime"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Start Time</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="HH:mm (00:00)" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="etime"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>End Time</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="HH:mm (00:00)" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                </div>
                                 <FormField
                                     control={form.control}
                                     name="eventType"
@@ -365,23 +308,23 @@ const AddBooking = () => {
                                     )}
                                 />
                                 <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                          <Button>Request</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. You can't change the booking again.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={form.handleSubmit(onSubmit)}>Continue</AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                                
+                                    <AlertDialogTrigger asChild>
+                                        <Button>Request</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. You can't change the booking again.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={form.handleSubmit(onSubmit)}>Continue</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+
                             </form>
                         </Form>
 
