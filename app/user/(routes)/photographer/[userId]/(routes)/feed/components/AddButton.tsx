@@ -73,7 +73,7 @@ const AddButton = () => {
                     googleApiKey: "<image_search_google_api_key>",
                     showAdvancedOptions: false,
                     singleUploadAutoClose: true,
-                    cropping: true,
+                    cropping: false,
                     multiple: false,
                     defaultSource: "local",
                     resourceType: "image",

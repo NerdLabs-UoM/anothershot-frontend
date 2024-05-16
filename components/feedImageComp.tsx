@@ -118,13 +118,15 @@ const FeedImageComp = () => {
         >
             <Masonry>
                 {feedImages.map((feedImage: FeedImage) => (
-                    <div key={feedImage.id} className="relative flex flex-col justify-end items-center overflow-hidden w-[350px] h-[350px] lg:h-[300px] lg:w-[300px] rounded-[40px] mx-auto  my-4">
+                    <div key={feedImage.id} className="relative flex flex-col justify-end items-center overflow-hidden w-[345px] h-auto lg:h-auto lg:w-[345px] rounded-[40px] mx-auto  my-4">
                         <Image
                             src={feedImage.imageUrl}
                             alt="Background Image"
-                            width={400}
-                            height={400}
-                            className=" rounded-[35px] h-[400px] w-[400px] hover:scale-110 transform transition duration-500"
+                            width={345}
+                            height={0}
+                            quality={100}
+                            style={{height: 'auto', width: '345px'}}
+                            className=" rounded-[35px]  hover:scale-110 transform transition duration-500"
                         />
                         <div className="absolute z-10 grid grid-cols-6 items-center justify-center w-full bg-gradient-to-t from-black to-transparent rounded-b-[40px]">
                             <div className="col-span-4 flex flex-start items-center justify-start pl-4 cursor-pointer" onClick={() => handleRedirect(feedImage.photographerId)}>
