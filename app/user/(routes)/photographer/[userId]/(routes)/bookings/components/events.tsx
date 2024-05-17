@@ -46,7 +46,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
 import React from "react";
-import { PlusSquare } from "lucide-react";
+import { DivideIcon, PlusSquare } from "lucide-react";
 import { Booking, Event } from "@/app/lib/types";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 
@@ -81,30 +81,31 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedBookingId, setSelectedBookingId] = useState<string>("");
 
+  const defaultStartDate = new Date();
+  defaultStartDate.setHours(defaultStartDate.getHours() + 5);
+  defaultStartDate.setMinutes(defaultStartDate.getMinutes() + 30);
+
+  const defaultEndDate = new Date();
+  defaultEndDate.setHours(defaultEndDate.getHours() + 5);
+  defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: ""
-     
+      description: "",
+      start: defaultStartDate,
+      end: defaultEndDate
+
     }
   });
 
-  const defaultStartDate = new Date();
-  defaultStartDate.setHours(defaultStartDate.getHours() +5);
-  defaultStartDate.setMinutes(defaultStartDate.getMinutes()+30);
-
-  const defaultEndDate = new Date();
-  defaultEndDate.setHours(defaultEndDate.getHours() +5);
-  defaultEndDate.setMinutes(defaultEndDate.getMinutes()+30);
-  
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
         );
-        console.log(response);
         const data = response.data;
         setBooking(data);
         console.log(data);
@@ -128,14 +129,14 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
 
   const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
 
-    const startObject = start? new Date(start): new Date();
-    const endObject = end? new Date(end): new Date();
+    const startObject = start ? new Date(start) : new Date();
+    const endObject = end ? new Date(end) : new Date();
 
-    startObject.setHours(startObject.getHours() +5);
-    startObject.setMinutes(startObject.getMinutes()+30);
+    startObject.setHours(startObject.getHours() + 5);
+    startObject.setMinutes(startObject.getMinutes() + 30);
 
-    endObject.setHours(endObject.getHours() +5);
-    endObject.setMinutes(endObject.getMinutes()+30);
+    endObject.setHours(endObject.getHours() + 5);
+    endObject.setMinutes(endObject.getMinutes() + 30);
 
     const startString = startObject.toISOString();
     const endString = endObject.toISOString();
@@ -145,11 +146,11 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     const defaultStartOnly = defaultStartDate.toISOString().split('T')[0];
     const defaultEndOnly = defaultEndDate.toISOString().split('T')[0];
 
-    if(startOnly===defaultStartOnly){
+    if (startOnly === defaultStartOnly) {
       toast.error("Please select a start date");
       return;
     }
-    if(endOnly===defaultEndOnly){
+    if (endOnly === defaultEndOnly) {
       toast.error("Please select a end date");
       return;
     }
@@ -163,8 +164,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
           {
             name: values.name,
             bookingId: selectedBookingId,
-            start: values.start,
-            end: values.end,
+            start: startOnly,
+            end: endOnly,
             description: values.description,
           }
         );
@@ -226,6 +227,24 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   };
 
   const handleSaveChanges = async () => {
+
+    const startObject = start ? new Date(start) : new Date();
+    const endObject = end ? new Date(end) : new Date();
+
+    startObject.setHours(startObject.getHours() + 5);
+    startObject.setMinutes(startObject.getMinutes() + 30);
+
+    endObject.setHours(endObject.getHours() + 5);
+    endObject.setMinutes(endObject.getMinutes() + 30);
+
+    const startString = startObject.toISOString();
+    const endString = endObject.toISOString();
+
+    const startOnly = startObject.toISOString().split('T')[0];
+    const endOnly = endObject.toISOString().split('T')[0];
+    const defaultStartOnly = defaultStartDate.toISOString().split('T')[0];
+    const defaultEndOnly = defaultEndDate.toISOString().split('T')[0];
+
     if (!session?.user?.id) return;
     const data = {
       photographerId: session.user.id,
@@ -250,7 +269,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       <div className="w-full sm:pr-10">
         <Dialog>
           {renderEditButton()}
-          <DialogContent className="max-w-[300px] sm:max-w-[450px] max-h-[700px] overflow-y-auto">
+          <DialogContent className="max-w-[300px] sm:max-w-[430px] max-h-[700px] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit event Details</DialogTitle>
               <DialogDescription className="sm:mt-2 sm:mb-4">
@@ -296,9 +315,10 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                       <FormControl className="col-span-6">
                         <Input
                           type="name"
-                          placeholder="event name"
+                          placeholder="  Event name"
                           maxLength={50}
-                          {...field} />
+                          {...field} 
+                          size={15}/>
                       </FormControl>
                     </FormItem>
                   )} />
@@ -311,7 +331,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                       <FormControl className="col-span-6">
                         <Input
                           type="description"
-                          placeholder="description"
+                          placeholder="  Description"
                           maxLength={100}
                           {...field} />
                       </FormControl>
@@ -321,54 +341,32 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                   control={form.control}
                   name="start"
                   render={({ field }) => (
-                    <FormItem className="grid grid-cols-8 gap-3 mb-2  ">
-                      <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
-                      <FormControl className="col-span-6 ml-10">
+                    <FormItem className="grid grid-cols-8 gap-3 mb-2 items-center">
+                      <FormLabel className="col-span-2 grid place-content-end ">Start Date</FormLabel>
+                      <div className="col-span-6 ">
                         {start && <DateTimePickerForm 
                           setDate={setStartDate}
-                          date={start}/>
-                          }
-                      </FormControl>
+                          date={start} />
+                        }
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )} />
-                <FormField
+               <FormField
                   control={form.control}
                   name="end"
                   render={({ field }) => (
-                    <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
-                      <FormLabel className="col-span-2 grid place-content-end">End Date</FormLabel>
-                      {end && <DateTimePickerForm
-                        setDate={setEndDate}
-                        date={end} />}
+                    <FormItem className="grid grid-cols-8 gap-3 mb-2 items-center">
+                      <FormLabel className="col-span-2 grid place-content-end ">End Date</FormLabel>
+                      <div className="col-span-6 ">
+                        {end && <DateTimePickerForm 
+                          setDate={setEndDate}
+                          date={end} />
+                        }
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )} />
-                {/* <FormField
-                  control={form.control}
-                  name="start"
-                  render={({ field }) => (
-                    <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
-                      <FormLabel className="col-span-2 grid place-content-end">
-                        Time
-                      </FormLabel>
-                      <FormControl className="col-span-3">
-                        <Input type="startTime" placeholder="startTime" />
-                      </FormControl>
-                      <FormMessage />
-                      <FormField
-                        control={form.control}
-                        name="end"
-                        render={({ field }) => (
-                          <FormItem className="col-span-3">
-                            <FormControl className="w-full">
-                              <Input type="endTime" placeholder="endTime" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )} />
-                    </FormItem>
-                  )} /> */}
               </form>
             </Form>
             <DialogFooter>
