@@ -44,12 +44,9 @@ const formSchema = z.object({
   }),
 
 });
-
-
 interface EditFormProps {
   paymentId: String | undefined;
 }
-
 
 const StatusForm: React.FC<EditFormProps> = ({paymentId
 }) => {
@@ -59,19 +56,13 @@ const StatusForm: React.FC<EditFormProps> = ({paymentId
       status: "",
     },
   });
-  console.log(paymentId)
 
-  const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
-  const [isClient, setIsClient] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [newvalues, setNewValues] = useState({
     status: "",
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setNewValues(values);
-    console.log(values);
-    console.log(newvalues);
     axios
       .put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/payment/update-payment-status/${paymentId}`,
@@ -80,11 +71,9 @@ const StatusForm: React.FC<EditFormProps> = ({paymentId
         }
       )
       .then((response) => {
-        console.log(response);
         toast.success("Payment status updated successfully");
       })
       .catch((error) => {
-        console.log(error);
         toast.error("Error updating payment status");
       });
    

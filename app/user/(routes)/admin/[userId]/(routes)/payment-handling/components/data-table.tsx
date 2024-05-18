@@ -2,13 +2,22 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
+  SortingState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox"
+import { FilterIcon, Search } from "lucide-react";
+import { DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 import {
   Table,
@@ -18,26 +27,57 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import React from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onSearchClick:() => void;
+  onSearchValueChange: (value: string) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onSearchClick,
+  onSearchValueChange,
 }: DataTableProps<TData, TValue>) {
+
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
 
   })
 
   return (
     <div>
+      <div className = 'flex gap-2'>
+      <Input
+            placeholder="Search by Name..."
+            onChange={(event) =>
+              onSearchValueChange(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <Button>
+          <Search className="mx-4 bg-gray-100 bg-transparent hover:cursor-pointor" onClick={() => onSearchClick()}/>
+          </Button>
+      </div>
     <div className="rounded-md border">
       <Table>
         <TableHeader>
@@ -82,24 +122,6 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
-    <div className="flex items-center justify-center space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
     </div>
   )
 }
