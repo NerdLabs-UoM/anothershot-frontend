@@ -13,7 +13,7 @@ const bookingTable = () => {
     const { data: session } = useSession()
     const [isNew, setIsNew] = useState<boolean>(false)
     const { userId } = useParams();
-    const [booking, setBooking] = useState<Booking[]>([]);
+    const [bookings, setBookings] = useState<Booking[]>([]);
     // useEffect(() => {
     //     const fetchBookings = async () => {
     //         try {
@@ -21,7 +21,7 @@ const bookingTable = () => {
     //                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
     //             );
     //             const data = response.data;
-    //             setBooking(data)
+    //             setBookings(data)
     //             console.log("Bookings",response.data);
     //         } catch (error) {
     //             toast.error("Cannot fetch Bookings.Please try again.");

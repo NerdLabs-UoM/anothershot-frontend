@@ -75,8 +75,8 @@ const PhotographerBookingsPage = () => {
   // const [events, setEvents] = useState<Event[]>(sampleEvents);
   const [eventList, setEventList] = useState<Event[]>([]);
   const [sampleDate, setSampleDate] = useState<Date>(new Date());
-  const [startDate , setStartDate] = useState<Date>(new Date());
-  const [endDate , setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -84,7 +84,7 @@ const PhotographerBookingsPage = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/get`
         );
-        const data= response.data
+        const data = response.data
         setEventList(data);
         console.log(data);
       } catch (error) {
@@ -96,7 +96,11 @@ const PhotographerBookingsPage = () => {
 
   return (
     <div className="w-full flex justify-center py-5" >
-      <div className=" pl-4 lg:w-3/5 ">
+      <div className="lg:w-3/5 ">
+        <div className="flex justify-center mb-6">
+          {session && session.user && session.user.id === userId &&
+            <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate} />}
+        </div>
         <DateTimePickerForm
           setDate={setSampleDate}
           date={sampleDate}
@@ -105,11 +109,6 @@ const PhotographerBookingsPage = () => {
           events={eventList}
         />
       </div>
-      <div className=" pr-6">
-        {session && session.user && session.user.id === userId &&
-          <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate}  />}
-      </div>
-      
     </div >
   );
 }
