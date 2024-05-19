@@ -1,6 +1,5 @@
-import React from 'react'
 "use client";
-
+import React from 'react'
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -14,21 +13,21 @@ const bookingTable = () => {
     const [isNew, setIsNew] = useState<boolean>(false)
     const { userId } = useParams();
     const [bookings, setBookings] = useState<Booking[]>([]);
-    // useEffect(() => {
-    //     const fetchBookings = async () => {
-    //         try {
-    //             const response = await axios.get(
-    //                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
-    //             );
-    //             const data = response.data;
-    //             setBookings(data)
-    //             console.log("Bookings",response.data);
-    //         } catch (error) {
-    //             toast.error("Cannot fetch Bookings.Please try again.");
-    //         }
-    //     };
-    //     fetchBookings();
-    // }, []);
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
+                );
+                const data = response.data;
+                setBookings(data)
+                console.log("Bookings",response.data);
+            } catch (error) {
+                toast.error("Cannot fetch Bookings.Please try again.");
+            }
+        };
+        fetchBookings();
+    }, []);
 
     return (
         <div>

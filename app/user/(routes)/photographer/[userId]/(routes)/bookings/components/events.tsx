@@ -64,6 +64,8 @@ export interface EventFormProps {
 }
 
 export const formSchema = z.object({
+  id: z.string(),
+  bookingId: z.string(),
   title: z
     .string()
     .min(2, "Username must be between 2-50 characters long").max(50, "Username must be between 2-50 characters long"),
@@ -80,6 +82,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const [booking, setBooking] = useState<Booking[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedBookingId, setSelectedBookingId] = useState<string>("");
+  const [selectedEventId, setSelectedEventId] = useState<string>("");
 
   const defaultStartDate = new Date();
   defaultStartDate.setHours(defaultStartDate.getHours() + 5);
@@ -98,6 +101,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: "",
+      bookingId: "",
       title: "",
       description: "",
       start: defaultStartDate,
@@ -224,17 +229,22 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       form.setValue("title", selectedBooking.subject);
     }
     setSelectedBookingId(value);
-
+  };
+  const handleEventChange = (value: string) => {
+    const selectedEvent = eventItems.find((events) => events.id === value);
+    if (selectedEvent) {
+      form.setValue("title", selectedEvent.title);
+    }
+    setSelectedEventId(value);
   };
 
   const handleDeleteEvent = async () => {
     const data = {
-      bookingId: selectedBookingId  
-
+      id:selectedEventId
     };
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/delete`, { data });
-      eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.bookingId !== selectedBookingId));
+      eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id===selectedEventId));
       console.log(response.data);
       toast.success("Event deleted successfully");
     } catch (error) {
@@ -322,6 +332,32 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                       <FormMessage />
                     </FormItem>
                   )} />)}
+                <FormField
+                  control={form.control}
+                  name="id"
+                  render={({ field }) => (
+                    <FormItem  className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
+                      <FormLabel className="col-span-2 grid place-content-end">Events</FormLabel>
+                      <Select onValueChange={(value: string) => handleEventChange(value)}>
+                        <FormControl className="col-span-6">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a Event" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent >
+                          <SelectGroup>
+                            {eventItems.map((events) => (
+                              <SelectItem key={events.id} value={events.id}>
+                                <SelectLabel>{events.title}</SelectLabel>
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="title"

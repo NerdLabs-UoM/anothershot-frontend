@@ -25,6 +25,7 @@ import Events from './components/events'
 import axios from "axios";
 import toast from "react-hot-toast";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
+import BookingTable from "./components/bookingTable";
 
 
 const sampleEvents = [
@@ -59,10 +60,8 @@ const sampleEvents = [
   // },
 ]
 interface EventData {
-  startDate: string;
-  endDate: string;
   id?: string;
-  name?: string;
+  title?: string;
   bookingId?: string;
   description?: string;
   start?: string;
@@ -108,6 +107,7 @@ const PhotographerBookingsPage = () => {
         <FullCalendarComp
           events={eventList}
         />
+        <BookingTable/>
       </div>
     </div >
   );
