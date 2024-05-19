@@ -109,28 +109,7 @@ const PhotographerBookingsPage = () => {
         {session && session.user && session.user.id === userId &&
           <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate}  />}
       </div>
-      {/* <div className="flex flex-wrap">
-        {eventList.length > 0 ? (
-          <>
-            <div className="flex flex-wrap">
-              {eventList.map((eventItem) => (
-                <Events
-                  key={eventItem.id}
-                  eventItems={eventList}
-                  eventProp={setEventList}
-                  id={eventItem.id}
-                  name={eventItem.name}
-                  description={eventItem.description}
-                  startDate="2024-03-01T19:30:00"
-                  endDate="2024-03-01T21:30:00"
-                />
-              ))}
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
-      </div> */}
+      
     </div >
   );
 }

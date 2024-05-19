@@ -226,6 +226,7 @@ export interface Offer {
 export interface Event {
     id: string;
     title: string;
+    bookingId : string;
     description?: string;
     start?: Date;
     end?: Date;

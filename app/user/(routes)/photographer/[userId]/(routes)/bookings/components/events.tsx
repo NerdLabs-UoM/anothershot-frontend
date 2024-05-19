@@ -52,7 +52,7 @@ import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picke
 
 export interface EventFormProps {
   id?: string;
-  name?: string;
+  title?: string;
   bookingId?: string;
   description?: string;
   start?: Date;
@@ -64,7 +64,7 @@ export interface EventFormProps {
 }
 
 export const formSchema = z.object({
-  name: z
+  title: z
     .string()
     .min(2, "Username must be between 2-50 characters long").max(50, "Username must be between 2-50 characters long"),
   description: z
@@ -89,14 +89,19 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   defaultEndDate.setHours(defaultEndDate.getHours() + 5);
   defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
 
+  // const bookingStartDate = new Date();
+  // const bookingEndDate = end ? new Date(end) : new Date();
+
+  // const bookingStartOnly = bookingStartDate.toISOString().split("T")[0];
+  // const bookingEndOnly = bookingEndDate.toISOString().split("T")[0];
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      title: "",
       description: "",
       start: defaultStartDate,
       end: defaultEndDate
-
     }
   });
 
@@ -106,8 +111,23 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
         );
+        const bookingObject = response.data.map((booking: Booking) => {
+          if (booking.start && booking.end) {
+            const bookingStartDate = new Date(booking.start);
+            const bookingStartDateString = bookingStartDate.toISOString().split('T')[0];
+            const bookingEndDate = new Date(booking.end);
+            const bookingEndDateString = bookingEndDate.toISOString().split('T')[0];
+            return {
+              ...booking,
+              start: bookingStartDateString,
+              end: bookingEndDateString
+            };
+          } else {
+            return booking;
+          }
+        })
         const data = response.data;
-        setBooking(data);
+        setBooking(bookingObject);
         console.log(data);
       } catch (error) {
         toast.error("Cannot fetch Bookings.Please try again.");
@@ -128,7 +148,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
-
     const startObject = start ? new Date(start) : new Date();
     const endObject = end ? new Date(end) : new Date();
 
@@ -146,15 +165,21 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     const defaultStartOnly = defaultStartDate.toISOString().split('T')[0];
     const defaultEndOnly = defaultEndDate.toISOString().split('T')[0];
 
+    const bookingStart = booking.map((bookings) => bookings.start);
+    const bookingEnd = booking.map((bookings) => bookings.end);
+
     if (startOnly === defaultStartOnly) {
       toast.error("Please select a start date");
+      // if(startOnly !==bookingStart)
+      //   toast.error("Selected date & time shouldn't match with the client booking date & time");
       return;
     }
     if (endOnly === defaultEndOnly) {
       toast.error("Please select a end date");
+      // if(endOnly !==bookingEndOnly)
+      //   toast.error("Selected date & time shouldn't match with the client booking date & time");
       return;
     }
-
     try {
       setLoading(true);
       if (values) {
@@ -162,30 +187,22 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`,
           {
-            name: values.name,
+            title: values.title,
             bookingId: selectedBookingId,
-            start: startOnly,
-            end: endOnly,
+            start: startString,
+            end: endString,
             description: values.description,
           }
         );
         const data = response.data;
         console.log(data);
-        // if (response.status !== 200) {
-        //   console.error(`Server responded with status code ${response.status}`);
-        //   toast.error("An error occurred. Please try again.");
-        //   return;
-        // }
         setLoading(false);
         const newEvent: Event = response.data;
         const newBooking: Booking = response.data;
         console.log("Response data:", newBooking);
-        // if (booking.some((booking: Booking) => booking.id === newBooking.id)) {
-        //   toast.error("Event already exists.");
-        if (eventItems.some((eventItem: Event) => eventItem.id !== null
+        if (eventItems.some((eventItem: Event) => eventItem.bookingId === newEvent.bookingId
         )) {
           toast.error("Event already exists.");
-
         } else {
           eventProp(prevEventList => {
             const newList = [...prevEventList, newEvent];
@@ -204,21 +221,20 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const handleBookingChange = (value: string) => {
     const selectedBooking = booking.find((bookings) => bookings.id === value);
     if (selectedBooking) {
-      form.setValue("name", selectedBooking.subject);
+      form.setValue("title", selectedBooking.subject);
     }
     setSelectedBookingId(value);
 
   };
 
   const handleDeleteEvent = async () => {
-    if (!session?.user?.id) return;
     const data = {
-      photographerId: session.user.id,
-      eventId: eventProp.name
+      bookingId: selectedBookingId  
+
     };
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/delete`, { data });
-      eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id !== selectedBookingId));
+      eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.bookingId !== selectedBookingId));
       console.log(response.data);
       toast.success("Event deleted successfully");
     } catch (error) {
@@ -248,10 +264,10 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     if (!session?.user?.id) return;
     const data = {
       photographerId: session.user.id,
-      name: form.getValues("name"),
+      name: form.getValues("title"),
       description: form.getValues("description"),
-      start: form.getValues("start"),
-      end: form.getValues("end"),
+      start: startString,
+      end: endString
     };
     try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
@@ -283,7 +299,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
               <form onSubmit={form.handleSubmit(handleSaveChanges)}>
                 {isNew && (<FormField
                   control={form.control}
-                  name="name"
+                  name="title"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ml-0 pl-0 ">
                       <FormLabel className="col-span-2 grid place-content-end">Bookings</FormLabel>
@@ -308,17 +324,17 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                   )} />)}
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="title"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">Name</FormLabel>
                       <FormControl className="col-span-6">
                         <Input
-                          type="name"
+                          type="title"
                           placeholder="  Event name"
                           maxLength={50}
-                          {...field} 
-                          size={15}/>
+                          {...field}
+                          size={15} />
                       </FormControl>
                     </FormItem>
                   )} />
@@ -342,9 +358,9 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                   name="start"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 items-center">
-                      <FormLabel className="col-span-2 grid place-content-end ">Start Date</FormLabel>
-                      <div className="col-span-6 ">
-                        {start && <DateTimePickerForm 
+                      <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
+                      <div className="col-span-6">
+                        {start && <DateTimePickerForm
                           setDate={setStartDate}
                           date={start} />
                         }
@@ -352,14 +368,14 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                       <FormMessage />
                     </FormItem>
                   )} />
-               <FormField
+                <FormField
                   control={form.control}
                   name="end"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 items-center">
                       <FormLabel className="col-span-2 grid place-content-end ">End Date</FormLabel>
                       <div className="col-span-6 ">
-                        {end && <DateTimePickerForm 
+                        {end && <DateTimePickerForm
                           setDate={setEndDate}
                           date={end} />
                         }
@@ -386,7 +402,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => (handleDeleteEvent)}>Continue</AlertDialogAction>
+                      <AlertDialogAction onClick={() => (handleDeleteEvent())}>Continue</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
