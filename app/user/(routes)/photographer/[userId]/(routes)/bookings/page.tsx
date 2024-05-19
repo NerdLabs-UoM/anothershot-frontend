@@ -100,14 +100,16 @@ const PhotographerBookingsPage = () => {
           {session && session.user && session.user.id === userId &&
             <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate} />}
         </div>
-        <DateTimePickerForm
+        {/* <DateTimePickerForm
           setDate={setSampleDate}
           date={sampleDate}
-        />
+        /> */}
         <FullCalendarComp
           events={eventList}
         />
+        <div className="mt-10">
         <BookingTable/>
+        </div>
       </div>
     </div >
   );
