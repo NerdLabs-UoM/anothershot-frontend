@@ -3,13 +3,14 @@ import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare, MoreVertical, Bookmark } from "lucide-react";
-import { FeedImage } from "@/app/lib/types";
+import { FeedImage,Notification } from "@/app/lib/types";
 import axios from 'axios';
 import { useSession } from "next-auth/react";
 import { toast } from 'react-hot-toast';
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 import { useRouter } from 'next/navigation';
 import { set } from 'lodash';
+import { NotificationService } from './notification/notification';
 
 const formatCount = (count: number) => {
     if (count < 1000) {
@@ -60,11 +61,21 @@ const FeedImageComp = () => {
                 };
                 setFeedImages(updatedFeedImages);
             }
-            await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${photographerId}/feed/like`, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${photographerId}/feed/like`, {
                 feedId: feedImageId,
                 userId: session?.user?.id,
                 like: !isLiked
             });
+
+            if (!isLiked){
+                NotificationService({
+                    senderId: session?.user?.id,
+                    receiverId: photographerId,
+                    type: "like",
+                    title: "likes your photo",
+                    description: ""
+                  })
+            }
             setLikeDisabled('');
             toast('❤️')
         } catch (error: any) {

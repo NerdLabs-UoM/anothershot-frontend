@@ -50,8 +50,8 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
     }, [session?.user?.id])
 
     useEffect(() => {
-        
-        const handleReceiveNotification = (notification: Notification) => {
+
+        const handleReceiveNotification = (notification: Notification,title:string) => {
             if (notification.receiverId === session?.user?.id) {
                 setNotifications(prev => [notification, ...prev]);
                 if (!notification.read) {
@@ -62,13 +62,36 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
         socket?.on("receive-notify", handleReceiveNotification);
         return () => {
             socket?.off("receive-notify", handleReceiveNotification);
+
         };
     }, [socket, session?.user?.id]);
+
 
     const updateUnreadCount = (newCount: number) => {
         setCount(newCount);
         setIsReadAll(newCount === 0);
     };
+
+    const handleDelete = async (id: string) => {
+        const userId = session?.user?.id;
+        try {
+            const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/notification/delete/${id}/${userId}`);
+            setNotifications(prev => prev.filter(notification => notification.id !== id));
+            toast.success("Notification deleted")
+        } catch (error) {
+            toast.error("Error deleting notification")
+        }
+    }
+
+    const handleRead = async (id: string) => {
+        try {
+            // Update the read state in the database
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/notification/update`, { notifyId: id, read: true });
+            toast.success('Update notification success');
+        } catch (error) {
+            toast.error('Error updating notification');
+        }
+    }
 
     return (
         <Sheet>
@@ -77,7 +100,7 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
             </SheetTrigger>
             <SheetContent>
                 <SheetTitle>Notifications</SheetTitle>
-                <SheetDescription>{isReadAll ? "You have no unread messages" : `You have ${count} unread messages.`}</SheetDescription>
+                {logged ? (<SheetDescription>{isReadAll ? "You have no unread messages" : `You have ${count} unread messages.`}</SheetDescription>):""}
 
                 <ScrollArea className="h-[600px]">
                     <div className="flex flex-col gap-3 mt-5">
@@ -85,11 +108,15 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
                             <NotificationCard
                                 key={index}
                                 id={notification.id}
+                                receiverId={session?.user?.id}
                                 title={notification.title}
                                 description={notification.description}
+                                time={notification.createdAt}
                                 read={notification.read}
                                 unreadCount={count}
-                                updateUnreadCount={updateUnreadCount} />
+                                updateUnreadCount={updateUnreadCount}
+                                onUpdateDelete={handleDelete}
+                                onUpdateRead={handleRead} />
 
                         ))) : (defaultNotify.map((notification, index) => (
                             <NotificationCard

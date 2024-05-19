@@ -384,6 +384,8 @@ export interface PaymentArray {
 
 export interface Notification {
     id:string;
+    sender:User;
+    senderId:string;
     receiver:User;
     receiverId:string;
     type:string;
