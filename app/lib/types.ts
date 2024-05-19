@@ -228,8 +228,8 @@ export interface Event {
     title: string;
     bookingId : string;
     description?: string;
-    start?: Date;
-    end?: Date;
+    start?: Date|null;
+    end?: Date|null;
     allDay?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
