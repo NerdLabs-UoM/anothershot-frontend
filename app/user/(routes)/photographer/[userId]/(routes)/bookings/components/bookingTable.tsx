@@ -73,7 +73,7 @@ const bookingTable = () => {
                     <TableBody>
                         {bookings.map((booking) => (
                             <TableRow key={booking.clientId}>
-                                <TableCell className="text-center text-xs">{booking.clientId}</TableCell>
+                                <TableCell className="text-center text-xs">{booking.client.name}</TableCell>
                                 <TableCell className="text-center text-xs">{booking.id}</TableCell>
                                 <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
                                 <TableCell className='text-center text-xs'>{booking.status}</TableCell>
