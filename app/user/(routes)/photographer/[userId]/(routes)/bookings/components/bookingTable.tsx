@@ -63,11 +63,11 @@ const bookingTable = () => {
                 <Table className="w-full sm:w-full min-w-[600px] mb-16 ">
                     <TableHeader className=''>
                         <TableRow>
-                            <TableHead className="w-[80px] sm:w-[100px] text-center">ClientName</TableHead>
-                            <TableHead className='text-center'>Booking Id</TableHead>
-                            <TableHead className='text-center'>StartDate & Time </TableHead>
-                            <TableHead className="text-center">Payment Status</TableHead>
-                            <TableHead className="text-center">Amount</TableHead>
+                            <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium">ClientName</TableHead>
+                            <TableHead className='text-center text-black font-medium'>Booking Id</TableHead>
+                            <TableHead className='text-center  text-black font-medium'>StartDate & Time </TableHead>
+                            <TableHead className="text-center text-black font-medium">Payment Status</TableHead>
+                            <TableHead className="text-center text-black font-medium">Amount</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
