@@ -93,12 +93,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   defaultEndDate.setHours(defaultEndDate.getHours() + 5);
   defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
 
-  // const bookingStartDate = new Date();
-  // const bookingEndDate = end ? new Date(end) : new Date();
-
-  // const bookingStartOnly = bookingStartDate.toISOString().split("T")[0];
-  // const bookingEndOnly = bookingEndDate.toISOString().split("T")[0];
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

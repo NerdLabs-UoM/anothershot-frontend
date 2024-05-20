@@ -200,7 +200,6 @@ export interface Booking {
     end?: Date | null;
     location?: String | null;
     event: Event;
-    // offer:Offer;
     status: BookingStatus;
     createdAt: Date;
     updatedAt: Date;

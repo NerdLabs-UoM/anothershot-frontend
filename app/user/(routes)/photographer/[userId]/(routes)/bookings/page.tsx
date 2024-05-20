@@ -95,7 +95,7 @@ const PhotographerBookingsPage = () => {
 
   return (
     <div className="w-full flex justify-center py-5" >
-      <div className="lg:w-3/5 ">
+      <div className=" w-full sm:w-4/5 ">
         <div className="flex justify-center mb-6">
           {session && session.user && session.user.id === userId &&
             <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate} />}
@@ -104,11 +104,11 @@ const PhotographerBookingsPage = () => {
           setDate={setSampleDate}
           date={sampleDate}
         /> */}
-        <FullCalendarComp
-          events={eventList}
-        />
-        <div className="mt-10">
-        <BookingTable/>
+       <div className="overflow-x-auto">
+          <FullCalendarComp events={eventList} />
+        </div>
+        <div className="mt-6 overflow-x-auto">
+          <BookingTable />
         </div>
       </div>
     </div >

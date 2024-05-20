@@ -39,7 +39,7 @@ const bookingTable = () => {
             }
         };
         fetchBookings();
-    }, []);
+    }, [userId]);
 
     // useEffect(() => {
     //     const fetchPackages = async () => {
@@ -57,31 +57,33 @@ const bookingTable = () => {
     // }, [userId]);
 
     return (
-        <div className='border-collapse border-gray-200 mb-6'>
-            <div className='flex items-start pl-4 sm:pl-4 text-xl font-bold text-black'>Bookings</div>
-            <Table>
-                <TableHeader className=''>
-                    <TableRow>
-                        <TableHead className="w-[100px]">Client Name</TableHead>
-                        <TableHead>Booking Id</TableHead>
-                        <TableHead>Start </TableHead>
-                        <TableHead className="text-right">Payment Status</TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {bookings.map((booking) => (
-                        <TableRow key={booking.clientId}>
-                            <TableCell className="font-medium">{booking.clientId}</TableCell>
-                            <TableCell className="font-medium">{booking.id}</TableCell>
-                            <TableCell>{booking.status}</TableCell>
-                            <TableCell>{booking.status}</TableCell>
-                            <TableCell className="text-right">{booking.packageId}</TableCell>
+        <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-10">
+            <div className="flex items-start pl-4 sm:pl-4 pt-4 text-xl font-bold text-black mb-4">Bookings</div>
+            <div className="overflow-x-auto sm:overflow-hidden w-full">
+                <Table className="w-full sm:w-full min-w-[600px] mb-16 ">
+                    <TableHeader className=''>
+                        <TableRow>
+                            <TableHead className="w-[80px] sm:w-[100px] text-center">ClientName</TableHead>
+                            <TableHead className='text-center'>Booking Id</TableHead>
+                            <TableHead className='text-center'>StartDate & Time </TableHead>
+                            <TableHead className="text-center">Payment Status</TableHead>
+                            <TableHead className="text-center">Amount</TableHead>
                         </TableRow>
-                    ))}
-                </TableBody>
+                    </TableHeader>
+                    <TableBody>
+                        {bookings.map((booking) => (
+                            <TableRow key={booking.clientId}>
+                                <TableCell className="text-center text-xs">{booking.clientId}</TableCell>
+                                <TableCell className="text-center text-xs">{booking.id}</TableCell>
+                                <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
+                                <TableCell className='text-center text-xs'>{booking.status}</TableCell>
+                                <TableCell className='text-center text-xs'>{booking.packageId}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
 
-            </Table>
+                </Table>
+            </div>
         </div>
     )
 }
