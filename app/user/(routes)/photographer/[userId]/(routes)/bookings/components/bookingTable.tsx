@@ -23,7 +23,6 @@ const bookingTable = () => {
     const [isNew, setIsNew] = useState<boolean>(false)
     const { userId } = useParams();
     const [bookings, setBookings] = useState<Booking[]>([]);
-    const [packages, setPackages] = useState<Package[]>([]);
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -40,21 +39,6 @@ const bookingTable = () => {
         };
         fetchBookings();
     }, [userId]);
-
-    // useEffect(() => {
-    //     const fetchPackages = async () => {
-    //         try {
-    //             const response = await axios.get(
-    //                 `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`
-    //             );
-    //             const data = response.data;
-    //             setPackages(data);
-    //         } catch (error) {
-    //             toast.error("Cannot fetch packages. Please try again.");
-    //         }
-    //     };
-    //     fetchPackages();
-    // }, [userId]);
 
     return (
         <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-10">
@@ -77,7 +61,7 @@ const bookingTable = () => {
                                 <TableCell className="text-center text-xs">{booking.id}</TableCell>
                                 <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
                                 <TableCell className='text-center text-xs'>{booking.status}</TableCell>
-                                <TableCell className='text-center text-xs'>{booking.packageId}</TableCell>
+                                <TableCell className='text-center text-xs'>{booking.package.price}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

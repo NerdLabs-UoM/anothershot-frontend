@@ -241,6 +241,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       start: startString,
       end: endString
     };
+    console.log("data comes")
     try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
       const updatedEvent: Event = response.data;
@@ -424,7 +425,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                 form.reset();
                 setIsNew(false);
               }}>Cancel</Button>
-              {!isNew && <Button onClick={() => (handleSaveChanges)}>
+              {!isNew && <Button onClick={() => (handleSaveChanges())}>
                 Update
               </Button>}
               {isNew && <Button onClick={form.handleSubmit(onSubmit)}>
