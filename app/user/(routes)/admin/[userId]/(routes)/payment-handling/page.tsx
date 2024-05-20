@@ -1,9 +1,16 @@
+'use client'
+
+import Table from "./components/Table";
+
+
 const PaymentPage = () => {
-    return (
-        <>
-            <h1>Payment Page</h1>
-        </>
-    );
-}
+
+
+  return (
+    <>
+      <Table />
+    </>
+  );
+};
 
 export default PaymentPage;
