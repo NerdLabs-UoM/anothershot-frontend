@@ -104,7 +104,7 @@ const PhotographerBookingsPage = () => {
           setDate={setSampleDate}
           date={sampleDate}
         /> */}
-       <div className="overflow-x-auto">
+       <div className="overflow-x-auto p-6 sm:p-0">
           <FullCalendarComp events={eventList} />
         </div>
         <div className="mt-6 overflow-x-auto">

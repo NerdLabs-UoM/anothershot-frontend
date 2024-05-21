@@ -319,7 +319,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                       <Select onValueChange={(value: string) => handleEventChange(value)}>
                         <FormControl className="col-span-6">
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a Event" />
+                            <SelectValue placeholder="Select an Event" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent >

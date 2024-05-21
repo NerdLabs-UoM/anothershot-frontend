@@ -41,32 +41,34 @@ const bookingTable = () => {
     }, [userId]);
 
     return (
-        <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-10">
-            <div className="flex items-start pl-4 sm:pl-4 pt-4 text-xl font-bold text-black mb-4">Bookings</div>
-            <div className="overflow-x-auto sm:overflow-hidden w-full">
-                <Table className="w-full sm:w-full min-w-[600px] mb-16 ">
-                    <TableHeader className=''>
-                        <TableRow>
-                            <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium">ClientName</TableHead>
-                            <TableHead className='text-center text-black font-medium'>Booking Id</TableHead>
-                            <TableHead className='text-center  text-black font-medium'>StartDate & Time </TableHead>
-                            <TableHead className="text-center text-black font-medium">Payment Status</TableHead>
-                            <TableHead className="text-center text-black font-medium">Amount</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {bookings.map((booking) => (
-                            <TableRow key={booking.clientId}>
-                                <TableCell className="text-center text-xs">{booking.client.name}</TableCell>
-                                <TableCell className="text-center text-xs">{booking.id}</TableCell>
-                                <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
-                                <TableCell className='text-center text-xs'>{booking.status}</TableCell>
-                                <TableCell className='text-center text-xs'>{booking.package.price}</TableCell>
+        <div className='p-6 sm:p-0'>
+            <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-10">
+                <div className="flex items-start pl-4 sm:pl-4 pt-4 text-xl font-bold text-black mb-4">Bookings</div>
+                <div className="overflow-x-auto sm:overflow-hidden w-full">
+                    <Table className="w-full sm:w-full min-w-[600px] mb-16 ">
+                        <TableHeader className=''>
+                            <TableRow>
+                                <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium">ClientName</TableHead>
+                                <TableHead className='text-center text-black font-medium'>Booking Id</TableHead>
+                                <TableHead className='text-center  text-black font-medium'>StartDate & Time </TableHead>
+                                <TableHead className="text-center text-black font-medium">Payment Status</TableHead>
+                                <TableHead className="text-center text-black font-medium">Amount</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
+                        </TableHeader>
+                        <TableBody>
+                            {bookings.map((booking) => (
+                                <TableRow key={booking.clientId}>
+                                    <TableCell className="text-center text-xs">{booking.client.name}</TableCell>
+                                    <TableCell className="text-center text-xs">{booking.id}</TableCell>
+                                    <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
+                                    <TableCell className='text-center text-xs'>{booking.status}</TableCell>
+                                    <TableCell className='text-center text-xs'>{booking.package.price}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
 
-                </Table>
+                    </Table>
+                </div>
             </div>
         </div>
     )
