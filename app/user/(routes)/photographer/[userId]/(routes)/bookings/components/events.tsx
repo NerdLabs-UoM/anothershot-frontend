@@ -233,7 +233,9 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       toast.error("Please select a end date & time");
       return;
     }
-    const data = {
+    
+    try {
+      const data = {
       id: selectedEventId,
       bookingId: selectedBookingId,
       title: form.getValues("title"),
@@ -242,7 +244,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       end: endString
     };
     console.log("data comes")
-    try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
       const updatedEvent: Event = response.data;
       eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id=== selectedEventId ? updatedEvent : eventItems));
@@ -309,9 +310,9 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                       <FormMessage />
                     </FormItem>
                   )} />)}
-                {isOld && (<FormField
+                {!isNew && (<FormField
                   control={form.control}
-                  name="id"
+                  name="title"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 justify-center items-center ">
                       <FormLabel className="col-span-2 grid place-content-end">Events</FormLabel>
