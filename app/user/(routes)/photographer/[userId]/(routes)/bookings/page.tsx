@@ -21,7 +21,7 @@ import { Event } from "@/app/lib/types";
 import FullCalendarComp from "@/components/fullCalendar";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import Events from './components/events'
+import Events from './components/events';
 import axios from "axios";
 import toast from "react-hot-toast";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
