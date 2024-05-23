@@ -17,6 +17,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import Offers from "@/components/offer/offers";
 
 const bookingTable = () => {
     const { data: session } = useSession()
@@ -53,6 +54,7 @@ const bookingTable = () => {
                                 <TableHead className='text-center  text-black font-medium'>StartDate & Time </TableHead>
                                 <TableHead className="text-center text-black font-medium">Payment Status</TableHead>
                                 <TableHead className="text-center text-black font-medium">Amount</TableHead>
+                                <TableHead className="text-center text-black font-medium">Offer</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -63,6 +65,9 @@ const bookingTable = () => {
                                     <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.status}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.package.price}</TableCell>
+                                    <TableCell className='text-center text-xs'>              
+                                        <Offers bookingId={booking.id} />
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

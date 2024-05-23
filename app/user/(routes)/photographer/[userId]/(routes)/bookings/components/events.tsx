@@ -214,6 +214,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     }
     setSelectedEventId(value);
   };
+  console.log(selectedBookingId)
+
 
   const handleSaveChanges = async (values: z.infer<typeof formSchema>, e: any) => {
 
