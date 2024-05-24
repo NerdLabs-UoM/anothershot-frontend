@@ -27,38 +27,6 @@ import toast from "react-hot-toast";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 import BookingTable from "./components/bookingTable";
 
-
-const sampleEvents = [
-  {
-    id: '1',
-    title: 'event 1',
-    // date: '2024-05-03' ,
-    // date: new Date(2024, 5, 3),
-    endDate: new Date(2024, 2, 1, 21, 30),
-    allDay: false,
-  },
-  {
-    id: '2',
-    name: 'event 2',
-    startDate: new Date(2024, 2, 2, 17, 30,),
-    endDate: new Date(2024, 2, 2, 19, 30),
-    allDay: false,
-  },
-  {
-    id: '3',
-    name: 'event 3',
-    startDate: new Date(2024, 2, 2, 19, 30,),
-    endDate: new Date(2024, 2, 2, 21, 30),
-    allDay: false,
-  },
-  // {
-  //   id: '4',
-  //   name: 'event 4',
-  //   startDate: new Date(),
-  //   endDate: new Date(),
-  //   allDay: true,
-  // },
-]
 interface EventData {
   id?: string;
   title?: string;
@@ -71,7 +39,6 @@ const PhotographerBookingsPage = () => {
 
   const { userId } = useParams();
   const { data: session } = useSession();
-  // const [events, setEvents] = useState<Event[]>(sampleEvents);
   const [eventList, setEventList] = useState<Event[]>([]);
   const [sampleDate, setSampleDate] = useState<Date>(new Date());
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -85,7 +52,6 @@ const PhotographerBookingsPage = () => {
         );
         const data = response.data
         setEventList(data);
-        console.log(data);
       } catch (error) {
         toast.error("Cannot fetch events. Please try again.");
       }

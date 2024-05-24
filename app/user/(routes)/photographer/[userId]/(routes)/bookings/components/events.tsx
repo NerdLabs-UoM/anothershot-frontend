@@ -46,7 +46,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
 import React from "react";
-import { DivideIcon, PlusSquare } from "lucide-react";
+import { PlusSquare } from "lucide-react";
 import { Booking, Event } from "@/app/lib/types";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 
@@ -75,6 +75,7 @@ export const formSchema = z.object({
   start: z.date(),
   end: z.date()
 });
+
 export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start, setStartDate, end, setEndDate }) => {
   const { data: session } = useSession();
   const [isNew, setIsNew] = useState<boolean>(false);
@@ -84,12 +85,10 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedBookingId, setSelectedBookingId] = useState<string>("");
   const [selectedEventId, setSelectedEventId] = useState<string>("");
-  const reference = useRef<string>();
 
   const defaultStartDate = new Date();
   defaultStartDate.setHours(defaultStartDate.getHours() + 5);
   defaultStartDate.setMinutes(defaultStartDate.getMinutes() + 30);
-
   const defaultEndDate = new Date();
   defaultEndDate.setHours(defaultEndDate.getHours() + 5);
   defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
@@ -114,7 +113,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         );
         const data = response.data;
         setBooking(data);
-        console.log(response.data);
       } catch (error) {
         toast.error("Cannot fetch Bookings.Please try again.");
       }
@@ -162,7 +160,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     try {
       setLoading(true);
       if (values) {
-        console.log(values);
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/create`,
           {
@@ -174,18 +171,15 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
           }
         );
         const data = response.data;
-        console.log(data);
         setLoading(false);
         const newEvent: Event = response.data;
         const newBooking: Booking = response.data;
-        console.log("Response data:", newBooking);
         if (eventItems.some((eventItem: Event) => eventItem.bookingId === newEvent.bookingId
         )) {
           toast.error("Event already exists.");
         } else {
           eventProp(prevEventList => {
             const newList = [...prevEventList, newEvent];
-            console.log("Updated event list:", newList);
             return newList;
           });
           toast.success("Event created successfully.");
@@ -205,7 +199,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     }
     setSelectedBookingId(value);
   };
-  reference.current= selectedBookingId;
 
   const handleEventChange = (value: string) => {
     const selectedEvent = eventItems.find((events) => events.id === value);
@@ -214,14 +207,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     }
     setSelectedEventId(value);
   };
-  console.log(selectedBookingId)
-
 
   const handleSaveChanges = async (values: z.infer<typeof formSchema>, e: any) => {
-
-    console.log(selectedBookingId)
-    console.log(reference.current);
-
 
     const startObject = start ? new Date(start) : new Date();
     const endObject = end ? new Date(end) : new Date();
@@ -243,23 +230,18 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       toast.error("Please select a end date & time");
       return;
     }
-    console.log(selectedBookingId)
-
     try {
       const data = {
-      id: selectedEventId,
+      eventId: selectedEventId,
       bookingId: selectedBookingId,
-      title: form.getValues("title"),
-      description: form.getValues("description"),
+      title: values.title,
+      description: values.description,
       start: startString,
       end: endString
     };
-    console.log("Sending data to backend:", data);
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
       const updatedEvent: Event = response.data;
       eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id=== selectedEventId ? updatedEvent : eventItems));
-      console.log(response.data);
-      console.log("Response from backend:", response.data);
       toast.success("Event details updated successfully.");
     } catch (error) {
       toast.error("An error occurred. Please try again.");
@@ -273,7 +255,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/delete`, { data });
       eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id === selectedEventId));
-      console.log(response.data);
       toast.success("Event deleted successfully");
     } catch (error) {
       toast.error("An error occurred. Please try again.");

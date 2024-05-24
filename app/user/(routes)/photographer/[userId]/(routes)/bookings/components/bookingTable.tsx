@@ -1,8 +1,6 @@
 "use client";
-import React from 'react'
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
 
@@ -19,9 +17,7 @@ import {
 } from "@/components/ui/table"
 import Offers from "@/components/offer/offers";
 
-const bookingTable = () => {
-    const { data: session } = useSession()
-    const [isNew, setIsNew] = useState<boolean>(false)
+const BookingTable = () => {  // Changed to uppercase "B"
     const { userId } = useParams();
     const [bookings, setBookings] = useState<Booking[]>([]);
 
@@ -32,10 +28,9 @@ const bookingTable = () => {
                     `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
                 );
                 const data = response.data;
-                setBookings(data)
-                console.log("Bookings", response.data);
+                setBookings(data);
             } catch (error) {
-                toast.error("Cannot fetch Bookings.Please try again.");
+                toast.error("Cannot fetch Bookings. Please try again.");
             }
         };
         fetchBookings();
@@ -47,11 +42,11 @@ const bookingTable = () => {
                 <div className="flex items-start pl-4 sm:pl-4 pt-4 text-xl font-bold text-black mb-4">Bookings</div>
                 <div className="overflow-x-auto sm:overflow-hidden w-full">
                     <Table className="w-full sm:w-full min-w-[600px] mb-16 ">
-                        <TableHeader className=''>
+                        <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium">ClientName</TableHead>
+                                <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium">Client Name</TableHead>
                                 <TableHead className='text-center text-black font-medium'>Booking Id</TableHead>
-                                <TableHead className='text-center  text-black font-medium'>StartDate & Time </TableHead>
+                                <TableHead className='text-center text-black font-medium'>Start Date & Time</TableHead>
                                 <TableHead className="text-center text-black font-medium">Payment Status</TableHead>
                                 <TableHead className="text-center text-black font-medium">Amount</TableHead>
                                 <TableHead className="text-center text-black font-medium">Offer</TableHead>
@@ -71,12 +66,11 @@ const bookingTable = () => {
                                 </TableRow>
                             ))}
                         </TableBody>
-
                     </Table>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default bookingTable
+export default BookingTable; 
