@@ -1,19 +1,13 @@
-import { BellRing, Check } from "lucide-react"
+import { BellRing, Check, CircleX } from "lucide-react"
 
 import { cn } from "@/app/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
 import React, { useEffect } from "react"
-import axios from "axios"
-import { set } from "lodash"
+
 
 type CardProps = React.ComponentProps<typeof Card>
 
@@ -24,7 +18,11 @@ export function NotificationCard(
     description,
     read,
     unreadCount,
-    updateUnreadCount, ...props }: CardProps &
+    updateUnreadCount,
+    time,
+    receiverId,
+    onUpdateDelete,
+    onUpdateRead, ...props }: CardProps &
     {
       id?: string,
       title: string,
@@ -32,45 +30,85 @@ export function NotificationCard(
       read: boolean,
       unreadCount?: number,
       updateUnreadCount?: (count: number) => void;
+      time?: Date;
+      receiverId?: string;
+      onUpdateDelete?: (id: string) => void;
+      onUpdateRead?: (id: string) => void;
     }) {
   const [isRead, setIsRead] = React.useState(read);
-  const [unreadCount1, setUnreadCount1] = React.useState(unreadCount);
 
   useEffect(() => {
     setIsRead(read);
   }, [read])
 
-
-  const handleClick = async () => {
+  const handleRead = async () => {
+    onUpdateRead && onUpdateRead(id ?? '');
     if (!isRead) {
       setIsRead(true);
       if (updateUnreadCount && unreadCount) {
         updateUnreadCount(unreadCount - 1)
 
       };
-
-      try {
-        // Update the read state in the database
-        const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/notification/update`, { id, read: true });
-        console.log("Update notification success:", res.data);
-      } catch (error) {
-        console.log("Error updating notification:", error);
-      }
+     
     }
   }
+
+  const handleDelete = async () => {
+    onUpdateDelete && onUpdateDelete(id ?? '');
+    if (!isRead) {
+      if (updateUnreadCount && unreadCount) {
+        updateUnreadCount(unreadCount - 1)
+
+      };
+     
+    }
+  
+  }
+
+  function formatDate(date: Date) {
+    const currentDate = new Date();
+    const timestamp = currentDate.getTime();
+
+    const notificationDate = new Date(date);
+    const notifyTimeStamp = notificationDate.getTime(); 
+
+    const diffTime = timestamp - notifyTimeStamp;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+
+    if (diffDays >= 2) {
+      return notificationDate.toDateString();
+    } else if (diffDays === 1) {
+      return 'Yesterday';
+    } else {
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+      if (diffHours > 0) {
+        return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+      }
+      const diffMinutes = Math.floor(diffTime / (1000 * 60));
+      if (diffMinutes > 0) {
+        return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+      }else{
+        return `Just now`;
+      }
+      
+    }
+  }
+  
+  
   return (
-    <Card className={cn("h-20", className)} {...props}>
-      <CardContent className="flex items-center gap-4 mt-1">
-
-        {!isRead && <span className="flex h-2 w-2 rounded-full bg-sky-500" />}
-        <div className="">
-          <div>
-            <p className="text-sm font-medium leading-none">{title}</p>
-            <p className="text-xs text-gray-500">{description}</p>
+    <Card className={cn("shadow-md mb-1 p-2", className)} {...props}>
+      {!isRead && <span className="flex h-2 w-2 rounded-full bg-sky-500" />}
+      <CardContent className="relative ">
+        <div className="static grid grid grid-col-2 grid-flow-col ">
+          <div className="flex flex-col">
+            <div className="text-m leading-none h-auto" >{title}</div>
+            <div className="text-sm text-gray-500">{description}</div>
+            <div className="text-xs ml-32">{time?formatDate(time):""}</div>
+            <div ><Button variant="ghost" className="m-0 p-0 text-blue-800 hover:bg-transparent" onClick={handleRead}>{isRead ? "Read" : "Mark as Read"} </Button></div>
           </div>
-          <Button variant="ghost" className="m-0 p-0 text-blue-800 hover:bg-transparent" onClick={handleClick}>{isRead ? "Read" : "Mark as Read"} </Button>
-
         </div>
+        <CircleX className="absolute text-gray-500 border-none bg-white size-5 absolute top-0 ml-[265px] hover:cursor-pointer" strokeWidth={0.75} onClick={handleDelete} />
       </CardContent>
 
     </Card>

@@ -200,7 +200,6 @@ export interface Booking {
     end?: Date | null;
     location?: String | null;
     event: Event;
-    // offer:Offer;
     status: BookingStatus;
     createdAt: Date;
     updatedAt: Date;
@@ -223,14 +222,28 @@ export interface Offer {
   updatedAt: Date;
 }
 
+export interface Payment{
+    id: String;               
+    client: Client;             
+    clientId: String;              
+    photographer: Photographer;        
+    photographerId: String;              
+    booking: Booking;            
+    bookingsId: String;        
+    amount: number;
+    currency: String;
+    status: PaymentStatus;       
+    createdAt: Date;             
+    updatedAt: Date;           
+}
+
 export interface Event {
     id: string;
     title: string;
+    bookingId : string;
     description?: string;
-    // startDate?: Date;
-    // endDate?: Date;
-    start?: Date;
-    end?: Date;
+    start?: Date|null;
+    end?: Date|null;
     allDay?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
@@ -384,6 +397,8 @@ export interface PaymentArray {
 
 export interface Notification {
     id:string;
+    sender:User;
+    senderId:string;
     receiver:User;
     receiverId:string;
     type:string;
