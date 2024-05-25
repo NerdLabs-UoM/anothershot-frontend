@@ -11,8 +11,8 @@ const Home = () => {
 
   return (
     <main>
-      <Suspense fallback={<Loading/>}>
-      <FeedImageComp />
+      <Suspense fallback={<Loading />}>
+        <FeedImageComp />
       </Suspense>
       <Navbar />
     </main>

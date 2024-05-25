@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy } from "react";
 import { delay } from "@/app/lib/delay";
 
 const Hero = lazy(() => delay(2000).then(() => import("./heroSection/Hero")));
