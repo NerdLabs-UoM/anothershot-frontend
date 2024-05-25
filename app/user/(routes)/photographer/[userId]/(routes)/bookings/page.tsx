@@ -91,6 +91,7 @@ const PhotographerBookingsPage = () => {
 
   return (
     <div className="w-full flex justify-center py-5" >
+      <AddBooking/>
       <div className=" pl-4 lg:w-3/5 ">
         <DateTimePickerForm
           setDate={setSampleDate}

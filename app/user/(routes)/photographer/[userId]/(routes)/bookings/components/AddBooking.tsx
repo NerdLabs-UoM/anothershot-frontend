@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import axios from 'axios';
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
 import { Package } from "@/app/lib/types";
 import { Photographer } from "@/app/lib/types";
@@ -87,6 +87,7 @@ const AddBooking = () => {
     });
     const [startDate, setStartDate] = React.useState<Date>(new Date());
     const [endDate, setEndDate] = React.useState<Date>(new Date());
+    const router = useRouter();
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -171,6 +172,7 @@ const AddBooking = () => {
         form.reset();
         setStartDate(new Date());
         setEndDate(new Date());
+        router.push(`/user/client/${session?.user.id}/bookings`)
     };
     const categories = photographer?.map((photographerItem: Photographer) => photographerItem.category);
 
@@ -230,7 +232,7 @@ const AddBooking = () => {
                                     name="sdate"
                                     render={({ field }) => (
                                         <FormItem className='flex flex-col'>
-                                            <FormLabel>Start Date</FormLabel>
+                                            <FormLabel>Start</FormLabel>
                                             <DateTimePickerForm
                                                 setDate={setStartDate}
                                                 date={startDate}
@@ -244,7 +246,7 @@ const AddBooking = () => {
                                     name="edate"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>End Date</FormLabel>
+                                            <FormLabel>End</FormLabel>
                                             <DateTimePickerForm
                                                 setDate={setEndDate}
                                                 date={endDate}

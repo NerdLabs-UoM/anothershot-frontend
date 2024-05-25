@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Album } from "@/app/lib/types";
-import AlbumCard from "./[albumId]/components/albumCard";
-import AlbumForm from "./[albumId]/components/albumForm";
+import { delay } from "@/app/lib/delay";
+
+const AlbumForm = React.lazy(() => delay(3000).then(() => import("./[albumId]/components/albumForm")));
+const AlbumCard = React.lazy(() => delay(3000).then(() => import("./[albumId]/components/albumCard")));
 
 const AlbumPage = () => {
     const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
