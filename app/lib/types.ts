@@ -294,7 +294,7 @@ export interface Package {
     name: string;
     description: string;
     coverPhotos: string[];
-    price: string;
+    price: number;
     Booking?: Booking[];
     createdAt?: Date;
     updatedAt?: Date;
@@ -408,3 +408,15 @@ export interface Notification {
     read:boolean;
     createdAt:Date;
   }
+  export interface Profilereport {
+    id: string;
+    client: Client;
+    clientId: string ;
+    photographer: Photographer;
+    photographerId: string;
+    subject: string;
+    description: string;
+    status: ReportStatus;
+    createdAt: Date;
+    updatedAt: Date;
+} 

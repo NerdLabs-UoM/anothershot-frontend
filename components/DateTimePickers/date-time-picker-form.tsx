@@ -73,7 +73,7 @@ export function DateTimePickerForm(
                                         </Button>
                                     </PopoverTrigger>
                                 </FormControl>
-                                <PopoverContent className="w-auto p-0">
+                                <PopoverContent className="w-auto p-0 max-h-64 overflow-y-auto">
                                     <Calendar
                                         mode="single"
                                         selected={props.date}
