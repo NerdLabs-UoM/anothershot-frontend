@@ -75,7 +75,6 @@ const handleDelete = async (imageId: string, photographerId: string) => {
 };
 
 const handleStatus = async (ImageReportId:string,status:string) => {
-  toast.success("Dismissed");
   axios
     .put(
       `${process.env.NEXT_PUBLIC_API_URL}/api/report/update-image-report-status`,

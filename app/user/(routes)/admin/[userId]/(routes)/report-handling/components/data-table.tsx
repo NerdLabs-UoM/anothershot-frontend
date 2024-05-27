@@ -13,10 +13,7 @@ import {
 } from "@tanstack/react-table"
 
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox"
-import { FilterIcon, Search } from "lucide-react";
-import { DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import {  Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {

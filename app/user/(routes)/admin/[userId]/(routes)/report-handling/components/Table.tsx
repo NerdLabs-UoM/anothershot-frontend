@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Profilereport, columns } from "./columns";
 import { DataTable } from "./data-table";
 import toast from "react-hot-toast";
@@ -35,7 +34,7 @@ const TableData = () => {
   useEffect(() => {
     const fetchLast = async () => {
       try {
-        const data = await fetchLastPage(name, rolesString);
+        const data = await fetchLastPage(name);
         setLast(data);
       } catch (err) {
         toast.error("Erro Fetching Data");

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Imagereport, columns } from "./columns";
 import { DataTable } from "./data-table";
 import toast from "react-hot-toast";
@@ -12,9 +11,7 @@ const TableData = () => {
   const [fetch, setFetch] = useState<boolean>(false);
   const [filteredUsers, setFilteredUsers] = useState<Imagereport[]>([]);
   const [name, setName] = useState<string>("");
-  const [rolesString, setRolesString] = useState<string>(
-    "ADMIN,PHOTOGRAPHER,CLIENT"
-  );
+
 
   useEffect(() => {
     setPage(1);
