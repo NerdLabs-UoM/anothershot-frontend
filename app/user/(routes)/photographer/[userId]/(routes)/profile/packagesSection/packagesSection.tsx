@@ -25,8 +25,8 @@ const PackagesSection = () => {
         setPackageList(data);
       } catch (error) {
         toast.error("Cannot fetch packages. Please try again.");
-      }
-    };
+      };
+    }
     fetchPackages();
   }, [userId]);
 
@@ -36,7 +36,7 @@ const PackagesSection = () => {
         <div>
           <Link href={`/user/photographer/${userId}/albums`}>
             <Button
-              variant="default" 
+              variant="default"
               className="rounded-md bg-black-600 text-white-300 flex justify-center items-center">
               View Albums
             </Button>
@@ -59,7 +59,7 @@ const PackagesSection = () => {
       </div>
       {packageList.length > 0 ? (
         <>
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap justify-center">
             {packageList.map((packageItem) => (
               <PackageCard
                 src={packageItem.coverPhotos[0]}

@@ -294,7 +294,7 @@ export interface Package {
     name: string;
     description: string;
     coverPhotos: string[];
-    price: string;
+    price: number;
     Booking?: Booking[];
     createdAt?: Date;
     updatedAt?: Date;
