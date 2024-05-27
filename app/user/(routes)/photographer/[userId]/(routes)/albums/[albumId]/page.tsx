@@ -9,6 +9,7 @@ import axios from "axios";
 import { Masonrygrid } from "./components/masonrygrid";
 import ImageUpload from "./components/imageUpload";
 import AlbumForm from "./components/albumForm";
+import { Button } from "react-day-picker";
 
 const AlbumPage = () => {
     const { albumId } = useParams();
@@ -74,7 +75,8 @@ const AlbumPage = () => {
                 ...album,
                 name: newAlbum.name,
                 description: newAlbum.description,
-                visibility: newAlbum.visibility
+                visibility: newAlbum.visibility,
+                price:newAlbum.price
             });
         }
     }
@@ -84,7 +86,7 @@ const AlbumPage = () => {
             <div className="mt-5">
                 <LucideArrowLeft onClick={() => {
                     router.back();
-                }} />
+                }} className="cursor-pointer"/>
 
             </div>
             <div className="flex justify-between pt-4">
