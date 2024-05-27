@@ -56,7 +56,7 @@ const ViewOffer=({bookingId}:bookingDetails)=>{
   return (
     <div>
       <Dialog>
-        <DialogTrigger className="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-sm text-white bg-black hover:bg-slate-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150">
+        <DialogTrigger className="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold sm:text-sm text-white bg-black hover:bg-slate-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150 text-xs">
           View Offer
         </DialogTrigger>
         <DialogContent>

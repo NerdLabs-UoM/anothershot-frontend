@@ -61,6 +61,11 @@ const PhotographerBookingsPage = () => {
 
   return (
     <div className="w-full flex justify-center py-5" >
+
+      <AddBooking/>
+      <div className=" pl-4 lg:w-3/5 ">
+        <DateTimePickerForm
+
       <div className=" w-full sm:w-4/5 ">
         <div className="flex justify-center mb-6">
           {session && session.user && session.user.id === userId &&
