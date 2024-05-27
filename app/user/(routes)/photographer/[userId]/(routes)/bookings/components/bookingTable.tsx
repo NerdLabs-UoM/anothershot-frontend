@@ -58,7 +58,7 @@ const BookingTable = () => {
                                     <TableCell className="text-center text-xs">{booking.id}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.status}</TableCell>
-                                    <TableCell className='text-center text-xs'>{booking.package?.price ?? "N/A"}</TableCell>
+                                    <TableCell className='text-center text-xs'>RS. {booking.package?.price}</TableCell>
                                     <TableCell className='text-center text-xs'>              
                                         <Offers bookingId={booking.id} />
                                     </TableCell>
