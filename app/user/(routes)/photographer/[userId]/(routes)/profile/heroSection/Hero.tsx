@@ -40,6 +40,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
+import ReportProfile from "@/components/Report/ReportProfile/ReportProfile";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
@@ -237,7 +238,7 @@ const Hero = () => {
         />
       </div>
 
-      <div className="p-5 md:px-0">
+      <div className="md:px-0">
         <div className="flex px-10 pt-10 align-middle">
           <div>
             <Avatar className="relative w-20 h-20">
@@ -399,6 +400,12 @@ const Hero = () => {
             </CldUploadWidget>
           )}
         </div>
+        <div className="px-10 pt-5">
+          <div className="flex gap-3 text-2xl font-bold max-w-3/5 md:text-3xl">
+            {values.name}
+            {session?.user.userRole === 'CLIENT' && (
+                <div><ReportProfile /></div>
+            )}
         {isLoading ? (
           <div className="space-y-2 w-[250px] md:w-[500px]">
             <Skeleton className="h-5 w-full" />
@@ -414,7 +421,7 @@ const Hero = () => {
         )}
       </div>
 
-      <div className="flex flex-row p-0 px-12 align-middle">
+      <div className="flex flex-row p-0 align-middle">
         {isPhotographer && (
           <div className="pt-2">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -490,7 +497,6 @@ const Hero = () => {
             <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
           </Button>
         )}
-
         {isPhotographer && (
           <Link
             href="profile/settings"
