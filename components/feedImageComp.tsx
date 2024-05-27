@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast';
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 import { useRouter } from 'next/navigation';
 import { set } from 'lodash';
+import ReportPhoto from './Report/ReportPhoto/ReportPhoto';
 
 const formatCount = (count: number) => {
     if (count < 1000) {
@@ -118,69 +119,74 @@ const FeedImageComp = () => {
         >
             <Masonry>
                 {feedImages.map((feedImage: FeedImage) => (
-                    <div key={feedImage.id} className="relative flex flex-col justify-end items-center overflow-hidden w-[345px] h-auto lg:h-auto lg:w-[345px] rounded-[40px] mx-auto  my-4">
-                        <Image
-                            src={feedImage.imageUrl}
-                            alt="Background Image"
-                            width={345}
-                            height={0}
-                            quality={100}
-                            style={{height: 'auto', width: '345px'}}
-                            className=" rounded-[35px]  hover:scale-110 transform transition duration-500"
-                        />
-                        <div className="absolute z-10 grid grid-cols-6 items-center justify-center w-full bg-gradient-to-t from-black to-transparent rounded-b-[40px]">
-                            <div className="col-span-4 flex flex-start items-center justify-start pl-4 cursor-pointer" onClick={() => handleRedirect(feedImage.photographerId)}>
-                                <Avatar className="w-14 h-14 sm:w-10 sm:h-10 lg:w-14 lg:h-14 border-2 border-white mr-3 hover:scale-110 transform transition duration-500">
-                                    <AvatarImage src={feedImage.photographer.user.image ?? ''} alt="@shadcn" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                                <div className="flex flex-col items-start justify-center">
-                                    <span className="text-white text-xs lg:text-md font-normal hover:scale-110 transform transition duration-500">{feedImage.photographer.name}</span>
-                                    <p className="text-xs italic font-medium text-slate-200">{feedImage.caption}</p>
-                                </div>
+                    <div key={feedImage.id} className="relative flex flex-col justify-end items-center overflow-hidden w-[345px] h-auto lg:h-auto lg:w-[345px] rounded-[40px] mx-auto my-4">
+                    <Image
+                        src={feedImage.imageUrl}
+                        alt="Background Image"
+                        width={345}
+                        height={0}
+                        quality={100}
+                        style={{ height: 'auto', width: '345px' }}
+                        className="rounded-[35px] hover:scale-110 transform transition duration-500"
+                    /> 
+                    <div className="absolute top-4 right-2 z-20 text-white hover:cursor-pointer">
+                        {session?.user.userRole!='ADMIN' && <ReportPhoto imageId={feedImage.id} />}
+                    </div>
+                    <div className="absolute z-10 grid grid-cols-6 items-center justify-center w-full bg-gradient-to-t from-black to-transparent rounded-b-[40px]">
+                        
+                        <div className="col-span-4 flex flex-start items-center justify-start pl-4 cursor-pointer" onClick={() => handleRedirect(feedImage.photographerId)}>
+                            <Avatar className="w-14 h-14 sm:w-10 sm:h-10 lg:w-14 lg:h-14 border-2 border-white mr-3 hover:scale-110 transform transition duration-500">
+                                <AvatarImage src={feedImage.photographer.user.image ?? ''} alt="@shadcn" />
+                                <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col items-start justify-center">
+                                <span className="text-white text-xs lg:text-md font-normal hover:scale-110 transform transition duration-500">{feedImage.photographer.name}</span>
+                                <p className="text-xs italic font-medium text-slate-200">{feedImage.caption}</p>
                             </div>
-                            <div className="cursor-pointer">
-                                <div className="flex flex-start items-center justify-between">
-                                    <div className="pl-0">
-                                        <Button
-                                            variant={null}
-                                            role="heart"
-                                            size="sm"
-                                            disabled={likeDisabled === feedImage.id}
-                                            className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
-                                            onClick={() => handleLike(feedImage.id, feedImage.photographerId, feedImage.likedUserIds != null && session !== null && feedImage.likedUserIds.includes(session.user.id))}
-                                        >
-                                            {feedImage.likedUserIds != null && session && feedImage.likedUserIds.includes(session.user.id) ? (
-                                                <Heart fill="#cb1a1a" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 " />
-                                            ) : (
-                                                <Heart color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 " />
-                                            )}
-                                        </Button>
-                                    </div>
-                                    <span className="text-white text-sm sm:text-xs lg:text-sm">{formatCount(feedImage.likeCount)}</span>
+                        </div>
+                        <div className="cursor-pointer">
+                            <div className="flex flex-start items-center justify-between">
+                                <div className="pl-4">
+                                    <Button
+                                        variant={null}
+                                        role="heart"
+                                        size="sm"
+                                        disabled={likeDisabled === feedImage.id}
+                                        className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
+                                        onClick={() => handleLike(feedImage.id, feedImage.photographerId, feedImage.likedUserIds != null && session !== null && feedImage.likedUserIds.includes(session.user.id))}
+                                    >
+                                        {feedImage.likedUserIds != null && session && feedImage.likedUserIds.includes(session.user.id) ? (
+                                            <Heart fill="#cb1a1a" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 " />
+                                        ) : (
+                                            <Heart color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6 " />
+                                        )}
+                                    </Button>
                                 </div>
-                                <div className="flex flex-start items-center justify-between">
-                                    <div className="pl-0">
-                                        <Button
-                                            variant={null}
-                                            role="save"
-                                            size="sm"
-                                            disabled={saveDisabled === feedImage.id}
-                                            className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
-                                            onClick={() => handleSave(feedImage.id, feedImage.photographerId, feedImage.savedUserIds != null && session !== null && feedImage.savedUserIds.includes(session.user.id))}
-                                        >
-                                            {feedImage.savedUserIds != null && session && feedImage.savedUserIds.includes(session.user.id) ? (
-                                                <Bookmark fill="#ffffff" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                                            ) : (
-                                                <Bookmark color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                                            )}
-                                        </Button>
-                                    </div>
-                                    <span className="text-white text-sm sm:text-xs lg:text-sm">{formatCount(feedImage.saveCount)}</span>
+                                <span className="text-white text-sm sm:text-xs lg:text-sm">{formatCount(feedImage.likeCount)}</span>
+                            </div>
+                            <div className="flex flex-start items-center justify-between">
+                                <div className="pl-4">
+                                    <Button
+                                        variant={null}
+                                        role="save"
+                                        size="sm"
+                                        disabled={saveDisabled === feedImage.id}
+                                        className="flex items-center justify-center gap-2 hover:scale-110 transform transition duration-500"
+                                        onClick={() => handleSave(feedImage.id, feedImage.photographerId, feedImage.savedUserIds != null && session !== null && feedImage.savedUserIds.includes(session.user.id))}
+                                    >
+                                        {feedImage.savedUserIds != null && session && feedImage.savedUserIds.includes(session.user.id) ? (
+                                            <Bookmark fill="#ffffff" strokeWidth={0} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                                        ) : (
+                                            <Bookmark color="#ffffff" strokeWidth={2} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                                        )}
+                                    </Button>
                                 </div>
+                                <span className="text-white text-sm sm:text-xs lg:text-sm">{formatCount(feedImage.saveCount)}</span>
                             </div>
                         </div>
                     </div>
+                </div>
+                
                 ))
                 }
             </Masonry>

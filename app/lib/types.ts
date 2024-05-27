@@ -392,3 +392,15 @@ export interface Notification {
     read:boolean;
     createdAt:Date;
   }
+  export interface Profilereport {
+    id: string;
+    client: Client;
+    clientId: string ;
+    photographer: Photographer;
+    photographerId: string;
+    subject: string;
+    description: string;
+    status: ReportStatus;
+    createdAt: Date;
+    updatedAt: Date;
+} 

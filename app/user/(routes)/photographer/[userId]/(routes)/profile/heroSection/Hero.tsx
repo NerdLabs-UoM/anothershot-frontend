@@ -40,6 +40,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
+import ReportProfile from "@/components/Report/ReportProfile/ReportProfile";
 
 const formSchema = z.object({
   name: z
@@ -234,7 +235,7 @@ const Hero = () => {
         />
       </div>
 
-      <div className="p-5 md:px-0">
+      <div className="md:px-0">
         <div className="flex px-10 pt-10 align-middle">
           <div>
             <Avatar className="relative w-20 h-20">
@@ -397,14 +398,17 @@ const Hero = () => {
           )}
         </div>
         <div className="px-10 pt-5">
-          <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
+          <div className="flex gap-3 text-2xl font-bold max-w-3/5 md:text-3xl">
             {values.name}
+            {session?.user.userRole === 'CLIENT' && (
+                <div><ReportProfile /></div>
+            )}
           </div>
           <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
         </div>
       </div>
 
-      <div className="flex flex-row p-0 px-12 align-middle">
+      <div className="flex flex-row p-0 align-middle">
         {isPhotographer && (
           <div className="pt-2">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -480,7 +484,6 @@ const Hero = () => {
             <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
           </Button>
         )}
-
         {isPhotographer && (
           <Link
             href="profile/settings"
