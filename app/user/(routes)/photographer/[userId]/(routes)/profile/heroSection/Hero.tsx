@@ -404,115 +404,117 @@ const Hero = () => {
           <div className="flex gap-3 text-2xl font-bold max-w-3/5 md:text-3xl">
             {values.name}
             {session?.user.userRole === 'CLIENT' && (
-                <div><ReportProfile /></div>
+              <div><ReportProfile /></div>
             )}
-        {isLoading ? (
-          <div className="space-y-2 w-[250px] md:w-[500px]">
-            <Skeleton className="h-5 w-full" />
-            <Skeleton className="h-5 w-1/2" />
           </div>
-        ) : (
-          <div className="px-10 pt-5">
-            <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
-              {values.name}
+          {isLoading ? (
+            <div className="space-y-2 w-[250px] md:w-[500px]">
+              <Skeleton className="h-5 w-full" />
+              <Skeleton className="h-5 w-1/2" />
             </div>
-            <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="px-10 pt-5">
+              <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
+                {values.name}
+              </div>
+              <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
+            </div>
+          )}
+        </div>
 
-      <div className="flex flex-row p-0 align-middle">
-        {isPhotographer && (
-          <div className="pt-2">
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger>
-                <PenSquare className="w-[40px]" />
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Profile</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Username</FormLabel>
-                          <FormControl>
-                            <Input type="name" placeholder="Kevin" {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            This is your public display name.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="bio"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Discription</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="description"
-                              placeholder="Photographer"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            This is your bio description
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit">Submit</Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
-        {
-          !isPhotographer && renderFeedButton()
-        }
-        {!isPhotographer && (
-          <Button
-            variant="default"
-            onClick={() => handleCreateChat()}
-            className="w-4/5 mx-3"
-          >
-            Message
-          </Button>
-        )}
-        {session?.user.userRole === 'CLIENT' && (
-          <Button variant="destructive" className="w-4/5" asChild>
-            <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
-          </Button>
-        )}
-        {isPhotographer && (
-          <Link
-            href="profile/settings"
-            className="relative px-2 pt-2"
-          >
-            <Settings />
-          </Link>
-        )}
-        {isPhotographer && (
-          <Link
-            href={`/user/photographer/${userId}/profile/history`}
-            className="relative px-2 pt-2"
-          >
-            <History />
-          </Link>
-        )}
+        <div className="flex flex-row p-0 align-middle">
+          {isPhotographer && (
+            <div className="pt-2">
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger>
+                  <PenSquare className="w-[40px]" />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Profile</DialogTitle>
+                  </DialogHeader>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-8"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Username</FormLabel>
+                            <FormControl>
+                              <Input type="name" placeholder="Kevin" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              This is your public display name.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="bio"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Discription</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="description"
+                                placeholder="Photographer"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              This is your bio description
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="submit">Submit</Button>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+          {
+            !isPhotographer && renderFeedButton()
+          }
+          {!isPhotographer && (
+            <Button
+              variant="default"
+              onClick={() => handleCreateChat()}
+              className="w-4/5 mx-3"
+            >
+              Message
+            </Button>
+          )}
+          {session?.user.userRole === 'CLIENT' && (
+            <Button variant="destructive" className="w-4/5" asChild>
+              <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
+            </Button>
+          )}
+          {isPhotographer && (
+            <Link
+              href="profile/settings"
+              className="relative px-2 pt-2"
+            >
+              <Settings />
+            </Link>
+          )}
+          {isPhotographer && (
+            <Link
+              href={`/user/photographer/${userId}/profile/history`}
+              className="relative px-2 pt-2"
+            >
+              <History />
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
