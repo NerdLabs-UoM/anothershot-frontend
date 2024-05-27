@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
-
 import { Booking, Package } from "@/app/lib/types";
 import {
     Table,
@@ -17,24 +16,24 @@ import {
 } from "@/components/ui/table"
 import Offers from "@/components/offer/offers";
 
-const BookingTable = () => {  // Changed to uppercase "B"
+const BookingTable = () => {  
     const { userId } = useParams();
     const [bookings, setBookings] = useState<Booking[]>([]);
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
-                );
-                const data = response.data;
-                setBookings(data);
-            } catch (error) {
-                toast.error("Cannot fetch Bookings. Please try again.");
-            }
-        };
-        fetchBookings();
-    }, [userId]);
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/clientBookings`
+        );
+        const data = response.data;
+        setBookings(data);
+      } catch (error) {
+        toast.error("Cannot fetch Bookings.Please try again.");
+      }
+    };
+    fetchBookings();
+  }, [userId]);
 
     return (
         <div className='p-6 sm:p-0'>
@@ -59,7 +58,7 @@ const BookingTable = () => {  // Changed to uppercase "B"
                                     <TableCell className="text-center text-xs">{booking.id}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.status}</TableCell>
-                                    <TableCell className='text-center text-xs'>{booking.package.price}</TableCell>
+                                    <TableCell className='text-center text-xs'>{booking.package?.price ?? "N/A"}</TableCell>
                                     <TableCell className='text-center text-xs'>              
                                         <Offers bookingId={booking.id} />
                                     </TableCell>
