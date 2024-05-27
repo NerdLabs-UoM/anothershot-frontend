@@ -71,7 +71,9 @@ const formSchema = z.object({
             message: "Username must be at least 2 characters long",
         })
         .max(200),
-    price: z.string(),
+    price: z.number().positive({
+        message: "Price must be a positive number",
+    }),
     coverPhoto: z.string()
 });
 
@@ -86,10 +88,13 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         defaultValues: {
             name: "",
             description: "",
-            price: "",
+            price: 0,
             coverPhoto: ""
         }
     });
+
+    const priceString = form.getValues("price").toString();
+    const priceNumber = parseFloat(priceString);
 
     const handlePackageChange = (value: string) => {
         const selectedPackage = packages.find((packageItem) => packageItem.id === value)
@@ -100,13 +105,14 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         }
         setSelectedPackageId(value)
     }
+
     const handleSaveChanges = async () => {
         const data = {
             photographerId: session?.user?.id,
             packageId: selectedPackageId,
             name: form.getValues("name"),
             description: form.getValues("description"),
-            price: form.getValues("price")
+            price: priceNumber
         }
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data)
@@ -123,19 +129,16 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
 
     const handleCreatePackage = async () => {
         if (!session?.user?.id) return;
-
         const data = {
             photographerId: session.user.id,
             name: form.getValues("name"),
             description: form.getValues("description"),
             coverPhotos: [],
-            price: form.getValues("price"),
+            price: priceNumber,
         };
-
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
             const newPackage: Package = response.data
-
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
             } else {
@@ -146,7 +149,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             toast.error("An error occurred. Please try again.");
         }
     };
-
 
     const handleDeletePackage = async () => {
         if (session?.user?.id === undefined) return
@@ -275,27 +277,27 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                         </Form>
                         <DialogFooter>
                             {!isNew && (
-                                
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button variant={'destructive'}
-                                            >Delete</Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete your
-                                                    packages and remove your data from our servers.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction onClick={() => handleDeletePackage()}>Continue</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                    
+
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant={'destructive'}
+                                        >Delete</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete your
+                                                packages and remove your data from our servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleDeletePackage()}>Continue</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+
                             )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset()

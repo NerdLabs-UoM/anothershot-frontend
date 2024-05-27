@@ -40,6 +40,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
+import ReportProfile from "@/components/Report/ReportProfile/ReportProfile";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   name: z
@@ -59,7 +61,7 @@ const formSchema = z.object({
 });
 
 const Hero = () => {
-  
+
   const [photographer, setPhotographer] = useState<Photographer>();
   const { userId } = useParams();
   const { data: session } = useSession();
@@ -77,6 +79,7 @@ const Hero = () => {
   const handleRefresh = () => {
     router.refresh();
   };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,6 +92,7 @@ const Hero = () => {
       catch (err) {
         console.error(err);
       }
+      setIsLoading(false);
     };
     fetchData();
   }, [userId]);
@@ -98,7 +102,7 @@ const Hero = () => {
       setIsPhotographer(true);
     }
     const user = async () => {
-      try{
+      try {
         const res = await axios.get<User>(
           `${process.env.NEXT_PUBLIC_API_URL}/api/user/${userId}/profile`
         );
@@ -113,10 +117,10 @@ const Hero = () => {
   }, [session]);
 
   useEffect(() => {
-    if(isSuspended=="SUSPENDED") {
+    if (isSuspended == "SUSPENDED") {
       toast.error("Your account has been Suspended")
     }
-  },[isSuspended])
+  }, [isSuspended])
 
   useEffect(() => {
     if (photographer) {
@@ -234,7 +238,7 @@ const Hero = () => {
         />
       </div>
 
-      <div className="p-5 md:px-0">
+      <div className="md:px-0">
         <div className="flex px-10 pt-10 align-middle">
           <div>
             <Avatar className="relative w-20 h-20">
@@ -344,8 +348,8 @@ const Hero = () => {
                 handleRefresh();
               }}
 
-              onPublicId={()=>{
-                
+              onPublicId={() => {
+
               }}
               options={{
                 tags: ["cover image", `${session?.user.id}`],
@@ -397,106 +401,120 @@ const Hero = () => {
           )}
         </div>
         <div className="px-10 pt-5">
-          <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
+          <div className="flex gap-3 text-2xl font-bold max-w-3/5 md:text-3xl">
             {values.name}
+            {session?.user.userRole === 'CLIENT' && (
+              <div><ReportProfile /></div>
+            )}
           </div>
-          <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
+          {isLoading ? (
+            <div className="space-y-2 w-[250px] md:w-[500px]">
+              <Skeleton className="h-5 w-full" />
+              <Skeleton className="h-5 w-1/2" />
+            </div>
+          ) : (
+            <div className="px-10 pt-5">
+              <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
+                {values.name}
+              </div>
+              <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
+            </div>
+          )}
         </div>
-      </div>
 
-      <div className="flex flex-row p-0 px-12 align-middle">
-        {isPhotographer && (
-          <div className="pt-2">
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger>
-                <PenSquare className="w-[40px]" />
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Profile</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Username</FormLabel>
-                          <FormControl>
-                            <Input type="name" placeholder="Kevin" {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            This is your public display name.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="bio"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Discription</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="description"
-                              placeholder="Photographer"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            This is your bio description
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit">Submit</Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
-        {
-          !isPhotographer &&renderFeedButton()
-        }
-        {!isPhotographer && (
-          <Button
-            variant="default"
-            onClick={() => handleCreateChat()}
-            className="w-4/5 mx-3"
-          >
-            Message
-          </Button>
-        )}
-        {session?.user.userRole === 'CLIENT' && (
-          <Button variant="destructive" className="w-4/5" asChild>
-            <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
-          </Button>
-        )}
-
-        {isPhotographer && (
-          <Link
-            href="profile/settings"
-            className="relative px-2 pt-2"
-          >
-            <Settings />
-          </Link>
-        )}
-        {isPhotographer && (
-          <Link
-            href={`/user/photographer/${userId}/profile/history`}
-            className="relative px-2 pt-2"
-          >
-            <History />
-          </Link>
-        )}
+        <div className="flex flex-row p-0 align-middle">
+          {isPhotographer && (
+            <div className="pt-2">
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger>
+                  <PenSquare className="w-[40px]" />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Profile</DialogTitle>
+                  </DialogHeader>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-8"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Username</FormLabel>
+                            <FormControl>
+                              <Input type="name" placeholder="Kevin" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              This is your public display name.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="bio"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Discription</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="description"
+                                placeholder="Photographer"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              This is your bio description
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="submit">Submit</Button>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+          {
+            !isPhotographer && renderFeedButton()
+          }
+          {!isPhotographer && (
+            <Button
+              variant="default"
+              onClick={() => handleCreateChat()}
+              className="w-4/5 mx-3"
+            >
+              Message
+            </Button>
+          )}
+          {session?.user.userRole === 'CLIENT' && (
+            <Button variant="destructive" className="w-4/5" asChild>
+              <Link href={`/user/photographer/${userId}/bookings`}>Book Now</Link>
+            </Button>
+          )}
+          {isPhotographer && (
+            <Link
+              href="profile/settings"
+              className="relative px-2 pt-2"
+            >
+              <Settings />
+            </Link>
+          )}
+          {isPhotographer && (
+            <Link
+              href={`/user/photographer/${userId}/profile/history`}
+              className="relative px-2 pt-2"
+            >
+              <History />
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
