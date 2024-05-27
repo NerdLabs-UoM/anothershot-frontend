@@ -1,16 +1,16 @@
 "use client";
 import React from 'react';
-import FeedComponent from './components/FeedComponent';
-import AddButton from './components/AddButton';
+import { delay } from "@/app/lib/delay";
 
-
+const AddButton = React.lazy(() => delay(4000).then(() => import("./components/AddButton")));
+const FeedComponent = React.lazy(() => delay(4000).then(() => import("./components/FeedComponent")));
 
 const Feed = () => {
     return (
         
         <div>
-            <AddButton />
-            <FeedComponent />
+                <AddButton />
+                <FeedComponent />
         </div>
     )
 }

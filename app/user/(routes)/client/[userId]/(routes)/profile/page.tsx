@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import ProfileBio from "./components/ProfileBio";
-import ProfileGallery from "./components/ProfileGallery";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, lazy } from "react";
+import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { delay } from "@/app/lib/delay";
+
+const ProfileBio = lazy(() => delay(4000).then(() => import("./components/ProfileBio")));
+const ProfileGallery = lazy(() => delay(4000).then(() => import("./components/ProfileGallery")));
+
 
 const ClientProfile = () => {
   const [isClient, setIsClient] = useState(false);
   const { userId } = useParams();
   const { data: Session } = useSession();
-  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -28,9 +30,7 @@ const ClientProfile = () => {
         )}
       </div>
     );
-  }else{
-    router.push('/page-not-found');
-  }
+  };
 };
 
   return (

@@ -42,9 +42,17 @@ const formatCount = (count: number) => {
   if (count < 1000) {
     return count.toString();
   } else if (count < 1000000) {
-    return (count / 1000).toFixed(1) + 'K';
+    if (count % 1000 === 0) {
+      return (count / 1000) + 'K';
+    } else {
+      return (count / 1000).toFixed(1) + 'K';
+    }
   } else {
-    return (count / 1000000).toFixed(1) + 'M';
+    if (count % 1000000 === 0) {
+      return (count / 1000000) + 'M';
+    } else {
+      return (count / 1000000).toFixed(1) + 'M';
+    }
   }
 };
 
@@ -227,7 +235,7 @@ const FeedComponent = () => {
                       <p className="text-xs italic font-medium text-slate-200">{feedImage.caption}</p>
                     </div>
                   </div>
-                  <div className="">
+                  <div>
                     <div className="flex flex-start items-center justify-between">
                       <div className="pl-0">
                         <Button

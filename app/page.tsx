@@ -1,14 +1,19 @@
 "use client"
 
 import Navbar from '@/components/Navbar';
-import FeedImageComp from '@/components/feedImageComp';
-import React from 'react';
+import React, { Suspense } from 'react';
+import { delay } from "@/app/lib/delay";
+import Loading from "@/components/loading";
+
+const FeedImageComp = React.lazy(() => delay(4000).then(() => import("@/components/feedImageComp")));
 
 const Home = () => {
 
   return (
     <main>
-      <FeedImageComp />
+      <Suspense fallback={<Loading />}>
+        <FeedImageComp />
+      </Suspense>
       <Navbar />
     </main>
   )

@@ -41,6 +41,7 @@ import toast from "react-hot-toast";
 import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
 import ReportProfile from "@/components/Report/ReportProfile/ReportProfile";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   name: z
@@ -60,7 +61,7 @@ const formSchema = z.object({
 });
 
 const Hero = () => {
-  
+
   const [photographer, setPhotographer] = useState<Photographer>();
   const { userId } = useParams();
   const { data: session } = useSession();
@@ -78,6 +79,7 @@ const Hero = () => {
   const handleRefresh = () => {
     router.refresh();
   };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,6 +92,7 @@ const Hero = () => {
       catch (err) {
         console.error(err);
       }
+      setIsLoading(false);
     };
     fetchData();
   }, [userId]);
@@ -99,7 +102,7 @@ const Hero = () => {
       setIsPhotographer(true);
     }
     const user = async () => {
-      try{
+      try {
         const res = await axios.get<User>(
           `${process.env.NEXT_PUBLIC_API_URL}/api/user/${userId}/profile`
         );
@@ -114,10 +117,10 @@ const Hero = () => {
   }, [session]);
 
   useEffect(() => {
-    if(isSuspended=="SUSPENDED") {
+    if (isSuspended == "SUSPENDED") {
       toast.error("Your account has been Suspended")
     }
-  },[isSuspended])
+  }, [isSuspended])
 
   useEffect(() => {
     if (photographer) {
@@ -345,8 +348,8 @@ const Hero = () => {
                 handleRefresh();
               }}
 
-              onPublicId={()=>{
-                
+              onPublicId={() => {
+
               }}
               options={{
                 tags: ["cover image", `${session?.user.id}`],
@@ -403,9 +406,19 @@ const Hero = () => {
             {session?.user.userRole === 'CLIENT' && (
                 <div><ReportProfile /></div>
             )}
+        {isLoading ? (
+          <div className="space-y-2 w-[250px] md:w-[500px]">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-1/2" />
           </div>
-          <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
-        </div>
+        ) : (
+          <div className="px-10 pt-5">
+            <div className="text-2xl font-bold max-w-3/5 md:text-3xl">
+              {values.name}
+            </div>
+            <div className="w-4/5 text-xs md:text-lg">{values.description}</div>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-row p-0 align-middle">
@@ -468,7 +481,7 @@ const Hero = () => {
           </div>
         )}
         {
-          !isPhotographer &&renderFeedButton()
+          !isPhotographer && renderFeedButton()
         }
         {!isPhotographer && (
           <Button
