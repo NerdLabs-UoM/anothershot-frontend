@@ -4,16 +4,16 @@ import React, { useState, useEffect } from "react";
 import Earnings from "./components/earnings";
 import AddCategorySection from "./components/add_category";
 import BankDetailsSection from "./components/bank_details";
-import ReportSection from "./components/report";
 import FaqSection from "./components/faq";
 import { useParams } from "next/navigation";
 import { Payment, columns } from "./components/paymentColumns";
 import { DataTable } from "./components/data-table";
-import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
+import SystemReportSection from "@/components/systemReport";
+
 const Settings = () => {
     const [payments, setPayments] = useState<Payment[]>([]);
     const { userId } = useParams();
@@ -91,7 +91,7 @@ const Settings = () => {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <ReportSection />
+                                    <SystemReportSection />
                                 </CardContent>
                             </Card>
 

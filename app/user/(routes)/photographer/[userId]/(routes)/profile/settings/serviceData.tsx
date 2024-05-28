@@ -1,7 +1,7 @@
 'use server'
 
 import axios from 'axios'
-import { BankDetails, Photographer, Report } from "@/app/lib/types";
+import { BankDetails, Photographer } from "@/app/lib/types";
 
 
 export const fetchCategories = async () => {
@@ -33,15 +33,6 @@ export const fetchCategoryById = async (userId: string | string[]) => {
         throw new Error("Error fetching user id");
     }
 }
-
-export const submitReport = async (userId: string | string[], val: Report) => {
-    try {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/report/${userId}`, val);
-    } catch (e) {
-        throw new Error("Error sending report");
-    }
-}
-
 
 export const updateBankDetails = async (values: BankDetails, userId: string | string[]) => {
     try {
