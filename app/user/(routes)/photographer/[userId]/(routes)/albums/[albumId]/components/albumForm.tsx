@@ -42,7 +42,9 @@ const albumFormSchema = z.object({
     visibile: z
         .boolean()
         .default(false)
-        .optional()
+        .optional(),
+    price: z
+    .preprocess((value) => parseFloat(z.string().parse(value)), z.number().optional())
 });
 
 interface AlbumFormProps {
@@ -64,6 +66,7 @@ const AlbumForm: React.FC<AlbumFormProps> = ({ userId,albumId, isPhotographer, i
             name: album?.name || "",
             description: isCreateAlbum ? "" : album?.description,
             visibile: isCreateAlbum ? false:(album?.visibility === "PUBLIC"),
+            price:album?.price || 0
         },
     });
 
@@ -88,9 +91,11 @@ const AlbumForm: React.FC<AlbumFormProps> = ({ userId,albumId, isPhotographer, i
                         photographerId: userId,
                         name: values.name,
                         description: values.description,
-                        visibility: visibilityVal
+                        visibility: visibilityVal,
+                        price:values.price
                     }
                 );
+                console.log("create album",res);
                 toast.success("Album created successfully");
                 if (onAlbumSubmit) {
                     onAlbumSubmit(res.data);
@@ -104,12 +109,13 @@ const AlbumForm: React.FC<AlbumFormProps> = ({ userId,albumId, isPhotographer, i
             try {
                 const res = await axios.put(
                     `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${albumId}/editalbum`,
-                    { albumId: albumId, name:values.name, description:values.description,visibility:visibilityVal}
+                    { albumId: albumId, name:values.name, description:values.description,visibility:visibilityVal,price:values.price}
                 );
                 toast.success("Album edited successfully");
                 if(onAlbumEdit){
                     onAlbumEdit(res.data)
                 }
+                console.log("edir album ",res)
             }catch(e){
                 toast.error("Error editing album");
             }
@@ -196,6 +202,28 @@ const AlbumForm: React.FC<AlbumFormProps> = ({ userId,albumId, isPhotographer, i
                                                 checked={field.value}
                                                 onCheckedChange={field.onChange}
                                                 className="col-span-3" />
+                                        </FormControl>
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="price"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <div className="grid items-center grid-cols-4 gap-4">
+                                        <FormLabel className="text-right">
+                                        Price (USD)
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter Price"
+                                                {...field}
+                                                className="col-span-2"
+                                                type="number"
+                                            />
                                         </FormControl>
                                     </div>
                                     <FormMessage />
