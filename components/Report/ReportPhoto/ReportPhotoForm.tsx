@@ -40,7 +40,7 @@ const formSchema = z.object({
       message: "Description is required",
     })
     .max(500),
-  subject: z.string().min(0),
+  subject: z.string().min(10,"Subject must not be empty"),
 });
 const subjects = [
   { label: "Inappropriate Content", value: "Inappropriate Content" },
@@ -50,10 +50,14 @@ const subjects = [
   { label: "Any other Reason", value: "Any other Reason" },
 ] as const;
 
-interface imageId {
+interface ReportFormProps {
     imageId:string;
+    setIsOpen: React.Dispatch<
+      React.SetStateAction<{
+          isOpen:boolean;
+      }>>
 }
-const ReportPhotoForm = ({imageId}:imageId) => {
+const ReportPhotoForm:React.FC<ReportFormProps> = ({imageId,setIsOpen}:ReportFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,13 +70,13 @@ const ReportPhotoForm = ({imageId}:imageId) => {
   const param = useParams();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsOpen({isOpen:false});
     const reportDetails = {
       description: values.description,
       subject: values.subject,
       userId: userId,
       feedImageId:imageId
     };
-    console.log(reportDetails);
     const createReport = async () => {
       await axios
         .post(
@@ -80,10 +84,10 @@ const ReportPhotoForm = ({imageId}:imageId) => {
           reportDetails
         )
         .then((res) => {
-          toast.success("Report created successfully", res.data);
+          toast.success("Report created successfully",{ duration: 2000 });
         })
         .catch((error) => {
-          toast.error("Failed to create report", error);
+          toast.error("Failed to create report", { duration: 2000 });
         });
     };
     await createReport();
@@ -149,7 +153,7 @@ const ReportPhotoForm = ({imageId}:imageId) => {
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <FormMessage />
+                <FormMessage className="flex justify-end col-span-8"/>
               </FormItem>
             )}
           />
@@ -164,7 +168,7 @@ const ReportPhotoForm = ({imageId}:imageId) => {
                 <FormControl className="col-span-6">
                   <Input placeholder="Description" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="flex justify-end col-span-8"/>
               </FormItem>
             )}
           />

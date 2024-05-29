@@ -24,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal ,X} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -232,6 +232,24 @@ export const columns: ColumnDef<Imagereport>[] = [
             >
               Dismiss Report
             </DropdownMenuItem>
+            <AlertDialog >
+              <AlertDialogTrigger asChild>
+                <Button variant='ghost' className="flex pl-2 w-full justify-start">
+                  View Description
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogCancel className="flex justify-end h-1 p-0 border-none hover:bg-white">
+                    <X className="w-4 h-4"/>
+                  </AlertDialogCancel>
+                  <AlertDialogTitle>Report Description</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {row.original.description}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       );
