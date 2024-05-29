@@ -4,7 +4,7 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal,X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -16,11 +16,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { UserDetail } from "./userDetails";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useState } from "react";
+import { ReportStatus } from "@/app/lib/types";
 
 
 export type Profilereport = {
@@ -36,11 +49,10 @@ export type Profilereport = {
         image: string;
     };
   };
-  client: {
-    name:string,
-    user: {
-        image: string;
-    };
+  user: {
+    userName:string,
+    image: string;
+    
   };
 };
 
@@ -59,6 +71,7 @@ const handleStatus = async (ReportId:string,status:string) => {
     .catch((error) => {
       toast.error("Error updating report status");
     });
+    return status;
 };
 
 export const columns: ColumnDef<Profilereport>[] = [
@@ -74,21 +87,21 @@ export const columns: ColumnDef<Profilereport>[] = [
   },
   {
     accessorKey: "client.name",
-    header: "Client",
+    header: "Reported by",
     cell: ({ row }) => (
       <UserDetail
-        userName={row.original.client?.name}
-        image={row.original.client?.user.image}
+        userName={row.original.user?.userName}
+        image={row.original.user?.image}
       />
     ),
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div>
+    cell: ({ row }) => {
+      return( <div>
         {row.original.status === "PENDING" ? (
-          <Badge variant="default">{row.original.status}</Badge>
+          <Badge variant="default"> {row.original.status}</Badge>
         ) : row.original.status === "RESOLVED" ? (
           <Badge variant="secondary">{row.original.status}</Badge>
         ) : row.original.status === "DISMISSED" ? (
@@ -96,8 +109,8 @@ export const columns: ColumnDef<Profilereport>[] = [
         ) : (
           <Badge variant="outline">{row.original.status}</Badge>
         )}
-      </div>
-    ),
+      </div>)
+    },
   },
   {
     accessorKey: "subject",
@@ -120,7 +133,6 @@ export const columns: ColumnDef<Profilereport>[] = [
     accessorKey: "More",
     cell: ({ row }) => {
       const payment = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -156,6 +168,24 @@ export const columns: ColumnDef<Profilereport>[] = [
             >
               Dismiss Report
             </DropdownMenuItem>
+            <AlertDialog >
+              <AlertDialogTrigger asChild>
+                <Button variant='ghost' className="flex pl-2 w-full justify-start">
+                  View Description
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogCancel className="flex justify-end h-1 p-0 border-none hover:bg-white">
+                    <X className="w-4 h-4"/>
+                  </AlertDialogCancel>
+                  <AlertDialogTitle>Report Description</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {row.original.description}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       );

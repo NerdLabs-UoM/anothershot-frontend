@@ -8,17 +8,17 @@ import ImageReportTable from "./imageReports/ImageReportTable";
 const ReportHandlingPage = () => {
   return (
     
-      <Tabs defaultValue="account" className="flex flex-col justify-center w-11/12">
-        <TabsList  className= "w-1/5 ml-8">
-          <TabsTrigger value="account">Profile Reports</TabsTrigger>
-          <TabsTrigger value="password">Image Reports</TabsTrigger>
+      <Tabs defaultValue="profile" className="flex flex-col justify-center w-11/12">
+        <TabsList  className= "flex justify-center w-[260px] mt-1 ml-8">
+          <TabsTrigger value="profile">Profile Reports</TabsTrigger>
+          <TabsTrigger value="image">Image Reports</TabsTrigger>
         </TabsList>
-        <TabsContent value="account" className="">
+        <TabsContent value="profile" className="">
          <Table />
         </TabsContent>
-        <TabsContent value="password"><ImageReportTable/></TabsContent>
+        <TabsContent value="image"><ImageReportTable/></TabsContent>
       </Tabs>
-      
+
   );
 };
 

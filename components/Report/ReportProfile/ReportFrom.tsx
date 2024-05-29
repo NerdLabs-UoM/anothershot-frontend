@@ -32,7 +32,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { delay } from "lodash";
 
 const formSchema = z.object({
   description: z
@@ -41,7 +40,7 @@ const formSchema = z.object({
       message: "Description is required",
     })
     .max(500),
-  subject: z.string().min(0),
+  subject: z.string().min(10,"Subject must not be empty"),
 });
 const subjects = [
   { label: "Inappropriate Content", value: "Inappropriate Content" },
@@ -50,8 +49,14 @@ const subjects = [
   { label: "Privacy Violations", value: "Privacy Violations" },
   { label: "Any other Reason", value: "Any other Reason" },
 ] as const;
+interface ReportFormProps {
+  setIsOpen: React.Dispatch<
+      React.SetStateAction<{
+          isOpen:boolean;
+      }>>
+}
 
-const ReportForm = () => {
+const ReportForm:React.FC<ReportFormProps> = ({setIsOpen}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,10 +71,11 @@ const ReportForm = () => {
   const photographerId = param.userId;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsOpen({isOpen:false});
     const offerDetails = {
       description: values.description,
       subject: values.subject,
-      clientId: userId,
+      userId: userId,
       photographerId: photographerId,
     };
     const createOffer = async () => {
@@ -79,10 +85,10 @@ const ReportForm = () => {
           offerDetails
         )
         .then((res) => {
-          toast.success("Report created successfully", res.data);
+          toast.success("Report created successfully", { duration: 2000 });
         })
         .catch((error) => {
-          toast.error("Failed to create report", error);
+          toast.error("Failed to create report", { duration: 2000 });
         });
     };
     await createOffer();
@@ -148,7 +154,7 @@ const ReportForm = () => {
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <FormMessage />
+                <FormMessage className="flex justify-end col-span-8"/>
               </FormItem>
             )}
           />
@@ -163,7 +169,7 @@ const ReportForm = () => {
                 <FormControl className="col-span-6">
                   <Input placeholder="Description" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="flex justify-end col-span-8"/>
               </FormItem>
             )}
           />
