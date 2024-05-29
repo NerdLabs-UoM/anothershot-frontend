@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -11,16 +11,21 @@ import {
 import ReportFrom from './ReportFrom';
 
 function ReportProfile() {
+  const [isOpen, setIsOpen] = useState<{isOpen:boolean}>({isOpen:false});
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen({ isOpen: open });
+  };
   return (
     <div>
-        <Dialog>
+        <Dialog open={isOpen.isOpen} onOpenChange={handleOpenChange}>
         <DialogTrigger >
           <Flag className="w-5 h-5" />
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Report Profile</DialogTitle>
-            <ReportFrom/>
+            <ReportFrom setIsOpen={setIsOpen}/>
           </DialogHeader>
         </DialogContent>
       </Dialog>

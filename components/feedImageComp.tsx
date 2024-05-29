@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageSquare, MoreVertical, Bookmark } from "lucide-react";
+import { Heart, MessageSquare, MoreVertical, Bookmark, EllipsisVertical } from "lucide-react";
 import { FeedImage,Notification } from "@/app/lib/types";
 import axios from 'axios';
 import { useSession } from "next-auth/react";
@@ -124,6 +124,20 @@ const FeedImageComp = () => {
         router.push(`/user/photographer/${photographerId}/profile`)
     }
 
+    const reportCreation =(id:string)=>{
+        
+            if(session?.user?.userRole=="PHOTOGRAPHER" || session?.user?.userRole=="CLIENT"){
+                return( <ReportPhoto imageId={id} />)
+            }else if(session==null){
+                return (
+                    <div onClick={()=>{
+                        toast.error("You must be logged in to report a photo")
+                    }}><EllipsisVertical/></div>
+                )
+            }
+            
+        
+    }
     return (
         <ResponsiveMasonry
             columnsCountBreakPoints={{ 350: 1, 700: 2, 1050: 3, 1400: 4, 1750: 5, 2100: 6, 2450: 7, 2800: 8, 3150: 9, 3500: 10 }}
@@ -142,7 +156,7 @@ const FeedImageComp = () => {
                         className="rounded-[35px] hover:scale-110 transform transition duration-500"
                     /> 
                     <div className="absolute top-4 right-2 z-20 text-white hover:cursor-pointer">
-                        {session?.user.userRole!='ADMIN' && <ReportPhoto imageId={feedImage.id} />}
+                        {reportCreation(feedImage.id)}
                     </div>
                     <div className="absolute z-10 grid grid-cols-6 items-center justify-center w-full bg-gradient-to-t from-black to-transparent rounded-b-[40px]">
                         
