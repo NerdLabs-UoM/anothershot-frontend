@@ -26,6 +26,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 import BookingTable from "./components/bookingTable";
+import AddBooking from "./components/AddBooking";
 
 interface EventData {
   id?: string;
@@ -62,20 +63,14 @@ const PhotographerBookingsPage = () => {
   return (
     <div className="w-full flex justify-center py-5" >
 
-      <AddBooking/>
-      <div className=" pl-4 lg:w-3/5 ">
-        <DateTimePickerForm
+      <AddBooking />
 
       <div className=" w-full sm:w-4/5 ">
         <div className="flex justify-center mb-6">
           {session && session.user && session.user.id === userId &&
             <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate} />}
         </div>
-        {/* <DateTimePickerForm
-          setDate={setSampleDate}
-          date={sampleDate}
-        /> */}
-       <div className="overflow-x-auto p-6 sm:p-0">
+                <div className="overflow-x-auto p-6 sm:p-0">
           <FullCalendarComp events={eventList} />
         </div>
         <div className="mt-6 overflow-x-auto">
@@ -83,8 +78,10 @@ const PhotographerBookingsPage = () => {
         </div>
       </div>
     </div >
+
   );
 }
 
 export default PhotographerBookingsPage;
+
 
