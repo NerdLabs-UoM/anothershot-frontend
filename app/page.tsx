@@ -1,9 +1,22 @@
-import Image from 'next/image'
+"use client"
 
-export default function Home() {
+import Navbar from '@/components/Navbar';
+import React, { Suspense } from 'react';
+import { delay } from "@/app/lib/delay";
+import Loading from "@/components/loading";
+
+const FeedImageComp = React.lazy(() => delay(4000).then(() => import("@/components/feedImageComp")));
+
+const Home = () => {
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Home Page
+    <main>
+      <Suspense fallback={<Loading />}>
+        <FeedImageComp />
+      </Suspense>
+      <Navbar />
     </main>
   )
 }
+
+export default Home;
