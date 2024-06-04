@@ -9,7 +9,7 @@ interface CardProps {
   src: string;
   name: string;
   description: string;
-  price: number;
+  price: number|null|undefined;
   packageId: string;
 }
 export const PackageCard = ({ src, name, description, price, packageId }: CardProps) => {
