@@ -7,8 +7,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const { SMTP_EMAIL, MAILTRAP_USER, MAILTRAP_PASS } = process.env;
 
         var transport = nodemailer.createTransport({
-            host: "sandbox.smtp.mailtrap.io",
-            port: 2525,
+            host: "live.smtp.mailtrap.io",
+            port: 587,
             auth: {
                 user: MAILTRAP_USER,
                 pass: MAILTRAP_PASS
