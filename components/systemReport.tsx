@@ -20,6 +20,7 @@ import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { resolve } from "path/win32";
 
 const ReportFormSchema = z.object({
     subject: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Report"}).max(100).min(1,{message: "Enter a subject"}),
@@ -39,7 +40,7 @@ const SystemReportSection = () => {
     
     const handleSubmit = async(val: z.infer<typeof ReportFormSchema>) => {
         try{
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/report/${userId}`, val);
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/${userId}/systemreport`, val);
             toast.success("Report successfully submitted");
         }catch(e){
             toast.error("Error submitting report");

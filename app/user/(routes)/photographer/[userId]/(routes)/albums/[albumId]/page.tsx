@@ -85,7 +85,7 @@ const AlbumPage = () => {
         <div className="container">
             <div className="mt-5">
                 <LucideArrowLeft onClick={() => {
-                    router.back();
+                    router.push(`/user/photographer/${userId}/albums`);
                 }} className="cursor-pointer"/>
 
             </div>
@@ -112,7 +112,7 @@ const AlbumPage = () => {
                     />
                 )}
             </div>
-            <Masonrygrid images={images} albumName={album?.name || ""} canView={viewPage} />
+            <Masonrygrid images={images} albumName={album?.name || ""} canView={viewPage} albumOwner={album?.photographerId} />
         </div>
     );
 };

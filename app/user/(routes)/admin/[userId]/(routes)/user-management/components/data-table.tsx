@@ -78,7 +78,6 @@ export function DataTable<TData, TValue>({
 
   const onChangeCheckBox = (e: {
     target: { checked: boolean; value: React.SetStateAction<string>}}) => {
-    // console.log("checkde",val);
     const { value, checked: isChecked } = e.target;
     setNewUserRole((prev) =>
       prev.map((item) => {

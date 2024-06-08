@@ -31,6 +31,9 @@ import Masonry from "react-masonry-css";
 import fileDownload from "js-file-download";
 import axios from "axios";
 import JSZip from "jszip";
+import toast from "react-hot-toast";
+import { NotificationService } from "@/components/notification/notification";
+import { useSession } from "next-auth/react";
 
 type AlbumCardProps = {
   albumData: Album[];
@@ -43,11 +46,13 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
   isPhotographer,
   deleteAlbums,
 }) => {
+  const { data: session } = useSession();
   if (!isPhotographer) {
     albumData = albumData.filter((album) => album.visibility === "PUBLIC");
   }
 
-  const handleDownload = async (images: AlbumImage[], filename: string) => {
+  const handleDownload = async (album: Album) => {
+    const { images,id } = album;
     const zip = new JSZip();
 
     // Create a promise for each image download
@@ -60,10 +65,11 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
         const response = await axios.get(modifiedUrl, {
           responseType: "blob",
         });
+
         // Add the downloaded image to the zip file
-        zip.file(`${index + 1}_${image.id}.jpg`, response.data);
+        zip.file(`${index + 1}_${image.id}.jpg`, response.data);       
       } catch (error) {
-        console.error(`Error downloading image ${image.id}:`, error);
+        toast.error("Error downloading images");
       }
     });
 
@@ -71,7 +77,17 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
 
     // Generate the zip file
     zip.generateAsync({ type: "blob" }).then((content) => {
-      fileDownload(content, filename);
+      fileDownload(content, `${id}.zip`);
+      toast.success("Album downloaded successfully");
+      NotificationService({
+        senderId: session?.user.id,
+        receiverId: album.photographerId,
+        type: "Album",
+        title: "downloaded your album",
+        description: `downloaded album ${album.name} successfully`,
+      });
+    }).catch((error) => {
+      toast.error("Error generating zip file");
     });
   };
 
@@ -83,12 +99,12 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
         768: 2,
         640: 1,
       }}
-      className="flex gap-4"
+      className="flex gap-6"
     >
-      {albumData.map((album) => (
+      {(albumData.length === 0)?"No Albums yet":albumData.map((album) => (
         <Card
           key={album.id}
-          className="w-[300px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative "
+          className="w-[300px] sm:w-[280px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative "
         >
           <Link
             href={{
@@ -99,7 +115,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
             }}
           >
             <Image
-              src={album.images[0]?.image || "/images/albumcover.png"}
+              src={album.coverImage || "/images/albumcover.png"}
               alt="album cover"
               layout="fill"
               objectFit="cover"
@@ -198,7 +214,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                       <DropdownMenuItem>
                         <button
                           onClick={() => {
-                            handleDownload(album.images, `${album.id}.zip`);
+                            handleDownload(album);
                           }}
                         >
                           Download Album
