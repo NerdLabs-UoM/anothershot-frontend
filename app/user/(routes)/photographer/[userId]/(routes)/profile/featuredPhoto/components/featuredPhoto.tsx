@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import UploadFeaturePhoto from "./uploadFeaturePhoto";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { NotificationService } from "@/components/notification/notification";
 
 export default function FeaturedPhoto() {
   const { userId } = useParams();
@@ -43,6 +44,13 @@ export default function FeaturedPhoto() {
         return [...updatePhoto];
       })
       toast.success("Featured photo updated successfully.");
+      NotificationService({
+        senderId: session?.user?.id, 
+        receiverId: session?.user.id,
+        type: 'featured_updated',
+        title: 'featured Updated',
+        description: '',
+      });
     } catch (error) {
       toast.error("Error updating featured photo. Please try again.");
     }

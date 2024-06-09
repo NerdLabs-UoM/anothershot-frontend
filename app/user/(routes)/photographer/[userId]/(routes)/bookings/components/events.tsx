@@ -49,6 +49,7 @@ import React from "react";
 import { PlusSquare } from "lucide-react";
 import { Booking, Event } from "@/app/lib/types";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
+import { NotificationService } from "@/components/notification/notification";
 
 export interface EventFormProps {
   id?: string;
@@ -185,12 +186,19 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
           toast.success("Event created successfully.");
         }
       }
+      NotificationService({
+        senderId: session?.user?.id, // Assuming the user who booked is the sender
+        receiverId: session?.user.id, // Assuming the user who booked is the receiver
+        type: 'Event_Created',
+        title: 'Event created',
+        description: '',
+      });
     }
     catch (error) {
       toast.error("An error occurred. Please try again.");
     }
   };
- 
+
 
   const handleBookingChange = (value: string) => {
     const selectedBooking = booking.find((bookings) => bookings.id === value);
@@ -232,16 +240,23 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     }
     try {
       const data = {
-      eventId: selectedEventId,
-      bookingId: selectedBookingId,
-      title: values.title,
-      description: values.description,
-      start: startString,
-      end: endString
-    };
+        eventId: selectedEventId,
+        bookingId: selectedBookingId,
+        title: values.title,
+        description: values.description,
+        start: startString,
+        end: endString
+      };
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
       const updatedEvent: Event = response.data;
-      eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id=== selectedEventId ? updatedEvent : eventItems));
+      eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id === selectedEventId ? updatedEvent : eventItems));
+      NotificationService({
+        senderId: session?.user?.id, // Assuming the user who booked is the sender
+        receiverId: session?.user.id, // Assuming the user who booked is the receiver
+        type: 'Event_Updated',
+        title: 'Event Updated',
+        description: '',
+      });
       toast.success("Event details updated successfully.");
     } catch (error) {
       toast.error("An error occurred. Please try again.");
@@ -256,6 +271,13 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/delete`, { data });
       eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id === selectedEventId));
       toast.success("Event deleted successfully");
+      NotificationService({
+        senderId: session?.user?.id, // Assuming the user who booked is the sender
+        receiverId: session?.user.id, // Assuming the user who booked is the receiver
+        type: 'Event_Deleted',
+        title: 'Event Deleted',
+        description: '',
+      });
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     }
@@ -356,8 +378,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           type="description"
                           placeholder="  Description"
                           maxLength={100}
-                          {...field} 
-                          size={50}/>
+                          {...field}
+                          size={50} />
                       </FormControl>
                     </FormItem>
                   )} />
