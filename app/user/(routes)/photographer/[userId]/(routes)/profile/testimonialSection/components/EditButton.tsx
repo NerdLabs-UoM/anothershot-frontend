@@ -89,6 +89,8 @@ const EditButton: React.FC<EditButtonProps> = ({
         { testimonialId: changedTestimonialsIds }
       );
       setIsOpen(false);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials`);
+      setCurrentTestimonials(response.data);
       toast.success("Testimonials updated successfully!");
     } catch (error) {
       toast.error("Failed to update testimonials");
@@ -167,7 +169,7 @@ const EditButton: React.FC<EditButtonProps> = ({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-5 mb-16 mx-3">
-      <p className="font-extrabold text-2xl md:text-5xl">Testimonials</p>
+      <p className="font-extrabold text-2xl sm:text-3xl md:text-5xl">Testimonials</p>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         {renderEditButton()}
         <DialogContent className="sm:max-w-[425px]">
@@ -198,17 +200,17 @@ const EditButton: React.FC<EditButtonProps> = ({
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
                     <CommandInput placeholder="Search testimonials..." />
-                    <CommandEmpty>No framework found.</CommandEmpty>
+                    <CommandEmpty>No testimonial found.</CommandEmpty>
                     <CommandGroup>
                       {testimonials.map((testimonial) => (
                         <HoverCard key={testimonial.id}>
                           <HoverCardTrigger asChild>
                             <CommandItem
                               key={testimonial.id}
-                              value={testimonial.id}
+                              value={testimonial.client.name}
                               onSelect={(currentValue) => {
                                 setValue(
-                                  currentValue === value ? "" : currentValue
+                                  currentValue   === value ? "" : currentValue
                                 );
                                 handleValueChange(currentValue);
                                 setOpen(false);

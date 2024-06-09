@@ -61,24 +61,25 @@ const PhotographerBookingsPage = () => {
   }, [userId]);
 
   return (
-    <div className="w-full flex justify-center py-5" >
-
-      <AddBooking />
-
-      <div className=" w-full sm:w-4/5 ">
-        <div className="flex justify-center mb-6">
-          {session && session.user && session.user.id === userId &&
-            <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate} />}
+    <div className="flex-col">
+      {session?.user.userRole === 'CLIENT' && (
+        <AddBooking />
+      )}
+      <div className="w-full flex justify-center py-5" >
+        <div className=" w-full sm:w-4/5 ">
+          <div className="flex justify-center mb-6">
+            {session && session.user && session.user.id === userId &&
+              <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate} />}
+          </div>
+          <div className="overflow-x-auto p-6 sm:p-0">
+            <FullCalendarComp events={eventList} />
+          </div>
+          <div className="mt-6 overflow-x-auto">
+            <BookingTable />
+          </div>
         </div>
-                <div className="overflow-x-auto p-6 sm:p-0">
-          <FullCalendarComp events={eventList} />
-        </div>
-        <div className="mt-6 overflow-x-auto">
-          <BookingTable />
-        </div>
-      </div>
-    </div >
-
+      </div >
+    </div>
   );
 }
 

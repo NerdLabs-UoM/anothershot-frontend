@@ -30,7 +30,7 @@ const AddButton = () => {
         }
         else {
             return (
-                <div className=' flex justify-start pl-20 '>
+                <div className=' flex justify-center md:justify-start md:pl-20 '>
                     <Link href={`/user/photographer/${userId}/profile`}>
                         <Button variant="ghost" className='h-auto'>
                             <Avatar className="w-12 h-12 mr-3">

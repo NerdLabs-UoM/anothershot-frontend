@@ -45,6 +45,7 @@ import { View, Check } from "lucide-react";
 import { Booking } from "@/app/lib/types";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NotificationService } from '@/components/notification/notification';
 
 const ClientBookings = () => {
   const { userId } = useParams();
@@ -105,6 +106,13 @@ const ClientBookings = () => {
         toast.success("Booking has been cancelled");
         setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
       }
+      NotificationService({
+        senderId: clientId,
+        receiverId: bookings.find((booking) => booking.id === bookingId)?.photographer.userId,
+        type: "bookingC",
+        title: "has cancelled the booking (" + bookings.find((booking) => booking.id === bookingId)?.subject + ")",
+        description: ""
+      });
     } catch (error: any) {
       toast.error("Error cancelling booking", error);
     }
