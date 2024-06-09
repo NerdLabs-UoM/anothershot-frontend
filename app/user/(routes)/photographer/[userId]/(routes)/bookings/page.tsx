@@ -74,7 +74,8 @@ const PhotographerBookingsPage = () => {
           <FullCalendarComp events={eventList} />
         </div>
         <div className="mt-6 overflow-x-auto">
-          <BookingTable />
+        {session && session.user && session.user.id === userId &&
+          <BookingTable />}
         </div>
       </div>
     </div >

@@ -190,7 +190,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         senderId: session?.user?.id, // Assuming the user who booked is the sender
         receiverId: session?.user.id, // Assuming the user who booked is the receiver
         type: 'Event_Created',
-        title: 'Event created',
+        title: 'Event created successfully',
         description: '',
       });
     }
@@ -254,7 +254,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         senderId: session?.user?.id, // Assuming the user who booked is the sender
         receiverId: session?.user.id, // Assuming the user who booked is the receiver
         type: 'Event_Updated',
-        title: 'Event Updated',
+        title: 'Event Updated successfully',
         description: '',
       });
       toast.success("Event details updated successfully.");
@@ -273,9 +273,9 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       toast.success("Event deleted successfully");
       NotificationService({
         senderId: session?.user?.id, // Assuming the user who booked is the sender
-        receiverId: session?.user.id, // Assuming the user who booked is the receiver
+        receiverId: userId as string, // Assuming the user who booked is the receiver
         type: 'Event_Deleted',
-        title: 'Event Deleted',
+        title: 'Event deleted successfully',
         description: '',
       });
     } catch (error) {
