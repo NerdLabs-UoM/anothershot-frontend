@@ -114,7 +114,7 @@ const FeedComponent = () => {
             senderId: session?.user?.id,
             receiverId: photographerId,
             type: "like",
-            title: "likes your photo",
+            title: "liked your photo",
             description: ""
           })
       }
@@ -160,7 +160,7 @@ const FeedComponent = () => {
             senderId: session?.user?.id,
             receiverId: photographerId,
             type: "save",
-            title: "saves your photo",
+            title: "saved your photo",
             description: ""
           })
       }

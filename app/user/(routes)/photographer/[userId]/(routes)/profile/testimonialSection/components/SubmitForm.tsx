@@ -80,7 +80,7 @@ const SubmitForm: React.FC = ({
         senderId: photographerId,
         receiverId: session?.user?.id,
         type: "feedbackClient",
-        title: "received your a feedback",
+        title: "received your feedback",
         description: "It is under review and will be published soon. Thank you for your feedback."
       });
     } catch (error) {
