@@ -76,6 +76,13 @@ const SubmitForm: React.FC = ({
         title: "gave you a feedback",
         description: ""
       });
+      NotificationService({
+        senderId: photographerId,
+        receiverId: session?.user?.id,
+        type: "feedbackClient",
+        title: "received your a feedback",
+        description: "It is under review and will be published soon. Thank you for your feedback."
+      });
     } catch (error) {
       setLoading(false);
       toast.error("Error submitting feedback");

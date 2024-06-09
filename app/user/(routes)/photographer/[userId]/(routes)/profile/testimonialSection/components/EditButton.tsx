@@ -207,7 +207,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                           <HoverCardTrigger asChild>
                             <CommandItem
                               key={testimonial.id}
-                              value={testimonial.client.name}
+                              value={testimonial.id}
                               onSelect={(currentValue) => {
                                 setValue(
                                   currentValue   === value ? "" : currentValue
