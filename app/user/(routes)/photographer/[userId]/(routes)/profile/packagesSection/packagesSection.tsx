@@ -77,7 +77,6 @@ const PackagesSection = () => {
           No Packages to display.
         </div>
       )}
-      <div>{renderAlbumButton()}</div>
     </div>
   );
 };

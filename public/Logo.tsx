@@ -1,6 +1,6 @@
 import React from 'react'
-import { Hexagon } from 'lucide-react'
 import {useRouter} from 'next/navigation' 
+import Image from 'next/image'
 
 const Logo=()=> {
   const router = useRouter()
@@ -8,8 +8,13 @@ const Logo=()=> {
     <div onClick={()=>{
       router.push(`/`)
     }}>
-      <div className="flex flex-row">
-          <Hexagon className="fill-black w-8" />
+      <div className="flex flex-row gap-2 pt-2">
+          <Image
+          src='/icon.png'
+          width={24}
+          height={10}
+          alt='logo'
+          />
           <div className = "font-bold">AnotherShot</div>
         </div>
     </div>
