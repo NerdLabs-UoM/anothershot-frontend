@@ -49,6 +49,7 @@ import { Package } from "@/app/lib/types";
 import { Photographer } from "@/app/lib/types";
 import toast from 'react-hot-toast';
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
+import { NotificationService } from '@/components/notification/notification';
 
 const formSchema = z.object({
     eventName: z.string().min(2, "Event name should be between 5-50 characters").max(50, "Event name should be between 2-50 characters"),
@@ -113,7 +114,14 @@ const AddBooking = () => {
         fetchPhotographer();
     }, [userId]);
 
+    const photographerId = userId as string;
+
     const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
+
+        if (session === null) {
+            toast.error('You must be logged in to request bookings');
+            return;
+        }
 
         const startDateObject = startDate ? new Date(startDate) : new Date();
         const endDateObject = endDate ? new Date(endDate) : new Date();
@@ -162,6 +170,20 @@ const AddBooking = () => {
                     toast.success("Booking request sent successfully!");
                 }
             }
+            NotificationService({
+                senderId: session?.user?.id,
+                receiverId: photographerId,
+                type: "bookingP",
+                title: "has requested a booking ( to " + startDateOnly + " )",
+                description: ""
+            });
+            NotificationService({
+                senderId: photographerId,
+                receiverId: session?.user?.id,
+                type: "bookingPC",
+                title: "has received the request",
+                description: "Your booking request is received. It is under review. You will be notified once it is accepted."
+            });
         } catch (error) {
             setLoading(false);
             toast.error("Error booking requesting");
@@ -185,7 +207,7 @@ const AddBooking = () => {
     };
 
     return (
-        <div className='flex justify-end'>
+        <div className='flex justify-center mt-3'>
             {session?.user.userRole === 'CLIENT' && (
                 <Dialog open={isOpened} onOpenChange={setIsOpened}>
                     <DialogTrigger>
