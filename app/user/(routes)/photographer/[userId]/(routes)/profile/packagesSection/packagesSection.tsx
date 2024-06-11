@@ -30,25 +30,10 @@ const PackagesSection = () => {
     fetchPackages();
   }, [userId]);
 
-  const renderAlbumButton = () => {
-    if (session?.user?.id !== userId) {
-      return (
-        <div>
-          <Link href={`/user/photographer/${userId}/albums`}>
-            <Button
-              variant="default"
-              className="rounded-md bg-black-600 text-white-300 flex justify-center items-center">
-              View Albums
-            </Button>
-          </Link>
-        </div>
-      );
-    }
-    return null;
-  };
+ 
 
   return (
-    <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-white border-t-2">
+    <div className="mt-0 sm:mt-4 mb-12 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-white border-t-2">
       <div className="flex flex-col justify-center text-center sm:flex sm:flex-row sm:justify-between">
         <h1 className="text-center text-2xl sm:text-5xl font-bold mb-0 sm:mb-6 sm:ml-5">
           Packages
@@ -77,7 +62,8 @@ const PackagesSection = () => {
           No Packages to display.
         </div>
       )}
-      <div>{renderAlbumButton()}</div>
+      
+
     </div>
   );
 };

@@ -91,6 +91,28 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
     return stars;
   };
 
+  useEffect(() => {
+    let autoSlideInterval: NodeJS.Timeout | undefined;
+
+    if (windowWidth < 780) {
+      autoSlideInterval = setInterval(() => {
+        if (api) {
+          if (current === count) {
+            api.scrollTo(0);
+          } else {
+            api.scrollNext();
+          }
+        }
+      }, 7000);
+    }
+
+    return () => {
+      if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+      }
+    };
+  }, [api, current, count, windowWidth]);
+
   return (
     <div className="flex flex-col ml-3 sm:ml-0">
       {visibleTestimonials.length > 0 ? (
@@ -123,7 +145,7 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
                         </Avatar>
                       </div>
                       <div>
-                        <span className="text-slate-950 text-right font-bold text-base sm:text-2xl">
+                        <span className="text-slate-950 text-right font-bold text-lg sm:text-xl md:text-2xl">
                           {testimonial.client.name}
                         </span>
                       </div>

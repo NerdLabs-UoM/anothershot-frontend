@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { usePathname, useRouter} from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
@@ -38,73 +38,57 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-
-
 const Navbar = () => {
-
-
-const [isPhotographer,setIsPhotographer] = useState <boolean>(false);
-const [isClient,setIsClient] = useState<boolean>(false);
-const [isAdmin,setIsAdmin] = useState<boolean>(false);
-const [isLogged,setIsLogged] = useState<boolean>(true);
+  const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isLogged, setIsLogged] = useState<boolean>(true);
 
   let navigationMenuContent;
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
- const userId = session?.user.id;
-  useEffect(() =>{
-  if(session?.user.userRole =="PHOTOGRAPHER"){
-    console.log(isPhotographer)
-    setIsPhotographer(true);
-  }else if(session?.user.userRole =="CLIENT"){
-    setIsClient(true)
-  }else if(session?.user.userRole =="ADMIN"){
-    setIsAdmin(true)
-  }else if(session?.expires){
-    setIsLogged(false);
-  }
+  const userId = session?.user.id;
+  useEffect(() => {
+    if (session?.user.userRole == "PHOTOGRAPHER") {
+      setIsPhotographer(true);
+    } else if (session?.user.userRole == "CLIENT") {
+      setIsClient(true);
+    } else if (session?.user.userRole == "ADMIN") {
+      setIsAdmin(true);
+    } else if (session?.expires) {
+      setIsLogged(false);
+    }
+  }, [session]);
 
- },[session])
- 
   const handleDirection = (dir: string) => {
-      router.push(`${dir}`);
+    router.push(`${dir}`);
   };
 
-  const handleHome=()=>{
-    if(session?.user.userRole ==="PHOTOGRAPHER")
-    {router.push(`/user/photographer/${session?.user.id}`);}
-    else if(session?.user.userRole ==="CLIENT"){
-      router.push(`/user/client/${session?.user.id}`);
-    }
-  }
-
   const handleDirectionClient = (dir: string) => {
-      router.push(`${dir}`);
+    router.push(`${dir}`);
   };
 
   if (isClient) {
     navigationMenuContent = !isAdmin && (
       <NavigationMenu>
-        <NavigationMenuList className="px-4 py-3 bg-black border-t shadow-lg rounded-t-3xl sm: sm:gap-20">
+        <NavigationMenuList className="px-4 py-2 bg-black border-t shadow-lg rounded-t-3xl sm: sm:gap-20">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6">
-                  
-                    <NavigationMenuLink
+                <NavigationMenuItem className="px-8 sm:px-6 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
+                  <NavigationMenuLink
                     onClick={() => {
-                      handleDirection('/')
+                      handleDirection("/");
                     }}
-                      className={
-                        pathname == "/"
-                          ? "flex flex-col items-center shadow-lg text-white"
-                          : "flex flex-col items-center text-white"
-                      }
-                    >
-                      <Home className="w-[20px]" />
-                    </NavigationMenuLink>
-                  
+                    className={
+                      pathname == "/"
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
+                    }
+                  >
+                    <Home className="w-[20px]" />
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               </TooltipTrigger>
               <TooltipContent>
@@ -115,15 +99,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6">
+                <NavigationMenuItem className="px-8 sm:px-6 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirectionClient(`/user/client/${userId}/profile`);
                     }}
                     className={
-                      pathname == "/photographer/profile"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/client/${userId}/profile`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <UserRound className="w-[20px]" />
@@ -139,15 +123,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6 lg:flex">
+                <NavigationMenuItem className="px-8 sm:px-6 lg:flex rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirectionClient(`/user/client/${userId}/bookings`);
                     }}
                     className={
-                      pathname == "/Photographer-bookings"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/client/${userId}/bookings`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <ListEnd className="w-[20px]" />
@@ -163,15 +147,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6 :flex">
+                <NavigationMenuItem className="px-8 sm:px-6 :flex rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirectionClient(`/user/client/${userId}/inbox`);
                     }}
                     className={
-                      pathname == "/inbox"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/client/${userId}/inbox`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <MessageSquareText className="w-[20px]" />
@@ -189,25 +173,23 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
   } else if (isPhotographer && pathname != "/admin") {
     navigationMenuContent = !isAdmin && (
       <NavigationMenu>
-        <NavigationMenuList className="px-4 py-3 bg-black border-t shadow-lg rounded-t-3xl sm:gap-20">
+        <NavigationMenuList className="px-4 py-2 bg-black border-t shadow-lg rounded-t-3xl sm:gap-20">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6">
-                  
-                    <NavigationMenuLink
+                <NavigationMenuItem className="px-8 sm:px-6 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
+                  <NavigationMenuLink
                     onClick={() => {
-                      handleDirection('/')
+                      handleDirection("/");
                     }}
-                      className={
-                        pathname == "/"
-                          ? "flex flex-col items-center shadow-lg text-white"
-                          : "flex flex-col items-center text-white"
-                      }
-                    >
-                      <Home className="w-[20px]" />
-                    </NavigationMenuLink>
-                  
+                    className={
+                      pathname == "/"
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
+                    }
+                  >
+                    <Home className="w-[20px]" />
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               </TooltipTrigger>
               <TooltipContent>
@@ -218,15 +200,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6">
+                <NavigationMenuItem className="px-8 sm:px-6 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirection(`/user/photographer/${userId}/profile`);
                     }}
                     className={
-                      pathname == "/photographer/profile"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/photographer/${userId}/profile`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <UserRound className="w-[20px]" />
@@ -242,15 +224,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="hidden px-8 sm:px-6 lg:flex">
+                <NavigationMenuItem className="hidden px-8 sm:px-6 lg:flex rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirection(`/user/photographer/${userId}/feed`);
                     }}
                     className={
-                      pathname == "/Photographer-feed"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/photographer/${userId}/feed`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <Blocks className="w-[20px]" />
@@ -266,15 +248,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="hidden px-8 lg:flex sm:px-6">
+                <NavigationMenuItem className="hidden px-8 lg:flex sm:px-6 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirection(`/user/photographer/${userId}/albums`);
                     }}
                     className={
-                      pathname == "/Photographer-albums"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/photographer/${userId}/albums`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <Image className="w-[20px]" />
@@ -290,15 +272,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="hidden px-8 sm:px-6 lg:flex">
+                <NavigationMenuItem className="hidden px-8 sm:px-6 lg:flex rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirection(`/user/photographer/${userId}/bookings`);
                     }}
                     className={
-                      pathname == "/Photographer-bookings"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/photographer/${userId}/bookings`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <ListEnd className="w-[20px]" />
@@ -314,15 +296,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <NavigationMenuItem className="px-8 sm:px-6 :flex">
+                <NavigationMenuItem className="px-8 sm:px-6 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
                   <NavigationMenuLink
                     onClick={() => {
                       handleDirection(`/user/photographer/${userId}/inbox`);
                     }}
                     className={
-                      pathname == "/inbox"
-                        ? "flex flex-col items-center shadow-lg"
-                        : "flex flex-col items-center text-white"
+                      pathname == `/user/photographer/${userId}/inbox`
+                        ? "flex flex-col items-center text-white"
+                        : "flex flex-col items-center text-slate-500"
                     }
                   >
                     <MessageSquareText className="w-[20px]" />
@@ -342,45 +324,44 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
                   <Menu className="w-[20px]" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-            
-                    <DropdownMenuItem
-                     onClick={() => {
+                  <DropdownMenuItem
+                    onClick={() => {
                       handleDirection(`/user/photographer/${userId}/bookings`);
                     }}
-                      className={
-                        pathname == "/Home"
-                          ? "text-slate-500"
-                          : "text-clipblack"
-                      }
-                    >
-                      Bookings
-                    </DropdownMenuItem>
+                    className={
+                      pathname == `/user/photographer/${userId}/bookings`
+                        ? "text-slate-500"
+                        : "text-clipblack"
+                    }
+                  >
+                    Bookings
+                  </DropdownMenuItem>
 
-                    <DropdownMenuItem
+                  <DropdownMenuItem
                     onClick={() => {
                       handleDirection(`/user/photographer/${userId}/feed`);
                     }}
-                      className={
-                        pathname == "/Home"
-                          ? "text-slate-500"
-                          : "text-clipblack"
-                      }
-                    >
-                      Feed
-                    </DropdownMenuItem>
+                    className={
+                      pathname == `/user/photographer/${userId}/feed`
+                        ? "text-slate-500"
+                        : "text-clipblack"
+                    }
+                  >
+                    Feed
+                  </DropdownMenuItem>
 
-                    <DropdownMenuItem
+                  <DropdownMenuItem
                     onClick={() => {
                       handleDirection(`/user/photographer/${userId}/albums`);
                     }}
-                      className={
-                        pathname == "/Home"
-                          ? "text-slate-500"
-                          : "text-clipblack"
-                      }
-                    >
-                      Albums
-                    </DropdownMenuItem>
+                    className={
+                      pathname == `/user/photographer/${userId}/albums`
+                        ? "text-slate-500"
+                        : "text-clipblack"
+                    }
+                  >
+                    Albums
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </NavigationMenuLink>
@@ -388,15 +369,15 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
         </NavigationMenuList>
       </NavigationMenu>
     );
-  } else if(isAdmin){
+  } else if (isAdmin) {
     navigationMenuContent = (
       <NavigationMenu>
         <NavigationMenuList className="px-4 py-3 bg-black rounded-t-3xl sm: sm:gap-20">
           <NavigationMenuItem className="px-10">
-            <Link href={`/user/admin/${userId}`}  legacyBehavior passHref>
+            <Link href={`/user/admin/${userId}`} legacyBehavior passHref>
               <NavigationMenuLink
                 className={
-                  pathname == `/user/admin/${userId}` 
+                  pathname == `/user/admin/${userId}`
                     ? "flex flex-col items-center text-white ease-in"
                     : "flex flex-col items-center text-slate-500"
                 }
@@ -408,54 +389,78 @@ const [isLogged,setIsLogged] = useState<boolean>(true);
         </NavigationMenuList>
       </NavigationMenu>
     );
-
-  }else  {
+  } else {
     navigationMenuContent = !isAdmin && (
       <NavigationMenu>
-        <NavigationMenuList className="px-4 py-3 bg-black rounded-t-3xl sm: sm:gap-20">
-          <NavigationMenuItem className="px-10">
-            <Link href="/" legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/"
-                    ? "flex flex-col items-center text-white"
-                    : "flex flex-col items-center text-slate-500"
-                }
-              >
-                <Home className="w-[20px]" />
-                <span className="text-xs">Home</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="px-10">
-            <Link href="/sign-in" legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/sign-in"
-                    ? "flex flex-col items-center text-white"
-                    : "flex flex-col items-center text-slate-500"
-                }
-              >
-                <LogIn className="w-[20px]" />
+        <NavigationMenuList className="px-4 py-2 bg-black border-t shadow-lg rounded-t-3xl sm:gap-20">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavigationMenuItem className="px-10 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
+                  <Link href="/" legacyBehavior passHref>
+                    <NavigationMenuLink
+                      className={
+                        pathname == "/"
+                          ? "flex flex-col items-center text-white"
+                          : "flex flex-col items-center text-slate-500"
+                      }
+                    >
+                      <Home className="w-[20px]" />
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Home</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-                <span className="text-xs">SignIn</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="px-10">
-            <Link href="/About" legacyBehavior passHref>
-              <NavigationMenuLink
-                className={
-                  pathname == "/About"
-                    ? "flex flex-col items-center text-white"
-                    : "flex flex-col items-center text-slate-500"
-                }
-              >
-                <Camera className="w-[20px]" />
-                <span className="text-xs">About</span>
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavigationMenuItem className="px-10 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
+                  <Link href="/sign-in" legacyBehavior passHref>
+                    <NavigationMenuLink
+                      className={
+                        pathname == "/sign-in"
+                          ? "flex flex-col items-center text-white"
+                          : "flex flex-col items-center text-slate-500"
+                      }
+                    >
+                      <LogIn className="w-[20px]" />
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Sign In</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavigationMenuItem className="px-10 rounded-lg hover:bg-slate-800 hover:shadow-md ease-in duration-300">
+                  <Link href="/about" legacyBehavior passHref>
+                    <NavigationMenuLink
+                      className={
+                        pathname == "/about"
+                          ? "flex flex-col items-center text-white"
+                          : "flex flex-col items-center text-slate-500"
+                      }
+                    >
+                      <Camera className="w-[20px]" />
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>About</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </NavigationMenuList>
       </NavigationMenu>
     );

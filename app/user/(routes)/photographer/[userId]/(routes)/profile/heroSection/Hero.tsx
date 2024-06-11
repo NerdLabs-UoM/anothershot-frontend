@@ -15,6 +15,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import {
   Form,
   FormControl,
@@ -26,7 +34,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Settings, PenSquare, Camera, History } from "lucide-react";
+import {
+  Settings,
+  PenSquare,
+  Camera,
+  History,
+  MessageCircle,
+  CircleCheck,
+} from "lucide-react";
 
 import {
   CldUploadWidgetResults,
@@ -121,7 +136,6 @@ const Hero = () => {
 
   useEffect(() => {
     if (photographer) {
-      console.log(photographer);
       setValues({
         name: photographer.name,
         description: photographer.bio ?? "",
@@ -167,10 +181,10 @@ const Hero = () => {
           updatedPhotographer
         )
         .then((res) => {
-          toast.success("Profile updated successfully",{ duration: 5000 });
+          toast.success("Profile updated successfully", { duration: 5000 });
         })
         .catch((error) => {
-          toast.error("Failed to update profile",{ duration: 5000 });
+          toast.error("Failed to update profile", { duration: 5000 });
         });
     };
     await update();
@@ -182,7 +196,7 @@ const Hero = () => {
         <div>
           <Link href={`/user/photographer/${userId}/feed`}>
             <Button variant="outline" className="">
-              View Feed
+              Feed
             </Button>
           </Link>
         </div>
@@ -225,6 +239,21 @@ const Hero = () => {
     }
   };
 
+  const renderAlbumButton = () => {
+    if (session?.user?.id !== userId) {
+      return (
+        <div>
+          <Link href={`/user/photographer/${userId}/albums`}>
+            <Button variant="outline" className="mx-3">
+              Albums
+            </Button>
+          </Link>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="flex flex-col sm:flex-row md:w-11/12 h-[350px] md:justify-between md:p-10 rounded-xl sm:px-24 md:h-[500px] bg-cover bg-no-repeat  bg-white bg-opacity-85 ">
       <div className="absolute inset-0 z-[-10] mt-48 sm:mt-24">
@@ -238,7 +267,7 @@ const Hero = () => {
         />
       </div>
 
-      <div className="lg:flex md:px-0">
+      <div className="lg:flex justify-between md:px-0 w-full">
         <div className="">
           <div className="flex px-10 pt-10 align-middle gap-3">
             <div>
@@ -422,7 +451,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="flex pl-10 lg:justify-end lg:pl-20">
+        <div className="flex pl-10 lg:justify-end lg:pl-0">
           {isPhotographer && (
             <div className="pt-2">
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -486,19 +515,21 @@ const Hero = () => {
             </div>
           )}
           {!isPhotographer && renderFeedButton()}
-          {!isPhotographer && (
-            <Button
-              variant="default"
-              onClick={() => handleCreateChat()}
-              className="w-4/5 mx-3"
-            >
-              Message
-            </Button>
-          )}
+          {renderAlbumButton()}
+
           {session?.user.userRole === "CLIENT" && (
-            <Button variant="destructive" className="w-4/5" asChild>
+            <Button variant="destructive" className="md:w-4/5" asChild>
               <Link href={`/user/photographer/${userId}/bookings`}>
-                Book Now
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <CircleCheck />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Book Now</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </Link>
             </Button>
           )}
@@ -514,6 +545,24 @@ const Hero = () => {
             >
               <History />
             </Link>
+          )}
+          {!isPhotographer && (
+            <Button
+              variant="default"
+              onClick={() => handleCreateChat()}
+              className="mx-2 rounded-3xl"
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <MessageCircle />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Message</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
           )}
         </div>
       </div>

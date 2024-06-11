@@ -35,19 +35,14 @@ const ContactSectionContent = () => {
   return (
     <>
       {(contactDets || session?.user?.id === userId) ?
-        <div className="mt-0 sm:mt-4 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 border-y-0 sm:border-t-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-gray-200 sm:bg-white">
-          <div className="flex flex-row  sm:flex sm:flex-row  sm:justify-between">
-            <h1 className="flex text-5xl font-bold mb-0 ml-24 sm:ml-0">Contact</h1>
-            <Button
-              className="mr-0 sm:mr-0 flex ml-auto sm:ml-auto "
-              variant={"outline"}
-              size={"icon"}
-            >
+        <div className="mt-0 sm:mt-2 mb-0 sm:mb-10 w-full sm:w-full sm:mr-2 border-t-2 sm:border-t-2 px-4 py-10 pb-0 sm:pb-16 justify-between bg-white sm:bg-white">
+          <div className="flex flex-col justify-center text-center sm:flex sm:flex-row sm:justify-between">
+            <h1 className="text-center text-2xl sm:text-5xl font-bold mb-0 sm:mb-6 sm:ml-5">Contact</h1>
+            
               {(session && session.user && session.user.id === userId ) && <ContactForm contactDets={contactDets} setContactDets={setContactDets} />}
-            </Button>
           </div>
-          <div className="grid grid-cols-1 gap-20 sm:grid-cols-3 grid-rows-3 sm:grid-rows-1 sm:gap-10 sm:ml-16 mt-6">
-            <div className="flex flex-col sm:flex-row mt-4 sm:mt-0 border-r-0 sm:border-r-2 justify-center ml-0 sm:ml-0">
+          <div className="grid grid-cols-1 gap-20 sm:grid-cols-3 grid-rows-3 sm:grid-rows-1 sm:gap-10 md:gap-0 lg-gap-10 sm:ml-16 md:ml-0 lg:ml-16 mt-6">
+            <div className="flex flex-col sm:flex-row mt-4 sm:mt-0 border-r-0 sm:border-r-2 justify-center ml-0 sm:ml-0 md:ml-0">
               <div className="ml-0 mt-0 sm:mt-2 flex justify-center sm:justify-start">
                 <Phone />
               </div>

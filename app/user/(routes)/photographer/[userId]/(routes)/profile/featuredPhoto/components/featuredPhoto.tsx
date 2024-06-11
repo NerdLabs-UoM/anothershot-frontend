@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import UploadFeaturePhoto from "./uploadFeaturePhoto";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { NotificationService } from "@/components/notification/notification";
 
 export default function FeaturedPhoto() {
   const { userId } = useParams();
@@ -43,6 +44,13 @@ export default function FeaturedPhoto() {
         return [...updatePhoto];
       })
       toast.success("Featured photo updated successfully.");
+      NotificationService({
+        senderId: session?.user?.id, 
+        receiverId: session?.user.id,
+        type: 'featured_updated',
+        title: 'featured Updated',
+        description: '',
+      });
     } catch (error) {
       toast.error("Error updating featured photo. Please try again.");
     }
@@ -119,7 +127,7 @@ export default function FeaturedPhoto() {
   const defaultImage = "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711975294/defaultImages/fearuredDefault_snh844.avif"
 
   return (
-      <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-10 space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg gap-5">
+      <div className="flex flex-direction:row sm:flex mt-6 ml-0 sm:ml-4 mb-6 sm:mb-2 space-x-2 sm:space-x-6 md:-space-x-6 lg:-space-x-8 w-lg gap-5">
         <div className="flex -space-x-4 xl:-space-x-14 md:-space-x-16">
           <div className="relative flex mt-10 sm:mt-20 md:mt-20 lg:mt-20 sm:mb-14">
             <Image
@@ -130,7 +138,7 @@ export default function FeaturedPhoto() {
               width={340}
               height={50}
             />
-            <div className="mt-10 absolute top-0 left-0 sm:top-0 sm:right-0 w-full h-full mr-80 ml-4 ">
+            <div className="mt-10 sm:mt-12 absolute top-0 left-0 sm:top-0 sm:right-0 w-full h-full mr-80 ml-0 sm:ml-4 ">
               {renderUploadFeaturePhotoOne()}
             </div>
           </div>
@@ -139,11 +147,11 @@ export default function FeaturedPhoto() {
               key={1}
               src={featuredPhoto[1]!=null? featuredPhoto[1]: defaultImage}
               alt={"featured photo 2"}
-              className="w-[250px] lg:w-[300px] xl:w-[456px] h-[200px] md:h-[400px] xl:h-[600px] rounded-3xl sm:rounded-3xl"
+              className="w-[300px] lg:w-[300px] xl:w-[456px] h-[200px] md:h-[400px] xl:h-[600px] rounded-3xl sm:rounded-3xl"
               width={456}
               height={600}
             />
-            <div className="absolute top-0 left-0 sm:top-0 sm:right-0 mt-4 mr-80 ml-6 ">
+            <div className="absolute top-0 left-0 sm:top-0 sm:right-0 mt-4 mr-80 ml-2 sm:ml-6 ">
               {renderUploadFeaturePhotoTwo()}
             </div>
           </div>
@@ -172,7 +180,7 @@ export default function FeaturedPhoto() {
               width={340}
               height={500}
             />
-            <div className="relative -top-36 left-12 sm:left-0 sm:-top-full sm:-mb-40 sm:mt-96 sm:ml-64 mr-2">
+            <div className="relative -top-36 left-12 sm:left-0 sm:-top-full sm:-mb-40 sm:mt-96 sm:ml-64 mr-4 sm:mr-0">
               {renderUploadFeaturePhotoFour()}
             </div>
           </div>

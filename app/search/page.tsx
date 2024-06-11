@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast'
 import { useEffect, useState } from "react"
 import { LoaderCircle, MapPin, Star } from 'lucide-react';
 import { useRouter } from "next/navigation"
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -154,7 +155,14 @@ const SearchPage = () => {
             </div>
             <Separator className="my-5" />
             <div className="my-5 flex gap-2 flex-wrap">
-                {photographers.map((photographer) => (
+            {loading ? (
+               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 w-full h-screen ml-20">
+               {Array.from({ length: 8 }).map((_, index) => (
+                 <Skeleton key={index} className="h-1/2 w-4/5 rounded-lg" />
+               ))}
+             </div>
+            ) : (
+                photographers.map((photographer) => (
                     <Card key={photographer.id} className="md:w-[340px] w-full">
                         <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
                             <div className="space-y-1">
@@ -205,7 +213,8 @@ const SearchPage = () => {
                             </div>
                         </CardContent>
                     </Card>
-                ))}
+                ))
+            )}
             </div>
         </main>
     );

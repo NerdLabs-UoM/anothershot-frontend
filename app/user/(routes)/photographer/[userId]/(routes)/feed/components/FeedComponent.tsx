@@ -36,7 +36,9 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import { NotificationService } from '@/components/notification/notification';
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formatCount = (count: number) => {
   if (count < 1000) {
@@ -65,6 +67,8 @@ const FeedComponent = () => {
   const [isLikingMap, setIsLikingMap] = React.useState<Record<string, boolean>>({});
   const [isSavingMap, setIsSavingMap] = React.useState<Record<string, boolean>>({});
   const [caption, setCaption] = React.useState<string>("");
+  const [isLoading, setIsLoading] = React.useState(true);
+
   useEffect(() => {
     const fetchFeedImages = async () => {
       try {
@@ -73,6 +77,7 @@ const FeedComponent = () => {
       } catch (error: any) {
         toast.error('Error fetching feed images:', error);
       }
+      setIsLoading(false);
     };
     fetchFeedImages();
   }, [userId]);
@@ -104,6 +109,15 @@ const FeedComponent = () => {
         userId: session?.user?.id,
         like: !isLiked
       });
+      if (!isLiked){
+        NotificationService({
+            senderId: session?.user?.id,
+            receiverId: photographerId,
+            type: "like",
+            title: "liked your photo",
+            description: ""
+          })
+      }
       setIsLikingMap(prevMap => ({
         ...prevMap,
         [imageId]: false,
@@ -141,6 +155,15 @@ const FeedComponent = () => {
         userId: session?.user?.id,
         save: !isSaved
       });
+      if (!isSaved){
+        NotificationService({
+            senderId: session?.user?.id,
+            receiverId: photographerId,
+            type: "save",
+            title: "saved your photo",
+            description: ""
+          })
+      }
       setIsSavingMap(prevMap => ({
         ...prevMap,
         [imageId]: false,
@@ -159,6 +182,7 @@ const FeedComponent = () => {
         },
       });
       setFeedImages(prevFeedImages => prevFeedImages.filter(image => image.id !== imageId));
+      toast.success('Feed image deleted successfully');
     } catch (error: any) {
       toast.error('Error deleting feed image:', error);
     }
@@ -206,7 +230,14 @@ const FeedComponent = () => {
   };
 
   return (
-    <div className="">
+    <div>
+       {isLoading ? (
+               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 w-full h-screen m-10">
+               {Array.from({ length: 8 }).map((_, index) => (
+                 <Skeleton key={index} className="h-full w-4/5 rounded-lg" />
+               ))}
+             </div>
+            ) : (
       <ResponsiveMasonry
         columnsCountBreakPoints={{ 350: 1, 700: 2, 1050: 3, 1400: 4, 1750: 5, 2100: 6, 2450: 7, 2800: 8, 3150: 9, 3500: 10 }}
         className='mb-10'
@@ -231,7 +262,7 @@ const FeedComponent = () => {
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col items-start justify-center">
-                      <span className="text-white text-xs lg:text-lg font-normal">{feedImage.photographer.name}</span>
+                      <span className="text-white text-xs lg:text-base font-normal">{feedImage.photographer.name}</span>
                       <p className="text-xs italic font-medium text-slate-200">{feedImage.caption}</p>
                     </div>
                   </div>
@@ -349,6 +380,7 @@ const FeedComponent = () => {
           ))
           }</Masonry>
       </ResponsiveMasonry>
+    )}
     </div >
   );
 };
