@@ -12,7 +12,6 @@ const UserLayout = (props: UserLayoutProps) => {
     return (
         <>
             {props.children}
-            <Navbar/>
         </>
     );
 }

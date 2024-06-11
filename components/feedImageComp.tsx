@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { set } from 'lodash';
 import ReportPhoto from './Report/ReportPhoto/ReportPhoto';
 import { NotificationService } from './notification/notification';
-
+import  Loading  from "@/components/skeletonHome";
 
 const formatCount = (count: number) => {
     if (count < 1000) {
@@ -30,6 +30,7 @@ const FeedImageComp = () => {
     const router = useRouter();
     const [likeDisabled, setLikeDisabled] = useState<string>('');
     const [saveDisabled, setSaveDisabled] = useState<string>('');
+    const [isLoading, setIsLoading] = React.useState(true);
 
     useEffect(() => {
         const fetchFeedImages = async () => {
@@ -39,6 +40,7 @@ const FeedImageComp = () => {
             } catch (error: any) {
                 toast.error('Error fetching feed images:', error);
             }
+            setIsLoading(false);
         };
         fetchFeedImages();
     }, []);
@@ -139,6 +141,10 @@ const FeedImageComp = () => {
         
     }
     return (
+        <div>
+            {isLoading ? (
+                <Loading />
+            ) : (
         <ResponsiveMasonry
             columnsCountBreakPoints={{ 350: 1, 700: 2, 1050: 3, 1400: 4, 1750: 5, 2100: 6, 2450: 7, 2800: 8, 3150: 9, 3500: 10 }}
             className='mb-10'
@@ -217,6 +223,8 @@ const FeedImageComp = () => {
                 }
             </Masonry>
         </ResponsiveMasonry>
+            )}
+        </div>
     );
 }
 

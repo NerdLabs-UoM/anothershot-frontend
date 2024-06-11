@@ -31,6 +31,8 @@ import Masonry from "react-masonry-css";
 import fileDownload from "js-file-download";
 import axios from "axios";
 import JSZip from "jszip";
+import toast from "react-hot-toast";
+import PayNow from "@/components/checkout/PayAlbum";
 
 type AlbumCardProps = {
   albumData: Album[];
@@ -108,7 +110,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
           </Link>
           <>
             <div className="absolute top-2 right-5 bg-slate-950 bg-opacity-45 rounded-full px-2 text-white text-xs">
-              {album.price !== 0 ? "Paid" : "Free"}
+              {album.price !== 0 ? album.paymentStatus:"Free"}
             </div>
             <div className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
               <div className="flex flex-col justify-center">
@@ -203,6 +205,9 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                         >
                           Download Album
                         </button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <PayNow albumId = {album.id} name={album.name} price={album.price}/>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>

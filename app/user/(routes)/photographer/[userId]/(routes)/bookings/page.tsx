@@ -61,11 +61,11 @@ const PhotographerBookingsPage = () => {
   }, [userId]);
 
   return (
-    <div className="flex-col" >
+
+    <div className="flex-col">
       {session?.user.userRole === 'CLIENT' && (
         <AddBooking />
-      )}-
-       
+      )}
       <div className="w-full flex justify-center py-5" >
         <div className=" w-full sm:w-4/5 ">
           <div className="flex justify-center mb-6">
@@ -81,6 +81,7 @@ const PhotographerBookingsPage = () => {
           </div>
         </div>
       </div ></div>
+
 
   );
 }

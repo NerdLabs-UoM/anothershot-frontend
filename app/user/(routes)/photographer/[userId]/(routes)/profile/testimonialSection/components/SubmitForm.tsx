@@ -18,6 +18,8 @@ import React from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { NotificationService } from '@/components/notification/notification';
+import { LoaderCircle } from 'lucide-react';
 
 const formSchema = z.object({
   review: z.string().min(5, "Give your feedback should be between 5-200 characters").max(200, "Give your feedback should be between 100-200 characters"),
@@ -42,7 +44,15 @@ const SubmitForm: React.FC = ({
     setSelectedRating(ratingValue);
   };
 
+  const photographerId = userId as string;
+
   const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
+
+    if (session === null) {
+      toast.error('You must be logged in to give feedbacks');
+      return;
+    }
+
     try {
       setLoading(true);
       if (values) {
@@ -59,6 +69,20 @@ const SubmitForm: React.FC = ({
           toast.success("Thank you for your feedback");
         }
       }
+      NotificationService({
+        senderId: session?.user?.id,
+        receiverId: photographerId,
+        type: "feedback",
+        title: "gave you a feedback",
+        description: ""
+      });
+      NotificationService({
+        senderId: photographerId,
+        receiverId: session?.user?.id,
+        type: "feedbackClient",
+        title: "received your feedback",
+        description: "It is under review and will be published soon. Thank you for your feedback."
+      });
     } catch (error) {
       setLoading(false);
       toast.error("Error submitting feedback");
@@ -115,7 +139,7 @@ const SubmitForm: React.FC = ({
               <FormControl>
                 <Textarea
                   className="h-[80px] w-[346px] sm:w-[537px] md:w-[689px] resize-none"
-                  placeholder="Type your feedback here"
+                  placeholder="Tell what your thoughts are...."
                   {...field}
                 />
               </FormControl>
@@ -127,7 +151,9 @@ const SubmitForm: React.FC = ({
           type="submit"
           className="ml-0 sm:ml-20 h-9 w-[346px] sm:h-11 sm:w-[537px] md:w-[530px]"
         >
-          Submit
+          {
+            loading ? <LoaderCircle className="animate-spin" /> : 'Send Feedback'
+          }
         </Button>
       </form>
     </Form>)

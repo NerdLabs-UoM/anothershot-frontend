@@ -80,7 +80,7 @@ const ProfileGallery = () => {
           </div>
         ) : (
           <ScrollArea className="h-[512px] lg:h-[450px] p-4">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
               {savedImages.length === 0 ? (
                 <div className="col-span-3">
                   <p className="text-gray-500 flex w-full items-start justify-center">No saved photos yet.</p>
@@ -116,7 +116,7 @@ const ProfileGallery = () => {
           </div>
         ) : (
           <ScrollArea className="h-[512px] lg:h-[450px] p-4">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
               {likedImages.length === 0 ? (
                 <div className="col-span-3">
                   <p className="text-gray-500 flex w-full items-start justify-center">No liked photos yet.</p>
