@@ -27,6 +27,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ContactDetails } from "@/app/lib/types";
+import { NotificationService } from "@/components/notification/notification";
+
 interface ContactDetailsFormProps {
   contactDets: ContactDetails | null;
   setContactDets: React.Dispatch<React.SetStateAction<ContactDetails | null>>;
@@ -117,6 +119,13 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
       } else {
         toast.error("Failed to update contact details");
       }
+      NotificationService({
+        senderId: session?.user?.id, 
+        receiverId: session?.user.id,
+        type: 'contact_updated',
+        title: 'contact Updated',
+        description: '',
+      });
     }
     catch (err) {
       toast.error("An error occured. Please try again.")
