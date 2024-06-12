@@ -45,6 +45,7 @@ import { View, Check } from "lucide-react";
 import { Booking } from "@/app/lib/types";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NotificationService } from '@/components/notification/notification';
 
 const ClientBookings = () => {
   const { userId } = useParams();
@@ -64,12 +65,35 @@ const ClientBookings = () => {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/client/${userId}/clientBookings`);
 
         const bookingsWithDateObjects = response.data.map((booking: Booking) => {
-          if (booking.start) {
+          if (booking.start && booking.end) {
             const startDate = new Date(booking.start);
-            const startDateString = startDate.toISOString().split('T')[0];
+            startDate.setHours(startDate.getHours() - 5);
+            startDate.setMinutes(startDate.getMinutes() - 30);
+            const startDateString = startDate.toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: false,
+            });
+              const endDate = new Date(booking.end);
+              endDate.setHours(endDate.getHours() - 5);
+              endDate.setMinutes(endDate.getMinutes() - 30);
+              const endDateString = endDate.toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+              });
             return {
               ...booking,
               start: startDateString,
+              end: endDateString,
             };
           } else {
             return booking;
@@ -105,6 +129,13 @@ const ClientBookings = () => {
         toast.success("Booking has been cancelled");
         setBookings((prevBookings) => prevBookings.filter((booking) => booking.id !== bookingId));
       }
+      NotificationService({
+        senderId: clientId,
+        receiverId: bookings.find((booking) => booking.id === bookingId)?.photographer.userId,
+        type: "bookingC",
+        title: "has cancelled the booking (" + bookings.find((booking) => booking.id === bookingId)?.subject + ")",
+        description: ""
+      });
     } catch (error: any) {
       toast.error("Error cancelling booking", error);
     }
@@ -180,7 +211,8 @@ const ClientBookings = () => {
                                         ) : (
                                           <p className="text-slate-500"><b>Package :</b> Selected package not available</p>
                                         )}
-
+                                        <p><b>Start :</b> {booking.start ? booking.start.toLocaleString() : ''}</p>
+                                        <p><b>End :</b> {booking.end ? booking.end.toLocaleString() : ''}</p>
                                       </div>
                                     </div>
                                   )
@@ -198,7 +230,7 @@ const ClientBookings = () => {
                       <CardContent>
                         <div className="flex flex-col sm:flex-row sm:justify-between">
                           <div className="flex flex-col text-xs sm:text-sm">
-                            <p>Date: {booking.start ? booking.start.toLocaleString() : ''}</p>
+                            <p>Date: {booking.start ? booking.start.toLocaleString().split(',')[0] : ''}</p>
                             {booking.status === "CONFIRMED" || booking.status === "COMPLETED" ? (
                               <p className="font-semibold text-slate-600">Total cost: {booking.offer?.price} Rs</p>
                             ) : booking.status === "CANCELLED" ? (

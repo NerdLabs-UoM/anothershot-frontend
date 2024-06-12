@@ -375,6 +375,7 @@ export interface Album {
     images: AlbumImage[];
     visibility: AlbumVisibility;
     coverImage?:string;
+    paymentStatus: PaymentStatus;
     price: number;
     createdAt?: Date;
     updatedAt?: Date;
