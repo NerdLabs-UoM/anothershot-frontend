@@ -25,8 +25,6 @@ const PaginationSection: React.FC<PaginationProps> = ({
     handleNext,
     handleClick,
 }) => {
-    console.log("currentPage", currentPage);
-    console.log("lastPage", lastPage);
     return (
         <Pagination className="mt-5">
             <PaginationContent>

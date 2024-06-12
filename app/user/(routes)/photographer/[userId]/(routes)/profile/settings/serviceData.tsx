@@ -30,7 +30,7 @@ export const fetchCategoryById = async (userId: string | string[]) => {
         const sentenceCaseData = res.data.category.map(category => category.charAt(0).toUpperCase() + category.slice(1).toLowerCase());
         return sentenceCaseData;
     } catch (e) {
-        throw new Error("Error fetching user id");
+        throw new Error("Error fetching categories");
     }
 }
 
