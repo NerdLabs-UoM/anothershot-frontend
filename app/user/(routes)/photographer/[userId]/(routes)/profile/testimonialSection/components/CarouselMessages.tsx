@@ -94,7 +94,7 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
   useEffect(() => {
     let autoSlideInterval: NodeJS.Timeout | undefined;
 
-    if (windowWidth < 780) {
+    if (windowWidth < 1025) {
       autoSlideInterval = setInterval(() => {
         if (api) {
           if (current === count) {
@@ -117,10 +117,10 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
     <div className="flex flex-col ml-3 sm:ml-0">
       {visibleTestimonials.length > 0 ? (
         <Carousel
-          className="flex flex-row items-start gap-12 flex-1 self-stretch mb-10 w-[360px] sm:w-[550px] md:w-[700px] lg:w-[920px] xl:w-[1200px]"
+          className="flex flex-row items-start gap-12 flex-1 self-stretch mb-10 w-[360px] sm:w-[550px] md:w-[700px] lg:w-[920px] xl:w-[1175px] 2xl:w-[1200px]"
           setApi={setApi}
         >
-          <CarouselContent className="w-[365px] sm:w-[565px] md:w-[715px] lg:w-[935px] xl:w-[1215px]">
+          <CarouselContent className="w-[365px] sm:w-[565px] md:w-[715px] lg:w-[935px] xl:w-[1190px] 2xl:w-[1215px]">
             {visibleTestimonials.map((testimonial) => (
               <CarouselItem key={testimonial.id}>
                 <div className="p-1">
@@ -158,8 +158,8 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          {window.innerWidth > 779 && <CarouselPrevious />}
-          {window.innerWidth > 779 && <CarouselNext />}
+          {window.innerWidth > 1025 && <CarouselPrevious />}
+          {window.innerWidth > 1025 && <CarouselNext />}
         </Carousel>
       ) : (
         <div className="text-center text-slate-950 mt-4">No testimonials to display.</div>
