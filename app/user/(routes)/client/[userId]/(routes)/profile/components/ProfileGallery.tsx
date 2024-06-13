@@ -11,7 +11,7 @@ import { User } from "@/app/lib/types";
 import toast from "react-hot-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import SystemReportSection from "@/components/systemReport";
-import {ProfileSkeleton}  from "./skeletons";
+import { ProfileSkeleton } from "./skeletons";
 
 
 const ProfileGallery = () => {
@@ -61,27 +61,27 @@ const ProfileGallery = () => {
 
   return (
     <Tabs defaultValue="like" className="flex flex-col items-center w-11/12 lg:w-2/3 h-screen lg:h-[550px]">
-        <TabsList className="my-5 bg-slate-100">
-          <TabsTrigger value="save" className="text-xs md:text-sm">
-            Saved Photos
-          </TabsTrigger>
-          <TabsTrigger value="like" className="text-xs md:text-sm">
-            Liked Photos
-          </TabsTrigger>
-          <TabsTrigger value="report" className="text-xs md:text-sm">
-            Report
-          </TabsTrigger>
-        </TabsList>
-        <Separator className="mb-2 h-0.5" />
+      <TabsList className="my-5 bg-slate-100">
+        <TabsTrigger value="save" className="text-xs md:text-sm">
+          Saved Photos
+        </TabsTrigger>
+        <TabsTrigger value="like" className="text-xs md:text-sm">
+          Liked Photos
+        </TabsTrigger>
+        <TabsTrigger value="report" className="text-xs md:text-sm">
+          Report
+        </TabsTrigger>
+      </TabsList>
+      <Separator className="mb-2 h-0.5" />
       <TabsContent value="save" className="lg:w-2/3 w-auto min-w-full">
         {isLoadingSaved ? (
           <div className="flex justify-center items-center h-[512px] lg:h-[450px]">
-            <h1>Loading.....</h1>
+            <ProfileSkeleton />
           </div>
         ) : (
           <ScrollArea className="h-[512px] lg:h-[450px] p-4">
             <div className="grid grid-cols-3 gap-2 sm:gap-4">
-              {savedImages.length === 0 ? (
+              {savedImages.length === 0 || savedImages.every(image => image.savedFeedImages.length === 0) ? (
                 <div className="col-span-3">
                   <p className="text-gray-500 flex w-full items-start justify-center">No saved photos yet.</p>
                 </div>
@@ -112,12 +112,12 @@ const ProfileGallery = () => {
       <TabsContent value="like" className="w-2/3 min-w-full">
         {isLoadingLiked ? (
           <div className="flex justify-center items-center h-[512px] lg:h-[450px]">
-            <ProfileSkeleton/>
+            <ProfileSkeleton />
           </div>
         ) : (
           <ScrollArea className="h-[512px] lg:h-[450px] p-4">
             <div className="grid grid-cols-3 gap-2 sm:gap-4">
-              {likedImages.length === 0 ? (
+              {likedImages.length === 0 || likedImages.every(image => image.likedFeedImages.length === 0) ? (
                 <div className="col-span-3">
                   <p className="text-gray-500 flex w-full items-start justify-center">No liked photos yet.</p>
                 </div>
@@ -146,17 +146,17 @@ const ProfileGallery = () => {
         )}
       </TabsContent>
       <TabsContent value="report" className="w-2/3 min-w-full">
-          <div className="grid grid-cols-1 gap-4">
-            <Card className="border-none">
-              <CardHeader >
-                <CardTitle>System Report</CardTitle>
-                <CardDescription>You can report your system issues from here. We prioritize you.</CardDescription>
-                <CardContent>
+        <div className="grid grid-cols-1 gap-4">
+          <Card className="border-none">
+            <CardHeader >
+              <CardTitle>System Report</CardTitle>
+              <CardDescription>You can report your system issues from here. We prioritize you.</CardDescription>
+              <CardContent>
                 <SystemReportSection />
-                </CardContent>
-              </CardHeader>
-            </Card>
-          </div>
+              </CardContent>
+            </CardHeader>
+          </Card>
+        </div>
       </TabsContent>
     </Tabs>
   );
