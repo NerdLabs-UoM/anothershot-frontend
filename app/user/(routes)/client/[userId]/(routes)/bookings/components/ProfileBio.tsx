@@ -63,7 +63,7 @@ const ProfileBio = () => {
         <h1 className="texl-xl lg:text-2xl font-bold">{values.name}</h1>
         <p className="text-gray-700 font-normal text-xs lg:text-base leading-4">@{client?.user.userName}</p>
         <Separator className="mt-2" />
-        <p className="text-xs lg:text-sm pt-3">{values.bio}</p>
+        <p className="text-xs lg:text-sm pt-3">{values.bio ? values.bio : "Something about you..."}</p>
       </div>
       )}
     </div>

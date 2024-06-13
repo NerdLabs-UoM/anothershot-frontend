@@ -230,7 +230,7 @@ const EditButton: React.FC<EditButtonProps> = ({
           <DrawerHeader>
             <div className="flex flex-col items-center justify-center h-full">
               <DrawerTitle className="flex flex-col items-center">
-                {selectedTestimonial.client.name}
+                {selectedTestimonial.client.user.userName}
                 <div className="flex items-center gap-2 mt-2">
                   {renderStars(selectedTestimonial.rating)}
                 </div>
@@ -293,7 +293,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                         {value
                           ? testimonials.find(
                             (testimonial) => testimonial.id === value
-                          )?.client.name
+                          )?.client.user.userName
                           : "Select testimonial..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -324,7 +324,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                                       isEqual(testimonial.visibility, "PUBLIC") ? "opacity-100" : "opacity-0"
                                     )}
                                   />
-                                  {testimonial.client.name}
+                                  {testimonial.client.user.userName}
                                 </CommandItem>
                               </HoverCardTrigger>
                               <HoverCardContent className="w-[500px]">
@@ -347,7 +347,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                                 </div>
                                 <div>
                                   <span className="text-slate-950 text-right font-bold text-xl">
-                                    {testimonial.client.name}
+                                    {testimonial.client.user.userName}
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-2 mt-2">
@@ -385,7 +385,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                       publicTestimonials.map((testimonial) => (
                         <div key={testimonial.id}>
                           <Badge variant="outline" className="w-auto gap-1 items-center justify-center">
-                            {testimonial.client.name}
+                            {testimonial.client.user.userName}
                             <Image
                               src="/icons/xMark.svg"
                               alt="image"

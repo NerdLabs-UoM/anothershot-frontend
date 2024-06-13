@@ -146,7 +146,7 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
                       </div>
                       <div>
                         <span className="text-slate-950 text-right font-bold text-lg sm:text-xl md:text-2xl">
-                          {testimonial.client.name}
+                          {testimonial.client.user.userName}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
