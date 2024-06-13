@@ -50,6 +50,8 @@ import { PlusSquare } from "lucide-react";
 import { Booking, Event } from "@/app/lib/types";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 import { NotificationService } from "@/components/notification/notification";
+import { BiSolidPlusSquare } from "react-icons/bi";
+
 
 export interface EventFormProps {
   id?: string;
@@ -125,7 +127,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     if (session && session.user && session.user.id === userId) {
       return (
         <DialogTrigger className="flex justify-center items-center">
-          <PlusSquare size={42} style={{ color: 'black' }} />
+           <BiSolidPlusSquare size={50} />
         </DialogTrigger>
       );
     }

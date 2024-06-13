@@ -44,10 +44,9 @@ const BookingTable = () => {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium">Client Name</TableHead>
-                                <TableHead className='text-center text-black font-medium'>Booking Id</TableHead>
+                                <TableHead className="text-center text-black font-medium">Booking Title</TableHead>
                                 <TableHead className='text-center text-black font-medium'>Start Date & Time</TableHead>
                                 <TableHead className="text-center text-black font-medium">Payment Status</TableHead>
-                                <TableHead className="text-center text-black font-medium">Amount</TableHead>
                                 <TableHead className="text-center text-black font-medium">Offer</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -55,10 +54,10 @@ const BookingTable = () => {
                             {bookings.map((booking) => (
                                 <TableRow key={booking.clientId}>
                                     <TableCell className="text-center text-xs">{booking.client.name}</TableCell>
-                                    <TableCell className="text-center text-xs">{booking.id}</TableCell>
+                                    <TableCell className='text-center text-xs'>{booking.subject}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.start ? booking.start.toString() : ""}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.status}</TableCell>
-                                    <TableCell className='text-center text-xs'>RS. {booking.package?.price}</TableCell>
+                                    
                                     <TableCell className='text-center text-xs'>              
                                         <Offers bookingId={booking.id} />
                                     </TableCell>
