@@ -64,7 +64,7 @@ const AlbumPage = () => {
         isCreateAlbum={true}
         onAlbumSubmit={handleAlbumSubmit}
       />
-      <div className="container mx-auto mt-6">
+      <div className="mt-6 w-full container max-w-full">
         <AlbumCard
           albumData={album}
           deleteAlbums={handleDeleteAlbum}

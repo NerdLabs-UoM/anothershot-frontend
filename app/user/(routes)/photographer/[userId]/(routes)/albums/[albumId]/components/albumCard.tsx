@@ -126,21 +126,13 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
   };
 
   return (
-    <Masonry
-      breakpointCols={{
-        default: 4,
-        1024: 3,
-        768: 2,
-        640: 1,
-      }}
-      className="flex gap-6"
-    >
-      {albumData.length === 0
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-[2rem] ">
+    {albumData.length === 0
         ? "No Albums yet"
         : albumData.map((album) => (
             <Card
               key={album.id}
-              className="w-[300px] sm:w-[280px] mb-9 mx-3 h-[400px] rounded-[40px] overflow-hidden relative "
+              className="w-full h-[300px] sm:h-[400px]  xl:h-[30rem] mb-9 mx-auto rounded-[40px] overflow-hidden relative "
             >
               <Link
                 href={{
@@ -275,7 +267,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
               </>
             </Card>
           ))}
-    </Masonry>
+       </div>
   );
 };
 

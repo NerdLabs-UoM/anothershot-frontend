@@ -94,7 +94,7 @@ export function NotificationCard({
         <div className="static grid grid grid-col-2 grid-flow-col ">
           <div className="flex flex-col">
             <div className="mb-8 ">
-              <div className="inline-block text-m leading-none h-auto max-w-[250px]">
+              <div className="inline-block text-m leading-none h-auto max-w-[240px]">
                 {title}
                 {!isRead && (
                   <span className="inline-block align-middle h-2 w-2 rounded-full bg-sky-500 ml-2" />
