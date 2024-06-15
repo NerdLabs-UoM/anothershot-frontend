@@ -93,8 +93,8 @@ export function NotificationCard({
       <CardContent className="relative ">
         <div className="static grid grid grid-col-2 grid-flow-col ">
           <div className="flex flex-col">
-            <div className="mb-8 ">
-              <div className="inline-block text-m leading-none h-auto max-w-[240px]">
+            <div className="md:mb-3 mb-6">
+              <div className="inline-block text-m leading-none h-auto sm:max-w-[240px] max-w-[160px]">
                 {title}
                 {!isRead && (
                   <span className="inline-block align-middle h-2 w-2 rounded-full bg-sky-500 ml-2" />
@@ -102,6 +102,8 @@ export function NotificationCard({
               </div>
               <div className="text-sm text-gray-500 ">{description}</div>
             </div>
+            <div className="text-xs absolute right-2 sm:bottom-2 bottom-8 ">{time ? formatDate(time) : ""}</div>
+
             <div className="absolute bottom-2">
               <Button
                 variant="ghost"
@@ -111,7 +113,6 @@ export function NotificationCard({
                 {isRead ? "Read" : "Mark as Read"}
               </Button>
             </div>
-            <div className="text-xs absolute right-2 bottom-2 ">{time ? formatDate(time) : ""}</div>
           </div>
         </div>
         <CircleX
