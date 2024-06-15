@@ -102,8 +102,8 @@ export const NotifySection: React.FC<NotifyProps> = ({ logged }) => {
                 <SheetTitle>Notifications</SheetTitle>
                 {logged ? (<SheetDescription>{isReadAll ? "You have no unread messages" : `You have ${count} unread messages.`}</SheetDescription>):""}
 
-                <ScrollArea className="h-[600px]">
-                    <div className="flex flex-col gap-3 mt-5">
+                <ScrollArea className="h-full">
+                    <div className="flex flex-col gap-3 mt-5 mb-10">
                         {logged ? (notifications.map((notification, index) => (
                             <NotificationCard
                                 key={index}

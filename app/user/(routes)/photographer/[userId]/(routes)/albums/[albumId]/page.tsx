@@ -9,7 +9,6 @@ import axios from "axios";
 import { Masonrygrid } from "./components/masonrygrid";
 import ImageUpload from "./components/imageUpload";
 import AlbumForm from "./components/albumForm";
-import { Button } from "react-day-picker";
 
 const AlbumPage = () => {
     const { albumId } = useParams();
@@ -112,7 +111,7 @@ const AlbumPage = () => {
                     />
                 )}
             </div>
-            <Masonrygrid images={images} albumName={album?.name || ""} canView={viewPage} albumOwner={album?.photographerId} />
+            <Masonrygrid images={images} albumData={album} canView={viewPage} isPhotographer={isPhotographer} viewerId={session?.user.id} />
         </div>
     );
 };
