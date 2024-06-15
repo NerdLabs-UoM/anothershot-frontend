@@ -90,11 +90,11 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const [selectedEventId, setSelectedEventId] = useState<string>("");
 
   const defaultStartDate = new Date();
-  defaultStartDate.setHours(defaultStartDate.getHours() + 5);
-  defaultStartDate.setMinutes(defaultStartDate.getMinutes() + 30);
+  // defaultStartDate.setHours(defaultStartDate.getHours() + 5);
+  // defaultStartDate.setMinutes(defaultStartDate.getMinutes() + 30);
   const defaultEndDate = new Date();
-  defaultEndDate.setHours(defaultEndDate.getHours() + 5);
-  defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
+  // defaultEndDate.setHours(defaultEndDate.getHours() + 5);
+  // defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -127,7 +127,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     if (session && session.user && session.user.id === userId) {
       return (
         <DialogTrigger className="flex justify-center items-center">
-           <BiSolidPlusSquare size={50} />
+          <BiSolidPlusSquare size={50} />
         </DialogTrigger>
       );
     }
@@ -138,11 +138,11 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     const startObject = start ? new Date(start) : new Date();
     const endObject = end ? new Date(end) : new Date();
 
-    startObject.setHours(startObject.getHours() + 5);
-    startObject.setMinutes(startObject.getMinutes() + 30);
+    // startObject.setHours(startObject.getHours() + 5);
+    // startObject.setMinutes(startObject.getMinutes() + 30);
 
-    endObject.setHours(endObject.getHours() + 5);
-    endObject.setMinutes(endObject.getMinutes() + 30);
+    // endObject.setHours(endObject.getHours() + 5);
+    // endObject.setMinutes(endObject.getMinutes() + 30);
 
     const startString = startObject.toISOString();
     const endString = endObject.toISOString();
@@ -175,8 +175,11 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         );
         const data = response.data;
         setLoading(false);
+        console.log(data);
         const newEvent: Event = response.data;
+        console.log(newEvent);
         const newBooking: Booking = response.data;
+        console.log(newBooking);
         if (eventItems.some((eventItem: Event) => eventItem.bookingId === newEvent.bookingId
         )) {
           toast.error("Event already exists.");
@@ -201,7 +204,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     }
   };
 
-
   const handleBookingChange = (value: string) => {
     const selectedBooking = booking.find((bookings) => bookings.id === value);
     if (selectedBooking) {
@@ -214,18 +216,20 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     const selectedEvent = eventItems.find((events) => events.id === value);
     if (selectedEvent) {
       form.setValue("title", selectedEvent.title);
+      console.log(`Selected Event ID: ${selectedEvent.id}`);  
     }
     setSelectedEventId(value);
+
   };
 
   const handleSaveChanges = async (values: z.infer<typeof formSchema>, e: any) => {
 
     const startObject = start ? new Date(start) : new Date();
     const endObject = end ? new Date(end) : new Date();
-    startObject.setHours(startObject.getHours() + 5);
-    startObject.setMinutes(startObject.getMinutes() + 30);
-    endObject.setHours(endObject.getHours() + 5);
-    endObject.setMinutes(endObject.getMinutes() + 30);
+    // startObject.setHours(startObject.getHours() + 5);
+    // startObject.setMinutes(startObject.getMinutes() + 30);
+    // endObject.setHours(endObject.getHours() + 5);
+    // endObject.setMinutes(endObject.getMinutes() + 30);
     const startString = startObject.toISOString();
     const endString = endObject.toISOString();
     const startOnly = startObject.toISOString().split('T')[0];
@@ -240,21 +244,29 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       toast.error("Please select a end date & time");
       return;
     }
+    if (!selectedEventId) {
+      toast.error("Please select an event to update");
+      return;
+    }
+    console.log(`Selected Event ID before update: ${selectedEventId}`);  
+
     try {
       const data = {
         eventId: selectedEventId,
-        bookingId: selectedBookingId,
         title: values.title,
         description: values.description,
         start: startString,
         end: endString
       };
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/update`, data);
+      console.log(`Selected Event ID before update: ${selectedEventId}`); 
+
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${selectedEventId}/event/update`, data);
       const updatedEvent: Event = response.data;
+      console.log(updatedEvent);
       eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id === selectedEventId ? updatedEvent : eventItems));
       NotificationService({
-        senderId: session?.user?.id, // Assuming the user who booked is the sender
-        receiverId: session?.user.id, // Assuming the user who booked is the receiver
+        senderId: session?.user?.id, 
+        receiverId: session?.user.id, 
         type: 'Event_Updated',
         title: 'Event Updated successfully',
         description: '',
@@ -271,11 +283,11 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     };
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/event/delete`, { data });
-      eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id === selectedEventId));
+      eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id !== selectedEventId));
       toast.success("Event deleted successfully");
       NotificationService({
-        senderId: session?.user?.id, // Assuming the user who booked is the sender
-        receiverId: userId as string, // Assuming the user who booked is the receiver
+        senderId: session?.user?.id, 
+        receiverId: userId as string,
         type: 'Event_Deleted',
         title: 'Event deleted successfully',
         description: '',
@@ -290,7 +302,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       <div className="w-full sm:pr-10">
         <Dialog>
           {renderEditButton()}
-          <DialogContent className="max-w-[300px] sm:max-w-[430px] max-h-[700px] overflow-y-auto">
+          <DialogContent className="max-w-[400px] sm:max-w-[430px] max-h-[700px] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit event Details</DialogTitle>
               <DialogDescription className="sm:mt-2 sm:mb-4">
@@ -390,8 +402,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                   name="start"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 items-center">
-                      <FormLabel className="col-span-2 grid place-content-end">Start Date</FormLabel>
-                      <div className="col-span-6">
+                      <FormLabel className="col-span-2 grid place-content-end w-3/4 sm:w-full">StartDate</FormLabel>
+                      <div className="col-span-6 ">
                         {start && <DateTimePickerForm
                           setDate={setStartDate}
                           date={start} />
@@ -405,7 +417,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                   name="end"
                   render={({ field }) => (
                     <FormItem className="grid grid-cols-8 gap-3 mb-2 items-center">
-                      <FormLabel className="col-span-2 grid place-content-end ">End Date</FormLabel>
+                      <FormLabel className="col-span-2 grid place-content-end w-3/4 sm:w-full ">EndDate</FormLabel>
                       <div className="col-span-6 ">
                         {end && <DateTimePickerForm
                           setDate={setEndDate}
