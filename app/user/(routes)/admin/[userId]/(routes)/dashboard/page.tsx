@@ -1,11 +1,78 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Overview } from './components/overview';
 import { RecentSales } from './components/recent-sales';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
 
 const AdminDashboard = () => {
+
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [totalBookings, setTotalBookings] = useState(0);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [totalActiveUsers, setTotalActiveUsers] = useState(0);
+
+    useEffect(() => {
+        const fetchTotalRevenue = async () => {
+            try {
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/totalRevenue`
+                );
+                const data = response.data
+                setTotalRevenue(data);
+            } catch (error) {
+                toast.error("Cannot fetch total revenue. Please try again.");
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchTotalBookings = async () => {
+            try {
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/totalBookings`
+                );
+                const data = response.data
+                setTotalBookings(data);
+            } catch (error) {
+                toast.error("Cannot fetch total bookings. Please try again.");
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchTotalUsers = async () => {
+            try {
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/totalUsers`
+                );
+                const data = response.data
+                setTotalUsers(data);
+            } catch (error) {
+                toast.error("Cannot fetch total users. Please try again.");
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchTotalActiveUsers = async () => {
+            try {
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/totalActiveUsers`
+                );
+                const data = response.data
+                setTotalActiveUsers(data);
+            } catch (error) {
+                toast.error("Cannot fetch total active users. Please try again.");
+            }
+        }
+    }, []);
+
+   
+
     return (
         <>
             <div className="flex flex-col w-full">
@@ -44,7 +111,7 @@ const AdminDashboard = () => {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">Rs:45,231.89</div>
+                                        <div className="text-2xl font-bold">{totalRevenue}</div>
                                         <p className="text-xs text-muted-foreground">
                                             +20.1% from last month
                                         </p>
@@ -71,7 +138,7 @@ const AdminDashboard = () => {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">+2350</div>
+                                        <div className="text-2xl font-bold">+{totalUsers}</div>
                                         <p className="text-xs text-muted-foreground">
                                             +180.1% from last month
                                         </p>
@@ -95,7 +162,7 @@ const AdminDashboard = () => {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">+12,234</div>
+                                        <div className="text-2xl font-bold">+{totalBookings}</div>
                                         <p className="text-xs text-muted-foreground">
                                             +19% from last month
                                         </p>
