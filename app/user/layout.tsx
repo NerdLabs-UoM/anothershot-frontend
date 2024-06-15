@@ -16,9 +16,7 @@ type UserLayoutProps = {
 const UserLayout = (props: UserLayoutProps) => {
     return (
         <>
-                {props.children}
-                <Navbar />
-                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            {props.children}
         </>
     );
 }

@@ -54,7 +54,21 @@ export const columns: ColumnDef<User>[] = [
     },
     {
         accessorKey: "userName",
-        header: "Name",
+        header: ({ column }) => {
+            return (
+                <div>
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === "asc")
+                        }
+                    >
+                        Username
+                        <ArrowDown className="w-4 h-4 ml-2" />
+                    </Button>
+                </div>
+            );
+        },
         cell: ({ row }) => (
             <UserDetail
                 userName={row.original.userName}
@@ -68,7 +82,7 @@ export const columns: ColumnDef<User>[] = [
         header: "Reports",
         cell: ({ row }) => (
             <div>
-                {row.original.reports.length > 0 ? ("Have Reports") : ("No Reports")}
+                {row.original.reports.length > 0 ? `${row.original.reports.length} reports` : ("No Reports")}
             </div>
         ),
     },

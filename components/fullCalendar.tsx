@@ -13,8 +13,8 @@ interface FullCalendarProps {
 const mapEventToEventInput = (event: Event): EventInput => ({
     id: event.id,
     title: event.title,
-    start: event.start ? event.start.toISOString() : undefined,
-    end: event.end ? event.end.toISOString() : undefined,
+    start: event.start ? new Date(event.start).toISOString() : undefined,
+    end: event.end ? new Date(event.end).toISOString() : undefined,
     allDay: event.allDay,
     description: event.description,
 });

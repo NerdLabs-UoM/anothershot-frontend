@@ -43,6 +43,17 @@ import { isEqual, set } from 'lodash';
 import { cn } from "@/app/lib/utils";
 import Image from "next/image";
 import { Testimonial } from "@/app/lib/types";
+import CarouselMessages from "./CarouselMessages";
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Badge } from "@/components/ui/badge";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer"
 
 interface EditButtonProps {
   testimonialsData: Testimonial[];
@@ -60,10 +71,29 @@ const EditButton: React.FC<EditButtonProps> = ({
   const [value, setValue] = React.useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [publicTestimonials, setPublicTestimonials] = useState<Testimonial[]>([]);
+  const [windowWidth, setWindowWidth] = useState<number>(0);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
+  const [isOpened, setIsOpened] = React.useState(false);
 
   useEffect(() => {
     setTestimonials(testimonialsData);
+    const publicTestimonials = testimonials.filter(
+      (testimonial) => testimonial.visibility === "PUBLIC"
+    );
+    setPublicTestimonials(publicTestimonials);
   }, [testimonialsData]);
+
+  useEffect(() => {
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", updateWindowWidth);
+    updateWindowWidth();
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  }, []);
 
   useEffect(() => {
     const currentTestimonials = async () => {
@@ -77,7 +107,7 @@ const EditButton: React.FC<EditButtonProps> = ({
     currentTestimonials();
   }, [userId]);
 
-  const handleSubmit = async () => { 
+  const handleSubmit = async () => {
     setLoading(true);
     try {
       const changedTestimonials = testimonials.filter(testimonial =>
@@ -89,6 +119,8 @@ const EditButton: React.FC<EditButtonProps> = ({
         { testimonialId: changedTestimonialsIds }
       );
       setIsOpen(false);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials`);
+      setCurrentTestimonials(response.data);
       toast.success("Testimonials updated successfully!");
     } catch (error) {
       toast.error("Failed to update testimonials");
@@ -107,6 +139,10 @@ const EditButton: React.FC<EditButtonProps> = ({
     });
     setTestimonials(updatedItems);
     setChecked(!checked);
+    const publicTestimonials = testimonials.filter(
+      (testimonial) => testimonial.visibility === "PUBLIC"
+    );
+    setPublicTestimonials(publicTestimonials);
   };
 
   const handleValueChange = (value: string) => {
@@ -165,121 +201,225 @@ const EditButton: React.FC<EditButtonProps> = ({
     return null;
   };
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-5 mb-16 mx-3">
-      <p className="font-extrabold text-2xl md:text-5xl">Testimonials</p>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        {renderEditButton()}
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Testmonials</DialogTitle>
-            <DialogDescription>
-              Make changes to your tesmonials here. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 gap-20 sm:gap-6 py-4 ">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-[180px] justify-between"
-                  >
-                    {value
-                      ? testimonials.find(
-                        (testimonial) => testimonial.id === value
-                      )?.client.name
-                      : "Select testimonial..."}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput placeholder="Search testimonials..." />
-                    <CommandEmpty>No framework found.</CommandEmpty>
-                    <CommandGroup>
-                      {testimonials.map((testimonial) => (
-                        <HoverCard key={testimonial.id}>
-                          <HoverCardTrigger asChild>
-                            <CommandItem
-                              key={testimonial.id}
-                              value={testimonial.id}
-                              onSelect={(currentValue) => {
-                                setValue(
-                                  currentValue === value ? "" : currentValue
-                                );
-                                handleValueChange(currentValue);
-                                setOpen(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  isEqual(testimonial.visibility, "PUBLIC") ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {testimonial.client.name}
-                            </CommandItem>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-[500px]">
-                            <div>
-                              <Image
-                                src="/images/com.png"
-                                alt="Description of the image"
-                                width={20}
-                                height={15}
-                              />
-                            </div>
-                            <div className="flex p-0 items-center gap-10 flex-1">
-                              <span className="flex flex-col justify-center items-end gap-3 flex-1 self-stretch text-right text-slate-950 text-xs">
-                                {testimonial.review}
-                              </span>
-                              <Avatar className="w-[70px] h-[70px]" >
-                                <AvatarImage src={testimonial.client.user.image || undefined} alt="@shadcn" />
-                                <AvatarFallback>CN</AvatarFallback>
-                              </Avatar>
-                            </div>
-                            <div>
-                              <span className="text-slate-950 text-right font-bold text-xl">
-                                {testimonial.client.name}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 mt-2">
-                              {renderStars(testimonial.rating)}
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+  const removePublicTestimonial = (testimonialId: string) => {
+    const updatedTestimonials = publicTestimonials.filter(
+      (testimonial) => testimonial.id !== testimonialId
+    );
+    const updatedTestimonialsData = testimonials.map((testimonial) => {
+      if (testimonial.id === testimonialId) {
+        testimonial.visibility = "PRIVATE";
+      }
+      return testimonial;
+    });
+    setPublicTestimonials(updatedTestimonials);
+    setTestimonials(updatedTestimonialsData);
+    setChecked(false);
+  }
+
+  const handleTestimonialClick = (testimonial: Testimonial) => {
+    setSelectedTestimonial(testimonial);
+    setIsOpened(true);
+  };
+
+  const renderTestimonialModal = () => {
+    if (!selectedTestimonial) return null;
+
+    return (
+      <Drawer open={isOpened} onOpenChange={setIsOpened}>
+        <DrawerContent>
+          <DrawerHeader>
+            <div className="flex flex-col items-center justify-center h-full">
+              <DrawerTitle className="flex flex-col items-center">
+                {selectedTestimonial.client.user.userName}
+                <div className="flex items-center gap-2 mt-2">
+                  {renderStars(selectedTestimonial.rating)}
+                </div>
+              </DrawerTitle>
             </div>
-            <div className="grid items-center gap-4">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={checked}
-                  onCheckedChange={handleVisibility}
-                  id="visibility"
+            <DrawerDescription>
+              <div>
+                <Image
+                  src="/images/com.png"
+                  alt="Description of the image"
+                  width={20}
+                  height={15}
                 />
-                <label
-                  htmlFor="visibility"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Public Visible
-                </label>
+              </div>
+              <div className="flex p-0 items-center gap-10 flex-1">
+                <span className="flex flex-col justify-center items-end gap-3 flex-1 self-stretch text-right text-slate-950 text-xs">
+                  {selectedTestimonial.review}
+                </span>
+                <Avatar className="w-[70px] h-[70px]" >
+                  <AvatarImage src={selectedTestimonial.client.user.image || undefined} alt="@shadcn" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <Button onClick={() => setIsOpened(false)}>Close</Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+    );
+  };
+
+  return (
+    <div className="flex flex-col items-center w-full">
+      <div className="grid grid-cols-1 mb-14 sm:mb-16 mx-3 sm:flex sm:flex-row sm:justify-between sm:w-full sm:mx-0 sm:px-4">
+        <p className="font-bold text-2xl sm:text-3xl md:text-5xl">Testimonials</p>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          {renderEditButton()}
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Testmonials</DialogTitle>
+              <DialogDescription>
+                Change visibility to your tesmonials here. Click save when you're done.
+                (<b>Click/Hover</b> on the testimonial to view.)
+              </DialogDescription>
+            </DialogHeader>
+            <div>
+              <div className="grid grid-cols-2 gap-20 sm:gap-6 py-4 ">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-[180px] justify-between"
+                      >
+                        {value
+                          ? testimonials.find(
+                            (testimonial) => testimonial.id === value
+                          )?.client.user.userName
+                          : "Select testimonial..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search testimonials..." />
+                        <CommandEmpty>No testimonial found.</CommandEmpty>
+                        <CommandGroup className="max-h-28 overflow-y-auto">
+                          {testimonials.map((testimonial) => (
+                            <HoverCard key={testimonial.id}>
+                              <HoverCardTrigger asChild>
+                                <CommandItem
+                                  key={testimonial.id}
+                                  value={testimonial.id}
+                                  onSelect={(currentValue) => {
+                                    setValue(
+                                      currentValue === value ? "" : currentValue
+                                    );
+                                    handleValueChange(currentValue);
+                                    handleTestimonialClick(testimonial);
+                                    setOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      isEqual(testimonial.visibility, "PUBLIC") ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {testimonial.client.user.userName}
+                                </CommandItem>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-[500px]">
+                                <div>
+                                  <Image
+                                    src="/images/com.png"
+                                    alt="Description of the image"
+                                    width={20}
+                                    height={15}
+                                  />
+                                </div>
+                                <div className="flex p-0 items-center gap-10 flex-1">
+                                  <span className="flex flex-col justify-center items-end gap-3 flex-1 self-stretch text-right text-slate-950 text-xs">
+                                    {testimonial.review}
+                                  </span>
+                                  <Avatar className="w-[70px] h-[70px]" >
+                                    <AvatarImage src={testimonial.client.user.image || undefined} alt="@shadcn" />
+                                    <AvatarFallback>CN</AvatarFallback>
+                                  </Avatar>
+                                </div>
+                                <div>
+                                  <span className="text-slate-950 text-right font-bold text-xl">
+                                    {testimonial.client.user.userName}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2 mt-2">
+                                  {renderStars(testimonial.rating)}
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="grid items-center gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={checked}
+                      onCheckedChange={handleVisibility}
+                      id="visibility"
+                    />
+                    <label
+                      htmlFor="visibility"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Public Visible
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col mx-[2px] my-2">
+                <label className="text-sm font-medium text-black pb-[5px] ml-[1px]">Public Testimonials :</label>
+                <ScrollArea className="h-20 w-full rounded-md border">
+                  <div className="p-3 flex flex-wrap gap-1">
+                    {publicTestimonials.length > 0 ? (
+                      publicTestimonials.map((testimonial) => (
+                        <div key={testimonial.id}>
+                          <Badge variant="outline" className="w-auto gap-1 items-center justify-center">
+                            {testimonial.client.user.userName}
+                            <Image
+                              src="/icons/xMark.svg"
+                              alt="image"
+                              width={8}
+                              height={8}
+                              className="cursor-pointer"
+                              onClick={() => removePublicTestimonial(testimonial.id)}
+                            />
+                          </Badge>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex w-full h-full items-center justify-center">
+                        <div className="text-center text-slate-950 text-sm pt-3">
+                          No public testimonials available.
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
               </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit" onClick={() => handleSubmit()}>
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button type="submit" onClick={() => handleSubmit()}>
+                Save changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <CarouselMessages
+        testimonialsData={testimonials}
+      />
+      {window.innerWidth < 800 && renderTestimonialModal()}
     </div>
   );
 };

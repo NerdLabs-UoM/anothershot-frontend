@@ -51,6 +51,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import { NotificationService } from "@/components/notification/notification";
 
 interface PackageEditFormProps {
     packages: Package[];
@@ -121,6 +122,13 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
             ));
             toast.success("Package details updated successfully.")
+            NotificationService({
+                senderId: session?.user?.id, 
+                receiverId: session?.user.id,
+                type: 'packages_updated',
+                title: 'packages Updated',
+                description: '',
+              });
         }
         catch (error) {
             toast.error("An error occurred. Please try again.")
@@ -145,6 +153,13 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                 packageProp(prevPackageList => [...prevPackageList, newPackage]);
                 toast.success("Package created successfully.");
             }
+            NotificationService({
+                senderId: session?.user?.id, 
+                receiverId: session?.user.id,
+                type: 'packages_created',
+                title: 'packages created',
+                description: '',
+              });
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
@@ -160,6 +175,13 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data })
             packageProp(prevPackageList => prevPackageList.filter(packageItem => packageItem.id !== selectedPackageId));
             toast.success("Package deleted successfully.")
+            NotificationService({
+                senderId: session?.user?.id, 
+                receiverId: session?.user.id,
+                type: 'packages_deleted',
+                title: 'packages Deleted',
+                description: '',
+              });
         }
         catch (error) {
             toast.error("An error occurred. Please try again.")

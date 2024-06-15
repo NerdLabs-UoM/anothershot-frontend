@@ -12,6 +12,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { Photographer } from "@/app/lib/types";
 import { PlusSquare } from "lucide-react";
+import { NotificationService } from "@/components/notification/notification";
 
 interface PackageEditFormProps {
     packageId: string;
@@ -68,6 +69,13 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                     await axios.put(
                                         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${packageId}/coverphotos`, data
                                     );
+                                    NotificationService({
+                                        senderId: session?.user?.id, 
+                                        receiverId: session?.user.id,
+                                        type: 'contact_updated',
+                                        title: 'contact Updated',
+                                        description: '',
+                                      });
                                 }
                                 catch (error) {
                                     toast.error("An error occured. Please try again.")

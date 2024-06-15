@@ -11,6 +11,7 @@ import { getServerSession } from "next-auth";
 import { SocketProvider } from "@/context/socketContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default async function RootLayout({
             <SocketProvider>
               <Header />
               {children}
+               <Navbar/>
               <ToasterProvider />
             </SocketProvider>
           </SessionProvider>
