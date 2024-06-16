@@ -7,18 +7,20 @@ import toast from "react-hot-toast";
 import { Currency } from "lucide-react";
 
 interface PaymentDetails {
-    price: number | undefined,
-    bookingId: string | undefined,
-    name:string | undefined,
+    price: number,
+    bookingId: string,
+    name:string,
+    clientId: string
 }
 
-function PayNow({price,bookingId,name}: PaymentDetails) {
+function PayNow({price,bookingId,name,clientId}: PaymentDetails) {
 
   function redirectToExternalLink(link: string) {
     window.location.href = link;
   }
 
   const createCheckout = async (values: any) => {
+    console.log(values)
 
     try {
       const url = await axios.post(
@@ -28,6 +30,7 @@ function PayNow({price,bookingId,name}: PaymentDetails) {
           currency:'usd',
           name: values.name,
           bookingId: values.bookingId,
+          clientId:clientId
         }
       );
 
@@ -38,7 +41,7 @@ function PayNow({price,bookingId,name}: PaymentDetails) {
         toast.error("Error creating checkout");
       }
     } catch (err) {
-      console.log("error");
+      console.log(err);
     }
   };
 
@@ -51,7 +54,7 @@ function PayNow({price,bookingId,name}: PaymentDetails) {
     <div className="grid text-center content-center h-full ">
       <Button
         onClick={() => {
-          onSubmit({ price: price ,bookingId: bookingId ,name:name});
+          onSubmit({ price: price ,bookingId: bookingId ,name:name,clientId:clientId});
         }}
         type="submit"
       >
