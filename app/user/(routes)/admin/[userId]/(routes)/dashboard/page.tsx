@@ -10,10 +10,12 @@ import toast from 'react-hot-toast';
 
 const AdminDashboard = () => {
 
-    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [totalRevenue, setTotalRevenue] = useState<number>(0);
     const [totalBookings, setTotalBookings] = useState(0);
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalActiveUsers, setTotalActiveUsers] = useState(0);
+    const [monthlyTotal, setMonthlyTotal] = useState<number>(0);
+
 
     useEffect(() => {
         const fetchTotalRevenue = async () => {
@@ -23,10 +25,12 @@ const AdminDashboard = () => {
                 );
                 const data = response.data
                 setTotalRevenue(data);
+                console.log(data)
             } catch (error) {
                 toast.error("Cannot fetch total revenue. Please try again.");
             }
-        }
+        };
+        fetchTotalRevenue();
     }, []);
 
     useEffect(() => {
@@ -37,10 +41,12 @@ const AdminDashboard = () => {
                 );
                 const data = response.data
                 setTotalBookings(data);
+                console.log(data)
             } catch (error) {
                 toast.error("Cannot fetch total bookings. Please try again.");
             }
-        }
+        };
+        fetchTotalBookings();
     }, []);
 
     useEffect(() => {
@@ -51,10 +57,12 @@ const AdminDashboard = () => {
                 );
                 const data = response.data
                 setTotalUsers(data);
+                console.log(data)
             } catch (error) {
                 toast.error("Cannot fetch total users. Please try again.");
             }
-        }
+        };
+        fetchTotalUsers();
     }, []);
 
     useEffect(() => {
@@ -65,13 +73,13 @@ const AdminDashboard = () => {
                 );
                 const data = response.data
                 setTotalActiveUsers(data);
+                console.log(data.activeUsers);
             } catch (error) {
                 toast.error("Cannot fetch total active users. Please try again.");
             }
-        }
+        };
+        fetchTotalActiveUsers();
     }, []);
-
-   
 
     return (
         <>
@@ -111,7 +119,9 @@ const AdminDashboard = () => {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">{totalRevenue}</div>
+                                        <div className="text-2xl font-bold">
+                                            Rs {totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </div>
                                         <p className="text-xs text-muted-foreground">
                                             +20.1% from last month
                                         </p>
@@ -187,7 +197,7 @@ const AdminDashboard = () => {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">+573</div>
+                                        <div className="text-2xl font-bold">+{totalActiveUsers}</div>
                                         <p className="text-xs text-muted-foreground">
                                             +201 since last hour
                                         </p>
@@ -195,12 +205,14 @@ const AdminDashboard = () => {
                                 </Card>
                             </div>
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+
+
                                 <Card className="col-span-4">
                                     <CardHeader>
                                         <CardTitle>Overview</CardTitle>
                                     </CardHeader>
                                     <CardContent className="pl-2">
-                                        <Overview />
+                                        <Overview setMonthlyTotal={setMonthlyTotal} />
                                     </CardContent>
                                 </Card>
                                 <Card className="col-span-3">

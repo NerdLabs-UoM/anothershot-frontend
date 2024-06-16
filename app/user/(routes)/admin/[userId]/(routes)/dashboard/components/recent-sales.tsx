@@ -15,8 +15,7 @@ export function RecentSales() {
     amount:string,
     date:string
   }
-  const [recentPayments, setRecentPayments] = useState([]);
-
+  const [recentPayments, setRecentPayments] = useState<Array<{name: string, email: string, amount: number}>>([]);
   useEffect(() => {
     const fetchRecentPayments = async () => {
         try {
@@ -29,7 +28,8 @@ export function RecentSales() {
         } catch (error) {
             toast.error("Cannot fetch recent payments. Please try again.");
         }
-    }
+    };
+    fetchRecentPayments();
 }, []);
   return (
     <div className="space-y-8">
@@ -39,11 +39,11 @@ export function RecentSales() {
           <AvatarFallback>OM</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">{setRecentPayments.name}</p>
+          <p className="text-sm font-medium leading-none">{setRecentPayments.name[0]}</p>
           <p className="text-sm text-muted-foreground">
           </p>
         </div>
-        <div className="ml-auto font-medium"></div>
+        <div className="ml-auto font-medium">{}</div>
       </div>
       {/* <div className="flex items-center">
         <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
