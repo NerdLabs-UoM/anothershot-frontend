@@ -42,19 +42,20 @@ const Navbar = () => {
   const [isPhotographer, setIsPhotographer] = useState<boolean>(false);
   const [isClient, setIsClient] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isLogged, setIsLogged] = useState<boolean>(true);
+  const [isLogged, setIsLogged] = useState<boolean>(false);
 
   let navigationMenuContent;
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user.id;
+
   useEffect(() => {
-    if (session?.user.userRole == "PHOTOGRAPHER") {
+    if (session?.user.userRole === "PHOTOGRAPHER") {
       setIsPhotographer(true);
-    } else if (session?.user.userRole == "CLIENT") {
+    } else if (session?.user.userRole === "CLIENT") {
       setIsClient(true);
-    } else if (session?.user.userRole == "ADMIN") {
+    } else if (session?.user.userRole === "ADMIN") {
       setIsAdmin(true);
     } else if (session?.expires) {
       setIsLogged(false);
@@ -69,7 +70,7 @@ const Navbar = () => {
     router.push(`${dir}`);
   };
 
-  if (isClient) {
+  if (isClient && pathname != "/admin" ) {
     navigationMenuContent = !isAdmin && (
       <NavigationMenu>
         <NavigationMenuList className="px-4 py-2 bg-black border-t shadow-lg rounded-t-3xl sm: sm:gap-20">

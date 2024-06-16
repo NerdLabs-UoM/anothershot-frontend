@@ -94,7 +94,7 @@ export const columns: ColumnDef<Payment>[] = [
     header: "Amount",
     cell: ({ row }) => {
       
-      return <div className="">{row.original.amount}$</div>
+      return <div className="">{row.original.amount/100}$</div>
     },
     
   },

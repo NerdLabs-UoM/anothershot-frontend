@@ -1,23 +1,15 @@
 "use client";
 
 import { loadStripe } from "@stripe/stripe-js/pure";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
 import { StripeElementsOptionsClientSecret } from "@stripe/stripe-js";
-import axios, { Axios } from "axios";
+import axios from "axios";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
-
-interface options {
-  clientSecret: string;
-  appearance: {
-    theme: string;
-  };
-}
 
 interface CheckoutFormOptions{
   items:string;
@@ -43,9 +35,6 @@ const Checkout = (offer:CheckoutFormOptions) => {
     stripe();
   }, []);
 
-  const appearance = {
-    theme: "stripe",
-  };
 
   const options: StripeElementsOptionsClientSecret = {
     clientSecret,

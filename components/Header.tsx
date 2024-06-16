@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search ,LogOut} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import Logo from "@/public/Logo";
@@ -33,19 +33,28 @@ const Header = () => {
         <div onClick={() => router.push("/")} className="cursor-pointer">
           <Logo />
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-1">
           {loggedIn && (
-            <Button
-              variant="ghost"
-              className="h-auto mb-7"
-              onClick={() =>
-                signOut({
-                  callbackUrl: `${window.location.origin}/sign-in`,
-                })
-              }
-            >
-              Sign Out
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="h-auto mb-8 font-bold hover:bg-slate-50 rounded-3xl"
+                    onClick={() =>
+                      signOut({
+                        callbackUrl: `${window.location.origin}/sign-in`,
+                      })
+                    }
+                  >
+                    <LogOut className="w-5 font-bold"/>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div>Logout</div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           <TooltipProvider>
             <Tooltip>
@@ -69,7 +78,7 @@ const Header = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="m-0 p-0 pt-1">
-                <NotifySection logged={loggedIn} />
+                  <NotifySection logged={loggedIn} />
                 </div>
               </TooltipTrigger>
               <TooltipContent>
