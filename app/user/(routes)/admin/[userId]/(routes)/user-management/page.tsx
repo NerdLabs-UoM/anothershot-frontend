@@ -49,7 +49,6 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
   }, [fetch]);
 
   useEffect(() => {
-    console.log("user roles tika", makeStringRoles(userRole))
     const fetchUsers = async () => {
       const data: User[] = await fetchData(page, name,rolesString);
       setFilteredUsers(data);
@@ -58,14 +57,12 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
   }, [page, fetch]);
 
   useEffect(() => {
-    console.log("user roles tika", makeStringRoles(userRole))
 
     const fetchLast = async () => {
       const data = await fetchLastPage(name, rolesString);
       setLast(data);
     };
     fetchLast();
-    // console.log("user roles tika", newUserRole)
   }, [fetch]);
 
   const handlePrev = () => {
@@ -102,7 +99,6 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
     }
     setUserRole(newUserRole);
     setRolesString(makeStringRoles(newUserRole));
-    // console.log("newuserRole", newUserRole);
   };
 
 

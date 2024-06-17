@@ -20,7 +20,6 @@ const EarningSection:React.FC<EarningSectionProps> = ({userId}) => {
             try{
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/earnings`);
             setEarnings(res.data);
-            console.log("earn data=>",res.data);
             }catch(e){
                 toast.error("Error fetching earnings");
             }

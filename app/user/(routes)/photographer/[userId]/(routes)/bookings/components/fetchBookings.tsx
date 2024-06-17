@@ -125,7 +125,7 @@ function FetchBookings() {
                           </Button>
                         ) : (
                           <Button className="text-xs sm:text-sm h-[30px] sm:h-auto ">
-                            <Offers bookingId={booking.id} />
+                            <Offers bookingId={booking.id} clientId={booking.clientId} eventName={booking.event.title} />
                           </Button>
                         )}
                       </div>

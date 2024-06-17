@@ -1,6 +1,5 @@
 "use client"
 
-import Navbar from '@/components/Navbar';
 import React, { Suspense } from 'react';
 import { delay } from "@/app/lib/delay";
 import Loading from "@/components/loading";
@@ -14,7 +13,6 @@ const Home = () => {
       <Suspense fallback={<Loading />}>
         <FeedImageComp />
       </Suspense>
-      <Navbar />
     </main>
   )
 }

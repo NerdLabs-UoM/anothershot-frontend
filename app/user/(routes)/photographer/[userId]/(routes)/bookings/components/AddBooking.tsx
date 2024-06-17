@@ -50,6 +50,12 @@ import { Photographer } from "@/app/lib/types";
 import toast from 'react-hot-toast';
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 import { NotificationService } from '@/components/notification/notification';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const formSchema = z.object({
     eventName: z.string().min(2, "Event name should be between 5-50 characters").max(50, "Event name should be between 2-50 characters"),
@@ -76,7 +82,7 @@ const AddBooking = () => {
     const defaultEndDate = new Date();
     defaultEndDate.setHours(defaultEndDate.getHours() + 5);
     defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
-    
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -137,15 +143,15 @@ const AddBooking = () => {
 
         const startDateOnly = startDateObject.toISOString().split('T')[0];
         const defaultStartDateOnly = defaultStartDate.toISOString().split('T')[0];
-        
+
         if (startDateOnly === defaultStartDateOnly) {
             toast.error("Please select a start date.");
             return;
         }
-        
+
         const endDateOnly = endDateObject.toISOString().split('T')[0];
         const defaultEndDateOnly = defaultEndDate.toISOString().split('T')[0];
-        
+
         if (endDateOnly === defaultEndDateOnly) {
             toast.error("Please select an end date.");
             return;
@@ -211,11 +217,18 @@ const AddBooking = () => {
             {session?.user.userRole === 'CLIENT' && (
                 <Dialog open={isOpened} onOpenChange={setIsOpened}>
                     <DialogTrigger>
-                        <BiSolidPlusSquare size={50} />
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger> <BiSolidPlusSquare size={50} /></TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Request a booking here</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Add Booking</DialogTitle>
+                            <DialogTitle>Request a booking</DialogTitle>
                             <DialogDescription>
                                 Check the availability of the photographer before booking.
                             </DialogDescription>
@@ -333,7 +346,7 @@ const AddBooking = () => {
                                 />
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button>Request</Button>
+                                        <Button className='float-right'>Request</Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>

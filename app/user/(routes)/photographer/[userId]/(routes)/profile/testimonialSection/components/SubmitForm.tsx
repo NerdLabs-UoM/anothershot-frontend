@@ -97,69 +97,72 @@ const SubmitForm: React.FC = ({
     if (session?.user?.userRole === 'PHOTOGRAPHER' || session?.user?.userRole === 'ADMIN') {
       return null;
     }
-    return (<Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="rating"
-          render={({ field }) => (
-            <FormItem className="flex flex-col items-start ml-0 sm:ml-20 sm:flex-row sm:items-center md:ml-0">
-              <FormLabel className="font-medium text-sm mr-[30px] inline-flex">
-                Rate your Experience
-              </FormLabel>
-              <FormControl>
-                <div className="flex items-cente">
-                  {[...Array(5)].map((_, index) => (
-                    <svg
-                      key={index}
-                      className={`w-4 h-4 ${selectedRating && index < selectedRating
-                        ? "text-yellow-300"
-                        : "text-gray-300"
-                        } ms-1 cursor-pointer`}
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 22 20"
-                      onClick={() => handleStarClick(index + 1)}
-                    >
-                      <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                    </svg>
-                  ))}
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="review"
-          render={({ field }) => (
-            <FormItem className="flex flex-col ml-0 sm:ml-20 md:ml-0">
-              <FormLabel className="font-medium text-sm">Feedback</FormLabel>
-              <FormControl>
-                <Textarea
-                  className="h-[80px] w-[346px] sm:w-[537px] md:w-[689px] resize-none"
-                  placeholder="Tell what your thoughts are...."
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          className="ml-0 sm:ml-20 h-9 w-[346px] sm:h-11 sm:w-[537px] md:w-[530px]"
-        >
-          {
-            loading ? <LoaderCircle className="animate-spin" /> : 'Send Feedback'
-          }
-        </Button>
-      </form>
-    </Form>)
+    return (<div>
+      <p className="flex-col my-6 font-bold text-base sm:text-lg">Give your feedback</p>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="rating"
+            render={({ field }) => (
+              <FormItem className="flex flex-col items-start ml-0 sm:ml-20 sm:flex-row sm:items-center md:ml-0">
+                <FormLabel className="font-medium text-sm mr-[30px] inline-flex">
+                  Rate your Experience
+                </FormLabel>
+                <FormControl>
+                  <div className="flex items-cente">
+                    {[...Array(5)].map((_, index) => (
+                      <svg
+                        key={index}
+                        className={`w-4 h-4 ${selectedRating && index < selectedRating
+                          ? "text-yellow-300"
+                          : "text-gray-300"
+                          } ms-1 cursor-pointer`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                        onClick={() => handleStarClick(index + 1)}
+                      >
+                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                      </svg>
+                    ))}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="review"
+            render={({ field }) => (
+              <FormItem className="flex flex-col ml-0 sm:ml-20 md:ml-0">
+                <FormLabel className="font-medium text-sm">Feedback</FormLabel>
+                <FormControl>
+                  <Textarea
+                    className="h-[80px] w-auto sm:w-[537px] md:w-[689px] resize-none"
+                    placeholder="Tell what your thoughts are...."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            className="ml-0 sm:ml-20 h-9 w-full sm:h-11 sm:w-[537px] md:w-[530px]"
+          >
+            {
+              loading ? <LoaderCircle className="animate-spin" /> : 'Send Feedback'
+            }
+          </Button>
+        </form>
+      </Form>
+    </div>)
   };
   return (
-    <div className="w-[340px] sm:w-[689px]">
+    <div className="w-full md:w-[689px]">
       {renderForm()}
     </div>
   );

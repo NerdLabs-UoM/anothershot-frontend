@@ -57,6 +57,7 @@ import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
 import ReportProfile from "@/components/Report/ReportProfile/ReportProfile";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetPhotographerProfile } from "@/hooks/photographer/profile/useGetPhotographerProfile";
 
 const formSchema = z.object({
   name: z
@@ -96,6 +97,9 @@ const Hero = () => {
   };
   const [isLoading, setIsLoading] = useState(true);
 
+  const { data, error } = useGetPhotographerProfile(userId.toString());
+  console.log(data);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -131,6 +135,7 @@ const Hero = () => {
   useEffect(() => {
     if (isSuspended == "SUSPENDED") {
       toast.error("Your account has been Suspended");
+      router.push(`${process.env.NEXT_PUBLIC_BASE_URL}/suspended`);
     }
   }, [isSuspended]);
 
@@ -143,12 +148,12 @@ const Hero = () => {
     }
     setProfileImage(
       photographer?.user.image ??
-        "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878461/defaultImages/default-profile-image_grcgcd.png"
+      "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878461/defaultImages/default-profile-image_grcgcd.png"
     );
     if (coverImageURL != null) {
       setCoverImageURL(
         photographer?.coverPhoto ??
-          "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878041/defaultImages/default-coverImage_sdmwpt.png"
+        "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878041/defaultImages/default-coverImage_sdmwpt.png"
       );
     }
   }, [photographer]);
@@ -356,7 +361,7 @@ const Hero = () => {
 
             {isPhotographer && (
               <CldUploadWidget
-                onOpen={() => {}}
+                onOpen={() => { }}
                 onSuccess={(results: CldUploadWidgetResults) => {
                   const uploadedResult = results.info as CldUploadWidgetInfo;
 
@@ -375,7 +380,7 @@ const Hero = () => {
                   Update();
                   handleRefresh();
                 }}
-                onPublicId={() => {}}
+                onPublicId={() => { }}
                 options={{
                   tags: ["cover image", `${session?.user.id}`],
                   sources: ["local"],
@@ -518,7 +523,7 @@ const Hero = () => {
           {renderAlbumButton()}
 
           {session?.user.userRole === "CLIENT" && (
-            <Button variant="destructive" className="md:w-4/5" asChild>
+            <Button variant="destructive" className="max-w-11" asChild>
               <Link href={`/user/photographer/${userId}/bookings`}>
                 <TooltipProvider>
                   <Tooltip>
@@ -550,7 +555,7 @@ const Hero = () => {
             <Button
               variant="default"
               onClick={() => handleCreateChat()}
-              className="mx-2 rounded-3xl"
+              className="max-w-11 mx-2"
             >
               <TooltipProvider>
                 <Tooltip>

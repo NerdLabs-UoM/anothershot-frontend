@@ -35,7 +35,6 @@ const PaymentDetails=({paymentId}:bookingDetails)=>{
   
 
   useEffect(() => {
-    console.log(paymentId);
     const fetchOffers = async () => {
       try {
         const data = await axios.get<Offer>(
