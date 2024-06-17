@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 const Team: React.FC = () => {
   return (
-    <div id="mission" className="flex flex-col min-h-screen w-full justify-center items-center sm:gap-y-24">
+    <div id="mission" className="flex flex-col min-h-screen w-full justify-center items-center sm:gap-y-24 mb-10 sm:mb-0">
       <h2 className='lg:text-6xl md:text-3xl text-xl sm:font-medium font-semibold text-center my-6 sm:my-0'>Developed By</h2>
       <div className='flex flex-col sm:grid sm:grid-cols-5 lg:gap-10 sm:gap-1'>
         <div className='flex flex-col mb-4 items-center'>

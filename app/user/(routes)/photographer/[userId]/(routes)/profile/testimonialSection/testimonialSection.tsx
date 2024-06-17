@@ -24,11 +24,8 @@ const TestMonialsSection = () => {
   }, [userId]);
 
   return (
-    <div className="flex flex-col items-center w-full pb-40 pt-10 border-t-2">
+    <div className="flex flex-col items-center w-full pb-40 pt-14 sm:pt-10 sm:border-t-2">
       <EditButton
-        testimonialsData={testimonials}
-      />
-       <CarouselMessages
         testimonialsData={testimonials}
       />
       <SubmitForm />

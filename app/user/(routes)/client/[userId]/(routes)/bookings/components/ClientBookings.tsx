@@ -159,8 +159,8 @@ const ClientBookings = () => {
               <p>No bookings made yet.</p>
             </div>
           ) : (
-            <div className="lg:w-2/3 w-auto min-w-full">
-              <ScrollArea className="h-[512px] lg:h-[450px] p-4">
+            <div className="lg:w-2/3 w-auto min-w-full h-screen">
+              <ScrollArea className="h-5/6 lg:h-4/5 p-4">
                 <div className="grid grid-cols-1 mx-0 md:mx-12 xl:mx-24">
                   {bookings.map((booking) => (
                     <Card key={booking.id} className="m-2 px-2 border-t border-slate-50 shadow-inner drop-shadow-lg hover:bg-slate-50">

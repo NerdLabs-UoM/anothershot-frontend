@@ -32,6 +32,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+import { NotificationService } from "@/components/notification/notification";
 
 const formSchema = z.object({
   description: z
@@ -86,6 +87,13 @@ const ReportForm:React.FC<ReportFormProps> = ({setIsOpen}) => {
         )
         .then((res) => {
           toast.success("Report created successfully", { duration: 2000 });
+          NotificationService({
+            senderId: session?.user?.id, 
+            receiverId: session?.user.id, 
+            type: 'Profile_reported',
+            title: `You have Reported a user profile`,
+            description: 'You have reported ',
+          });
         })
         .catch((error) => {
           toast.error("Failed to create report", { duration: 2000 });
