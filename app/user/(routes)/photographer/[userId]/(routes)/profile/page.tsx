@@ -2,7 +2,7 @@
 
 import { useEffect, useState, lazy } from "react";
 import { delay } from "@/app/lib/delay";
-import { useGetPhotographerProfile } from "@/hooks/photographer/profile/useGetPhotographerProfile";
+// import { useGetPhotographerProfile } from "@/hooks/photographer/profile/useGetPhotographerProfile";
 import { useParams } from "next/navigation";
 
 const Hero = lazy(() => delay(2000).then(() => import("./heroSection/Hero")));
@@ -19,8 +19,8 @@ const PhotographerProfile = () => {
     setIsClient(true);
   }, []);
 
-  const { data, error, isLoading } = useGetPhotographerProfile(userId.toString());
-  console.log(data);
+  // const { data, error, isLoading } = useGetPhotographerProfile(userId.toString());
+  // console.log(data);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-5">
