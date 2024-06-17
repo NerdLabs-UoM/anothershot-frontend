@@ -57,6 +57,7 @@ import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
 import ReportProfile from "@/components/Report/ReportProfile/ReportProfile";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetPhotographerProfile } from "@/hooks/photographer/profile/useGetPhotographerProfile";
 
 const formSchema = z.object({
   name: z
@@ -95,6 +96,9 @@ const Hero = () => {
     router.refresh();
   };
   const [isLoading, setIsLoading] = useState(true);
+
+  const { data, error } = useGetPhotographerProfile(userId.toString());
+  console.log(data);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,12 +148,12 @@ const Hero = () => {
     }
     setProfileImage(
       photographer?.user.image ??
-        "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878461/defaultImages/default-profile-image_grcgcd.png"
+      "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878461/defaultImages/default-profile-image_grcgcd.png"
     );
     if (coverImageURL != null) {
       setCoverImageURL(
         photographer?.coverPhoto ??
-          "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878041/defaultImages/default-coverImage_sdmwpt.png"
+        "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878041/defaultImages/default-coverImage_sdmwpt.png"
       );
     }
   }, [photographer]);
@@ -357,7 +361,7 @@ const Hero = () => {
 
             {isPhotographer && (
               <CldUploadWidget
-                onOpen={() => {}}
+                onOpen={() => { }}
                 onSuccess={(results: CldUploadWidgetResults) => {
                   const uploadedResult = results.info as CldUploadWidgetInfo;
 
@@ -376,7 +380,7 @@ const Hero = () => {
                   Update();
                   handleRefresh();
                 }}
-                onPublicId={() => {}}
+                onPublicId={() => { }}
                 options={{
                   tags: ["cover image", `${session?.user.id}`],
                   sources: ["local"],

@@ -1,12 +1,16 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
+import { useGetPhotographerProfile } from "@/hooks/photographer/profile/useGetPhotographerProfile";
 import { signOut } from "next-auth/react";
 import { useParams } from "next/navigation";
 
 const Photographer = () => {
 
     const { userId } = useParams();
+    
+    const { data, error, isLoading } = useGetPhotographerProfile(userId.toString());
+    console.log(data);
 
     return (
         <div>
