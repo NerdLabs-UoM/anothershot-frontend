@@ -21,10 +21,7 @@ import { Offer } from "@/app/lib/types";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-
 import PayNow from "./paynow"
-import { values } from "lodash";
 
 interface bookingDetails{
     bookingId:string;
@@ -70,7 +67,7 @@ const ViewOffer=({bookingId}:bookingDetails)=>{
                 </CardHeader>
                 <CardContent className="flex flex-col justify-end ">
                   <p className = "pb-3 font-bold">{value?.price}/=</p>
-                  <PayNow price ={value?.price} bookingId={bookingId} name={value?.clientName}/>
+                  <PayNow price ={value?.price} bookingId={bookingId} name={value?.clientName} clientId={value?.clientId}/>
                 </CardContent>
                 <CardFooter>
                   <p>{session?.user.name}</p>

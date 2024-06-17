@@ -135,6 +135,7 @@ const Hero = () => {
   useEffect(() => {
     if (isSuspended == "SUSPENDED") {
       toast.error("Your account has been Suspended");
+      router.push(`${process.env.NEXT_PUBLIC_BASE_URL}/suspended`);
     }
   }, [isSuspended]);
 
@@ -522,7 +523,7 @@ const Hero = () => {
           {renderAlbumButton()}
 
           {session?.user.userRole === "CLIENT" && (
-            <Button variant="destructive" className="md:w-4/5" asChild>
+            <Button variant="destructive" className="max-w-11" asChild>
               <Link href={`/user/photographer/${userId}/bookings`}>
                 <TooltipProvider>
                   <Tooltip>
@@ -554,7 +555,7 @@ const Hero = () => {
             <Button
               variant="default"
               onClick={() => handleCreateChat()}
-              className="mx-2 rounded-3xl"
+              className="max-w-11 mx-2"
             >
               <TooltipProvider>
                 <Tooltip>

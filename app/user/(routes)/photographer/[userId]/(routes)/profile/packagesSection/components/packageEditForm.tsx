@@ -121,6 +121,10 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             packageProp(prevPackageList => prevPackageList.map(packageItem =>
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
             ));
+            if(updatedPackage.price < 0){
+                toast.error("Price must be a positive number");
+                return;
+            }
             toast.success("Package details updated successfully.")
             NotificationService({
                 senderId: session?.user?.id, 
@@ -149,8 +153,13 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             const newPackage: Package = response.data
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
-            } else {
+            } 
+            else {
                 packageProp(prevPackageList => [...prevPackageList, newPackage]);
+                if(newPackage.price<0){
+                    toast.error("Price must be a positive number");
+                    return;
+                }
                 toast.success("Package created successfully.");
             }
             NotificationService({
