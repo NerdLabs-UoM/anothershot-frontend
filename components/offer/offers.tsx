@@ -12,8 +12,8 @@ import OfferForm from "./OfferFrom";
 
 interface BookingDetails{
   bookingId: string;
-  clientId:string;
-  eventName:string;
+  clientId: string;
+  eventName: string;
 }
 
 function Offers({bookingId,clientId,eventName}: BookingDetails) {
