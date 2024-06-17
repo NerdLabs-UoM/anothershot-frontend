@@ -57,7 +57,7 @@ import { Photographer, Suspended, User } from "@/app/lib/types";
 import { addYears } from "date-fns";
 import ReportProfile from "@/components/Report/ReportProfile/ReportProfile";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetPhotographerProfile } from "@/hooks/photographer/profile/useGetPhotographerProfile";
+// import { useGetPhotographerProfile } from "@/hooks/photographer/profile/useGetPhotographerProfile";
 
 const formSchema = z.object({
   name: z
@@ -97,8 +97,8 @@ const Hero = () => {
   };
   const [isLoading, setIsLoading] = useState(true);
 
-  const { data, error } = useGetPhotographerProfile(userId.toString());
-  console.log(data);
+  // const { data, error } = useGetPhotographerProfile(userId.toString());
+  // console.log(data);
 
   useEffect(() => {
     const fetchData = async () => {
