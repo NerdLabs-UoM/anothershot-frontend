@@ -1,5 +1,3 @@
-"use client";
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -20,7 +18,7 @@ export const metadata: Metadata = {
   description: "Photographer Booking Application",
 };
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
 export default async function RootLayout({
   children,
@@ -31,17 +29,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <QueryClientProvider client={queryClient}>
+        {/* <QueryClientProvider client={queryClient}> */}
           <SessionProvider session={session}>
             <SocketProvider>
               <Header />
               {children}
-               <Navbar/>
+              <Navbar />
               <ToasterProvider />
             </SocketProvider>
           </SessionProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        {/* </QueryClientProvider> */}
       </body>
     </html>
   );
