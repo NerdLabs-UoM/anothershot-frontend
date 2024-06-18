@@ -26,9 +26,13 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox"
-import { FilterIcon, Search } from "lucide-react";
-import { DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
+import { FilterIcon, LoaderCircle, Search } from "lucide-react";
+import {
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -40,10 +44,11 @@ interface UserRole {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onSearchClick:() => void;
+  onSearchClick: () => void;
   onSearchValueChange: (value: string) => void;
   userRole: UserRole[];
   onCheckInputChange: (newUserRole: UserRole[]) => void;
+  loading: Boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -52,13 +57,13 @@ export function DataTable<TData, TValue>({
   onSearchClick,
   onSearchValueChange,
   userRole,
-  onCheckInputChange
+  onCheckInputChange,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-
   const [newUserRole, setNewUserRole] = useState<UserRole[]>(userRole);
 
   const table = useReactTable({
@@ -77,7 +82,8 @@ export function DataTable<TData, TValue>({
   });
 
   const onChangeCheckBox = (e: {
-    target: { checked: boolean; value: React.SetStateAction<string>}}) => {
+    target: { checked: boolean; value: React.SetStateAction<string> };
+  }) => {
     const { value, checked: isChecked } = e.target;
     setNewUserRole((prev) =>
       prev.map((item) => {
@@ -95,7 +101,9 @@ export function DataTable<TData, TValue>({
         <div className="flex gap-5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="align-middle">
-              <Button variant="outline" ><FilterIcon /></Button>
+              <Button variant="outline">
+                <FilterIcon />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-zinc-50 z-10 ml-10 border mt-8">
               <DropdownMenuLabel>User Role</DropdownMenuLabel>
@@ -112,18 +120,15 @@ export function DataTable<TData, TValue>({
                       className="peer m-2 w-4 h-4"
                     /> */}
                     <input
-                        type="checkbox"
-                        value={item.role}
-                        name="time"
-                        onChange={onChangeCheckBox}
-                        id={item.role}
-                        checked={item.isChecked}
-                        className="peer m-2 w-4 h-4"
-                      />
-                    <label htmlFor={item.role}>
-                      {item.role}
-
-                    </label>
+                      type="checkbox"
+                      value={item.role}
+                      name="time"
+                      onChange={onChangeCheckBox}
+                      id={item.role}
+                      checked={item.isChecked}
+                      className="peer m-2 w-4 h-4"
+                    />
+                    <label htmlFor={item.role}>{item.role}</label>
                   </div>
                 ))}
               </DropdownMenuGroup>
@@ -131,17 +136,13 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
           <Input
             placeholder="Search by Name..."
-            onChange={(event) =>
-              onSearchValueChange(event.target.value)
-            }
+            onChange={(event) => onSearchValueChange(event.target.value)}
             className="max-w-sm"
           />
-          <Button>
-          <Search className="mx-4 bg-gray-100 bg-transparent hover:cursor-pointor" onClick={() => onSearchClick()}/>
+          <Button onClick={() => onSearchClick()}>
+            {loading ? <LoaderCircle className="animate-spin" /> : "Search"}
           </Button>
-
         </div>
-        
       </div>
       <div className="border rounded-md z-0">
         <Table>
@@ -154,9 +155,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   );
                 })}
