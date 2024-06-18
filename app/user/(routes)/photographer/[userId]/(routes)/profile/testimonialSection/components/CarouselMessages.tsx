@@ -114,13 +114,13 @@ const CarouselMessages: React.FC<CarouselMessagesProps> = ({
   }, [api, current, count, windowWidth]);
 
   return (
-    <div className="flex flex-col ml-3 sm:ml-0">
+    <div className="flex flex-col sm:ml-0">
       {visibleTestimonials.length > 0 ? (
         <Carousel
           className="flex flex-row items-start gap-12 flex-1 self-stretch mb-10 w-full sm:w-[550px] md:w-[700px] lg:w-[920px] xl:w-[1175px] 2xl:w-[1200px]"
           setApi={setApi}
         >
-          <CarouselContent className="w-full sm:w-[565px] md:w-[715px] lg:w-[935px] xl:w-[1190px] 2xl:w-[1215px]">
+          <CarouselContent className="w-[345px] sm:w-[565px] md:w-[715px] lg:w-[935px] xl:w-[1190px] 2xl:w-[1215px]">
             {visibleTestimonials.map((testimonial) => (
               <CarouselItem key={testimonial.id}>
                 <div className="p-1">

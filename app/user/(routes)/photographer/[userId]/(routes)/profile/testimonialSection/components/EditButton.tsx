@@ -78,11 +78,19 @@ const EditButton: React.FC<EditButtonProps> = ({
 
   useEffect(() => {
     setTestimonials(testimonialsData);
-    const publicTestimonials = testimonials.filter(
-      (testimonial) => testimonial.visibility === "PUBLIC"
-    );
-    setPublicTestimonials(publicTestimonials);
   }, [testimonialsData]);
+
+  useEffect(()=> {
+    const publicTestimonials = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials/public`);
+        setPublicTestimonials(response.data);
+      } catch (error: any) {
+        toast.error('Error fetching public testimonials:', error);
+      }
+    };
+    publicTestimonials();
+  }, [userId]);
 
   useEffect(() => {
     const updateWindowWidth = () => {
