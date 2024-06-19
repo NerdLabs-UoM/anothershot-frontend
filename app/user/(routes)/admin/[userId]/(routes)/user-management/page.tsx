@@ -37,27 +37,35 @@ const AdminPage = () => {
   const [fetch, setFetch] = useState<boolean>(false);
 
   const [userRole, setUserRole] = useState<UserRole[]>(userRoles);
-const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT");
+  const [rolesString, setRolesString] = useState<string>(
+    "ADMIN,PHOTOGRAPHER,CLIENT"
+  );
+
+  const [loading, setLoading] = useState(false);
 
   const makeStringRoles = (roles: UserRole[]) => {
     const newUserRole = roles.filter((role) => role.isChecked);
 
-    return newUserRole.map((user) => user.role).join(",").toUpperCase();
-  }
+    return newUserRole
+      .map((user) => user.role)
+      .join(",")
+      .toUpperCase();
+  };
   useEffect(() => {
     setPage(1);
   }, [fetch]);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const data: User[] = await fetchData(page, name,rolesString);
+      setLoading(true);
+      const data: User[] = await fetchData(page, name, rolesString);
       setFilteredUsers(data);
+      setLoading(false);
     };
     fetchUsers();
   }, [page, fetch]);
 
   useEffect(() => {
-
     const fetchLast = async () => {
       const data = await fetchLastPage(name, rolesString);
       setLast(data);
@@ -90,8 +98,7 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
 
   const handleSearch = () => {
     setFetch(!fetch);
-
-  }
+  };
 
   const onCheckInputChange = (newUserRole: UserRole[]) => {
     if (!newUserRole) {
@@ -101,7 +108,6 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
     setRolesString(makeStringRoles(newUserRole));
   };
 
-
   return (
     <div className="w-full">
       <DataTable
@@ -110,8 +116,10 @@ const [rolesString,setRolesString] = useState<string>("ADMIN,PHOTOGRAPHER,CLIENT
         onSearchValueChange={handleSearchValueChange}
         onCheckInputChange={onCheckInputChange}
         userRole={userRole}
-        data={filteredUsers} />'
-
+        data={filteredUsers}
+        loading={loading}
+      />
+      '
       <PaginationSection
         lastPage={last}
         currentPage={page}

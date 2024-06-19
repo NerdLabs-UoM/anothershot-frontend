@@ -21,7 +21,7 @@ const ClientProfile = () => {
   const RenderClientProfile = () => {
     if (Session && Session.user.id === userId) {
     return (
-      <div className="flex flex-col min-h-screen items-center lg:flex-row lg:items-start mt-4 sm:mt-12 lg:pt-20 lg:mx-16">
+      <div className="flex flex-col min-h-screen items-center lg:flex-row lg:items-start mt-4 sm:mt-12 lg:mt-10 lg:mx-16">
         {isClient && (
           <>
             <ProfileBio />
