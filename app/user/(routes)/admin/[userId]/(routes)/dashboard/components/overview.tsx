@@ -24,7 +24,6 @@ export const Overview: React.FC<OverviewProps> = ({ setMonthlyTotal }) => {
         const total = res.data.reduce((acc, item) => acc + item.total, 0);
         setMonthlyTotal(total);
       } catch (error) {
-        console.log(error);
       }
     };
 

@@ -39,7 +39,7 @@ const BookingTable = () => {
         <div className='p-6 sm:p-0'>
             <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-10">
                 <div className="flex items-start pl-4 sm:pl-4 pt-4 text-xl font-bold text-black mb-4">Bookings</div>
-                <div className="overflow-x-auto sm:overflow-hidden w-full">
+                <div className="overflow-x-auto sm:overflow-hidden overflow-y-hidden sm:overflow-y-auto custom-scrollbar w-full max-h-[400px]">
                     <Table className="w-full sm:w-full min-w-[600px] mb-16 ">
                         <TableHeader>
                             <TableRow>
