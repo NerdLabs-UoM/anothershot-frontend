@@ -7,9 +7,9 @@ import Header from "@/components/Header";
 import SessionProvider from "@/providers/AuthProvider";
 import { getServerSession } from "next-auth";
 import { SocketProvider } from "@/context/socketContext";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Navbar from "@/components/Navbar";
+import QueryProvider from "@/providers/QueryProvider";
+import AuthProvider from "@/providers/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,16 +29,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <QueryClientProvider client={queryClient}> */}
-          <SessionProvider session={session}>
+        <QueryProvider>
+          {/* <SessionProvider session={session}> */}
+          <AuthProvider>
             <SocketProvider>
               <Header />
               {children}
               <Navbar />
               <ToasterProvider />
             </SocketProvider>
-          </SessionProvider>
-        {/* </QueryClientProvider> */}
+          </AuthProvider>
+          {/* </SessionProvider> */}
+        </QueryProvider>
       </body>
     </html>
   );
