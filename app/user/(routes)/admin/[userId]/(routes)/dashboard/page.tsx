@@ -30,7 +30,6 @@ const AdminDashboard = () => {
         );
         const data = response.data;
         setTotalRevenue(data);
-        console.log(data);
       } catch (error) {
         toast.error("Cannot fetch total revenue. Please try again.");
       }
@@ -46,7 +45,6 @@ const AdminDashboard = () => {
         );
         const data = response.data;
         setTotalBookings(data);
-        console.log(data);
       } catch (error) {
         toast.error("Cannot fetch total bookings. Please try again.");
       }
@@ -62,7 +60,6 @@ const AdminDashboard = () => {
         );
         const data = response.data;
         setTotalUsers(data);
-        console.log(data);
       } catch (error) {
         toast.error("Cannot fetch total users. Please try again.");
       }
@@ -78,7 +75,6 @@ const AdminDashboard = () => {
         );
         const data = response.data;
         setTotalActiveUsers(data);
-        console.log(data.activeUsers);
       } catch (error) {
         toast.error("Cannot fetch total active users. Please try again.");
       }
@@ -153,7 +149,7 @@ const AdminDashboard = () => {
                   <CardContent>
                     <div className="text-2xl font-bold">+{totalUsers}</div>
                     <p className="text-xs text-muted-foreground">
-                      +180.1% from last month
+                      +150.2% from last month
                     </p>
                   </CardContent>
                 </Card>
@@ -179,7 +175,7 @@ const AdminDashboard = () => {
                   <CardContent>
                     <div className="text-2xl font-bold">+{totalBookings}</div>
                     <p className="text-xs text-muted-foreground">
-                      +19% from last month
+                      +16% from last month
                     </p>
                   </CardContent>
                 </Card>
@@ -206,7 +202,7 @@ const AdminDashboard = () => {
                       +{totalActiveUsers}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      +201 since last hour
+                      +50 since last hour
                     </p>
                   </CardContent>
                 </Card>
@@ -224,7 +220,7 @@ const AdminDashboard = () => {
                   <CardHeader>
                     <CardTitle>Recent Payments</CardTitle>
                     <CardDescription>
-                      You made 265 sales this month.
+                      You made +100 sales this month.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
