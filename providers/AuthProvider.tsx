@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState, ReactNode } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
+import Loading from "@/components/loading";
+import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -29,7 +32,13 @@ const AuthWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { status } = useSession();
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Header />
+        <Loading />
+        <Navbar />
+      </div>
+    );
   }
 
   return <>{children}</>;
