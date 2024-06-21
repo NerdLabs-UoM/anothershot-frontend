@@ -1,4 +1,3 @@
-import { Separator } from "@/components/ui/separator";
 import {
     Dialog,
     DialogContent,
@@ -8,13 +7,8 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Booking } from "@/app/lib/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface BookingCardProps {
     booking: Booking | null;
@@ -25,14 +19,9 @@ interface BookingCardProps {
 const BookingCard: React.FC<BookingCardProps> = ({ booking, isOpened, onClose }) => {
     const router = useRouter();
 
-    const handleRedirect = (photographerId: string) => {
-        toast('Redirecting to photographer bookings');
-        router.push(`/user/photographer/${photographerId}/bookings`);
-    };
-
     return (
         <Dialog open={isOpened} onOpenChange={onClose}>
-            <DialogContent>
+            <DialogContent className="max-w-[300px] sm:max-w-[380px]">
                 <DialogHeader>
                     <DialogTitle>Booking Details</DialogTitle>
                     <DialogDescription>
@@ -41,15 +30,6 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, isOpened, onClose })
                 </DialogHeader>
                 {booking && (
                     <div className="flex items-center gap-10 text-sm sm:text-base">
-                        {/* <Avatar
-                            className="w-20 h-20 border-2 border-slate-300 cursor-pointer hover:scale-90 transform transition duration-500"
-                            onClick={() => handleRedirect(booking.client.userId)}
-                        >
-                            <AvatarImage
-                                src={booking.client.user.image ?? "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711878461/defaultImages/default-profile-image_grcgcd.png"}
-                                alt={booking.client.name}
-                            />
-                        </Avatar> */}
                         <div>
                             <p><b>Event Name :</b> {booking.subject}</p>
                             <p><b>Client :</b> {booking.client.name}</p>

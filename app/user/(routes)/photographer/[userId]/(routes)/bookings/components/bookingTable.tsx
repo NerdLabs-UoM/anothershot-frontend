@@ -54,13 +54,13 @@ const BookingTable = () => {
             <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-8 pr-2 ">
                 <div className="flex items-start pl-4 sm:pl-4 pt-4 text-xl font-bold text-black mb-4">Bookings</div>
                 <div className="overflow-x-auto sm:overflow-hidden overflow-y-auto sm:overflow-y-auto w-full max-h-[400px]">
-                    <Table className="w-full sm:w-full min-w-[600px] mb-16 ">
+                    <Table className="w-1/2 sm:w-full min-w-[400px] mb-16 ">
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium">Client Name</TableHead>
+                                <TableHead className="w-[80px] sm:w-[100px] text-center text-black font-medium hidden sm:table-cell">Client Name</TableHead>
                                 <TableHead className="text-center text-black font-medium">Booking Title</TableHead>
-                                <TableHead className='text-center text-black font-medium'>Start Date & Time</TableHead>
-                                <TableHead className="text-center text-black font-medium">Payment Status</TableHead>
+                                <TableHead className='text-center text-black font-medium hidden sm:table-cell'>Start Date & Time</TableHead>
+                                <TableHead className="text-center text-black font-medium hidden sm:table-cell">Payment Status</TableHead>
                                 <TableHead className="text-center text-black font-medium">Offer</TableHead>
                                 <TableHead className="text-center text-black font-medium">More</TableHead>
                             </TableRow>
@@ -68,10 +68,10 @@ const BookingTable = () => {
                         <TableBody>
                             {bookings.map((booking) => (
                                 <TableRow key={booking.id}>
-                                    <TableCell className="text-center text-xs">{booking.client.name}</TableCell>
+                                    <TableCell className="text-center text-xs hidden sm:table-cell">{booking.client.name}</TableCell>
                                     <TableCell className='text-center text-xs'>{booking.subject}</TableCell>
-                                    <TableCell className='text-center text-xs'>{booking.start ? new Date(booking.start).toISOString() : ""}</TableCell>
-                                    <TableCell className='text-center text-xs'>{booking.status}</TableCell>
+                                    <TableCell className='text-center text-xs hidden sm:table-cell'>{booking.start ? new Date(booking.start).toISOString() : ""}</TableCell>
+                                    <TableCell className='text-center text-xs hidden sm:table-cell'>{booking.status}</TableCell>
                                     <TableCell className='text-center text-xs'>
                                         {booking.offer ? <div className="bg-blue-500 py-1 rounded-md bg-opacity-40">Offer exists</div> : <Offers bookingId={booking.id} clientId={booking.client.id} eventName={booking.category} />}
                                     </TableCell>

@@ -71,7 +71,7 @@ const FullCalendarComp: React.FC<FullCalendarProps> = ({ events }) => {
           <h2 className="text-2xl  mb-4">Event Details</h2>
           <pre>{modalContent}</pre>
           <button
-            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+            className="mt-4 bg-black text-white py-2 px-4 rounded"
             onClick={() => setModalIsOpen(false)}
           >
             Close
