@@ -18,24 +18,24 @@ interface BookingDetails{
 
 function Offers({bookingId,clientId,eventName}: BookingDetails) {
   const [isOpen, setIsOpen] = useState<{ isOpen: boolean }>({ isOpen: false });
-
+  const [hasOffer,setHasOffer] = useState<{ hasOffer: boolean }>({hasOffer:false});
   const handleOpenChange = (open: boolean) => {
     setIsOpen({ isOpen: open });
   };
 
   return (
       <div className="flex flex-col">
-        <Dialog open={isOpen.isOpen} onOpenChange={handleOpenChange}>
+        {hasOffer.hasOffer==false?<Dialog open={isOpen.isOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger className="bg-green-500 py-1 rounded-md bg-opacity-40">Create Offer</DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Make an Offer</DialogTitle>
               <DialogDescription>
-                <OfferForm bookingId = {bookingId} clientId={clientId} setIsOpen={setIsOpen} eventName={eventName}/>
+                <OfferForm bookingId = {bookingId} clientId={clientId} setIsOpen={setIsOpen} eventName={eventName} setHasOffer={setHasOffer}/>
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
-        </Dialog>
+        </Dialog>:<div className="bg-blue-500 py-1 rounded-md bg-opacity-40">Offer Exists</div>}
       </div>
   );
 }

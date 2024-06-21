@@ -28,6 +28,8 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
+      <link rel="manifest" href="/manifest.json" />
+      <link rel="icon" href="/siteicon.png" sizes="2048x2048" />
       <body className={inter.className}>
         <QueryProvider>
           {/* <SessionProvider session={session}> */}

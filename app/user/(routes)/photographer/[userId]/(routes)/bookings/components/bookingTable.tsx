@@ -47,8 +47,10 @@ const BookingTable = () => {
     const handleCloseDialog = () => {
         setSelectedBooking(null);
         setIsDialogOpen(false);
+
     };
 
+  
     return (
         <div className='p-6 sm:p-0'>
             <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-8 pr-2 ">
@@ -79,6 +81,7 @@ const BookingTable = () => {
                                         <button className="flex items-center justify-center" onClick={() => handleOpenDialog(booking)}>
                                             <RiMoreFill />
                                         </button>
+
                                     </TableCell>
                                 </TableRow>
                             ))}
