@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  ColumnDef,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
 import {
   Dialog,
@@ -24,7 +22,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { MoreHorizontal ,X} from "lucide-react";
+import { MoreHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -39,7 +37,7 @@ import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import axios from "axios";
-
+import { ReportStatus } from "@/app/lib/types";
 
 export type Imagereport = {
   id: string;
@@ -74,12 +72,12 @@ const handleDelete = async (imageId: string, photographerId: string) => {
   }
 };
 
-const handleStatus = async (ImageReportId:string,status:string) => {
+const handleStatus = async (ImageReportId: string, status: string) => {
   axios
     .put(
       `${process.env.NEXT_PUBLIC_API_URL}/api/report/update-image-report-status`,
       {
-        ImageReportId:ImageReportId,
+        ImageReportId: ImageReportId,
         status: status,
       }
     )
@@ -91,6 +89,17 @@ const handleStatus = async (ImageReportId:string,status:string) => {
     });
 };
 
+const setStatus = (status: ReportStatus) => {
+  if (status == "PENDING") {
+    return <Badge variant="default">{status}</Badge>;
+  }
+  if (status == "RESOLVED") {
+    return <Badge variant="secondary">{status}</Badge>;
+  }
+  if (status == "DISMISSED") {
+    return <Badge variant="destructive">{status}</Badge>;
+  }
+};
 
 export const columns: ColumnDef<Imagereport>[] = [
   {
@@ -113,36 +122,36 @@ export const columns: ColumnDef<Imagereport>[] = [
                 />
               </div>
             </DialogHeader>
-            <div className = "flex justify-end gap-2">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant='destructive'>
-                  Delete
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    the image.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() =>
-                      handleDelete(
-                        row.original.feedImage?.id,
-                        row.original.feedImage?.photographerId
-                      )
-                    }
-                  >
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <div className="flex justify-end gap-2">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Delete</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      the image.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() =>
+                        handleDelete(
+                          row.original.feedImage?.id,
+                          row.original.feedImage?.photographerId
+                        )
+                      }
+                    >
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </DialogContent>
         </Dialog>
@@ -162,19 +171,9 @@ export const columns: ColumnDef<Imagereport>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div>
-        {row.original.status === "PENDING" ? (
-          <Badge variant="default">{row.original.status}</Badge>
-        ) : row.original.status === "RESOLVED" ? (
-          <Badge variant="secondary">{row.original.status}</Badge>
-        ) : row.original.status === "DISMISSED" ? (
-          <Badge variant="destructive">{row.original.status}</Badge>
-        ) : (
-          <Badge variant="outline">{row.original.status}</Badge>
-        )}
-      </div>
-    ),
+    cell: ({ row }) => {
+      return <div>{setStatus(row.original.status)}</div>;
+    },
   },
   {
     accessorKey: "subject",
@@ -197,7 +196,6 @@ export const columns: ColumnDef<Imagereport>[] = [
     accessorKey: "More",
     cell: ({ row }) => {
       const report = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -219,29 +217,38 @@ export const columns: ColumnDef<Imagereport>[] = [
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
-            onClick={() => {
-              const status = "RESOLVED"
-              handleStatus(row.original.id,status);
-            }} >Mark as Resolved</DropdownMenuItem>
+              onClick={() => {
+                const status = "RESOLVED";
+                row.original.status = status;
+                handleStatus(row.original.id, status);
+              }}
+            >
+              Mark as Resolved
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="bg-transparent text-black font-normal hover:bg-slate-200"
               onClick={() => {
-                const status = "DISMISSED"
-                handleStatus(row.original.id,status);
+                const status = "DISMISSED";
+                setStatus(status);
+                row.original.status = status;
+                handleStatus(row.original.id, status);
               }}
             >
               Dismiss Report
             </DropdownMenuItem>
-            <AlertDialog >
+            <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant='ghost' className="flex pl-2 w-full justify-start">
+                <Button
+                  variant="ghost"
+                  className="flex pl-2 w-full justify-start"
+                >
                   View Description
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogCancel className="flex justify-end h-1 p-0 border-none hover:bg-white">
-                    <X className="w-4 h-4"/>
+                    <X className="w-4 h-4" />
                   </AlertDialogCancel>
                   <AlertDialogTitle>Report Description</AlertDialogTitle>
                   <AlertDialogDescription>
