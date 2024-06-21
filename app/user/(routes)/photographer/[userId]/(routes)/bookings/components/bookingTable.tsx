@@ -62,7 +62,7 @@ const BookingTable = () => {
                                     <TableCell className='text-center text-xs'>{booking.status}</TableCell>
                                     
                                     <TableCell className='text-center text-xs'>              
-                                    {booking.offer?<div className="bg-blue-500 py-1 rounded-md bg-opacity-40">Offer exits</div>:<Offers bookingId={booking.id} clientId={booking.client.id}  eventName={booking.category}/>}
+                                    <Offers bookingId={booking.id} clientId={booking.client.id} eventName={booking.category}/>
                                     </TableCell>
                                 </TableRow>
                             ))}
