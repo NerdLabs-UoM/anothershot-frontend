@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
-import { Booking, Package } from "@/app/lib/types";
+import { Booking, Package, ReportStatus } from "@/app/lib/types";
 import {
     Table,
     TableBody,
@@ -19,6 +19,7 @@ import Offers from "@/components/offer/offers";
 const BookingTable = () => {  
     const { userId } = useParams();
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [offerStatus,setOfferStatus] = useState<ReportStatus>('PENDING');
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -28,6 +29,7 @@ const BookingTable = () => {
         );
         const data = response.data;
         setBookings(data);
+        setOfferStatus(response.data.offer.status)
       } catch (error) {
         toast.error("Cannot fetch Bookings.Please try again.");
       }
@@ -35,6 +37,7 @@ const BookingTable = () => {
     fetchBookings();
   }, [userId]);
 
+  
     return (
         <div className='p-6 sm:p-0'>
             <div className="border border-gray-300 rounded-lg shadow-lg p-4 mb-36 mt-20 px-10">
@@ -59,7 +62,7 @@ const BookingTable = () => {
                                     <TableCell className='text-center text-xs'>{booking.status}</TableCell>
                                     
                                     <TableCell className='text-center text-xs'>              
-                                    {booking.offer?<div className="bg-blue-500 py-1 rounded-md bg-opacity-40">Offer exits</div>:<Offers bookingId={booking.id} clientId={booking.client.id}  eventName={booking.category}/>}
+                                    <Offers bookingId={booking.id} clientId={booking.client.id} eventName={booking.category}/>
                                     </TableCell>
                                 </TableRow>
                             ))}

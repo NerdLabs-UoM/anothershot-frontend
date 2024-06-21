@@ -36,10 +36,14 @@ interface ReportFormProps {
   setIsOpen: React.Dispatch<
       React.SetStateAction<{
           isOpen:boolean;
+      }>>;
+  setHasOffer: React.Dispatch<
+      React.SetStateAction<{
+          hasOffer:boolean;
       }>>
 }
 
-const OfferForm:React.FC<ReportFormProps> = ({bookingId,clientId,eventName,setIsOpen}:ReportFormProps) =>{
+const OfferForm:React.FC<ReportFormProps> = ({bookingId,clientId,eventName,setIsOpen,setHasOffer}:ReportFormProps) =>{
     const {data:session} = useSession();
     const userId = session?.user?.id;
 
@@ -65,6 +69,7 @@ const OfferForm:React.FC<ReportFormProps> = ({bookingId,clientId,eventName,setIs
             toast.error("Failed to create offer", { duration: 2000 });
           })
         }
+        setHasOffer({hasOffer: true})
         await createOffer();
     };
 
