@@ -25,7 +25,7 @@ function Offers({bookingId,clientId,eventName}: BookingDetails) {
 
   return (
       <div className="flex flex-col">
-        {hasOffer.hasOffer==true?<Dialog open={isOpen.isOpen} onOpenChange={handleOpenChange}>
+        {hasOffer.hasOffer==false?<Dialog open={isOpen.isOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger className="bg-green-500 py-1 rounded-md bg-opacity-40">Create Offer</DialogTrigger>
           <DialogContent>
             <DialogHeader>
