@@ -185,6 +185,7 @@ export interface Attachment {
 }
 
 export interface Booking {
+    map(arg0: (booking: any) => false | import("react").JSX.Element): import("react").ReactNode;
     id: string;
     client: Client;
     clientId: string;
