@@ -201,7 +201,7 @@ const SearchPage = () => {
                                     <span className="ml-2">{photographer.contactDetails?.address?.city}</span>
                                 </div>
                                 <Separator className="my-3" />
-                                <div className="flex mt-2">
+                                <div className="flex mt-2 flex-wrap">
                                     {
                                         photographer.category.map((category) => (
                                             <Badge key={category} className="mr-1 cursor-pointer">
