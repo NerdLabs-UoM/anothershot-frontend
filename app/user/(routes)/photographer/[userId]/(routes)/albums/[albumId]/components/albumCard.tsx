@@ -35,6 +35,7 @@ import toast from "react-hot-toast";
 import { NotificationService } from "@/components/notification/notification";
 import { useSession } from "next-auth/react";
 import PayNow from "@/components/checkout/PayAlbum";
+import { useParams } from "next/navigation";
 
 type AlbumCardProps = {
   albumData: Album[];
@@ -49,6 +50,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
 }) => {
   const { data: session } = useSession();
   const [status, setStatus] = useState<String>();
+  const { userId } = useParams();
 
   if (!isPhotographer) {
     albumData = albumData.filter((album) => album.visibility === "PUBLIC");
@@ -253,11 +255,11 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                             </button>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <PayNow
+                            {userId ==session?.user.id ?"":<PayNow
                               albumId={album.id}
                               name={album.name}
                               price={album.price}
-                            />
+                            />}
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
