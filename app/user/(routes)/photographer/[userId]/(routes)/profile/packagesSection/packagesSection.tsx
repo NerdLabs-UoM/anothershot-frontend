@@ -15,6 +15,21 @@ const PackagesSection = () => {
   const { userId } = useParams();
   const { data: session } = useSession();
 
+  // useEffect(() => {
+  //   const fetchPackages = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/${userId}`
+  //       );
+  //       const data = response.data;
+  //       setPackageList(data);
+  //     } catch (error) {
+  //       toast.error("Cannot fetch packages. Please try again.");
+  //     };
+  //   }
+  //   fetchPackages();
+  // }, [userId]);
+
   useEffect(() => {
     const fetchPackages = async () => {
       try {
@@ -23,14 +38,16 @@ const PackagesSection = () => {
         );
         const data = response.data;
         setPackageList(data);
-      } catch (error) {
-        toast.error("Cannot fetch packages. Please try again.");
-      };
-    }
+      } catch (error: any) {
+        if (error.response && error.response.data && error.response.data.message === 'No packages found for the specified photographer.') {
+          toast.error('Cannot fetch packages');
+        } else {
+          toast.error('An error occurred while fetching package details');
+        }
+      }
+    };
     fetchPackages();
   }, [userId]);
-
- 
 
   return (
     <div className="mt-0 sm:mt-4 mb-12 sm:mb-10 w-full sm:w-full sm:mr-2 py-10 pb-0 sm:pb-16 justify-between bg-white border-t-2">

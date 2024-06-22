@@ -121,18 +121,21 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             packageProp(prevPackageList => prevPackageList.map(packageItem =>
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
             ));
-            if(updatedPackage.price < 0){
+            if (updatedPackage.price < 0) {
                 toast.error("Price must be a positive number");
                 return;
             }
-            toast.success("Package details updated successfully.")
-            NotificationService({
-                senderId: session?.user?.id, 
-                receiverId: session?.user.id,
-                type: 'packages_updated',
-                title: 'packages Updated',
-                description: '',
-              });
+            else {
+                toast.success("Package details updated successfully.")
+                NotificationService({
+                    senderId: session?.user?.id,
+                    receiverId: session?.user.id,
+                    type: 'packages_updated',
+                    title: 'packages Updated',
+                    description: '',
+                });
+            }
+
         }
         catch (error) {
             toast.error("An error occurred. Please try again.")
@@ -153,26 +156,31 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             const newPackage: Package = response.data
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
-            } 
-            else {
-                packageProp(prevPackageList => [...prevPackageList, newPackage]);
-                if(newPackage.price<0){
-                    toast.error("Price must be a positive number");
-                    return;
-                }
-                toast.success("Package created successfully.");
             }
-            NotificationService({
-                senderId: session?.user?.id, 
-                receiverId: session?.user.id,
-                type: 'packages_created',
-                title: 'packages created',
-                description: '',
-              });
-        } catch (error) {
+            else {
+
+                if (newPackage.price < 0) {
+                    toast.error("Price must be a positive number");
+                }
+                packageProp(prevPackageList => [...prevPackageList, newPackage]);
+                toast.success("Package created successfully.");
+                return newPackage;
+
+                NotificationService({
+                    senderId: session?.user?.id,
+                    receiverId: session?.user.id,
+                    type: 'packages_created',
+                    title: 'packages created',
+                    description: '',
+                });
+
+            }
+        }
+        catch (error) {
             toast.error("An error occurred. Please try again.");
         }
-    };
+    }
+
 
     const handleDeletePackage = async () => {
         if (session?.user?.id === undefined) return
@@ -185,12 +193,12 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             packageProp(prevPackageList => prevPackageList.filter(packageItem => packageItem.id !== selectedPackageId));
             toast.success("Package deleted successfully.")
             NotificationService({
-                senderId: session?.user?.id, 
+                senderId: session?.user?.id,
                 receiverId: session?.user.id,
                 type: 'packages_deleted',
                 title: 'packages Deleted',
                 description: '',
-              });
+            });
         }
         catch (error) {
             toast.error("An error occurred. Please try again.")
@@ -348,4 +356,5 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         </main >
     );
 };
+
 export default PackageEditForm;
