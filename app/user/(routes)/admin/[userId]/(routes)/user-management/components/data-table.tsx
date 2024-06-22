@@ -111,14 +111,6 @@ export function DataTable<TData, TValue>({
               <DropdownMenuGroup className="ml-3">
                 {userRole.map((item, index) => (
                   <div key={index}>
-                    {/* <Checkbox
-                    id={item.role}
-                      value={item.role}
-                      name="time"
-                      onChange={onChangeCheckBox}
-                      checked={item.isChecked}
-                      className="peer m-2 w-4 h-4"
-                    /> */}
                     <input
                       type="checkbox"
                       value={item.role}

@@ -15,7 +15,6 @@ export const columns: ColumnDef<User>[] = [
         header: ({ column }) => {
             return (
                 <div>
-                    <Checkbox className="border-slate" />
                     <Button
                         variant="ghost"
                         onClick={() =>
@@ -30,7 +29,6 @@ export const columns: ColumnDef<User>[] = [
         },
         cell: ({ row }) => (
             <div className="py-3 text-sm font-medium leading-tight text-gray-900">
-                <Checkbox className="mr-8 border-slate" />
                 {row.original.id}
             </div>
         ),
@@ -75,15 +73,6 @@ export const columns: ColumnDef<User>[] = [
                 email={row.original.email}
                 image={row.original.image}
             />
-        ),
-    },
-    {
-        accessorKey: "status",
-        header: "Reports",
-        cell: ({ row }) => (
-            <div>
-                {row.original.reports.length > 0 ? `${row.original.reports.length} reports` : ("No Reports")}
-            </div>
         ),
     },
     {

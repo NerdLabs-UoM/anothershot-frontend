@@ -4,6 +4,8 @@ export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
 
 export type ReportStatus = "PENDING" | "RESOLVED" | "DISMISSED";
 
+export type SystemReportStatus = "PENDING" | "RESOLVED";
+
 export type TestimonialVisibility = "PUBLIC" | "PRIVATE";
 
 export type AlbumVisibility = "PUBLIC" | "PRIVATE";
@@ -90,6 +92,7 @@ export interface User {
     updatedAt: Date;
     suspended: Suspended;
     reports: Report[];
+    systemReports: SystemReport[];
 }
 
 export interface Account {
@@ -422,3 +425,14 @@ export interface Notification {
     createdAt: Date;
     updatedAt: Date;
 } 
+
+export interface SystemReport {
+    id:string;
+    user:User;  
+    userId:string;
+    subject:string;
+    description:string;
+    status:SystemReportStatus;
+    createdAt:Date;
+    updatedAt:Date;
+}
