@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, isBefore, startOfToday } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -40,6 +40,8 @@ export function DateTimePickerForm(
         resolver: zodResolver(formSchema),
     });
 
+    const today = startOfToday();
+
     function onDateChange(date: Date) {
         props.setDate(date);
     }
@@ -78,18 +80,19 @@ export function DateTimePickerForm(
                                         mode="single"
                                         selected={props.date}
                                         onSelect={(date) => {
-                                            field.onChange(date);
-                                            if (date) {
+                                            if (date && !isBefore(date, today)) {
+                                                field.onChange(date);
                                                 props.setDate(date);
                                             }
                                         }}
                                         initialFocus
+                                        disabled={(date) => isBefore(date, today)}
                                     />
                                     <div className="p-3 border-t border-border">
                                         <TimePickerDemo
                                             setDate={(date) => {
-                                                field.onChange(date);
-                                                if (date) {
+                                                if (date && !isBefore(date, today)) {
+                                                    field.onChange(date);
                                                     props.setDate(date);
                                                 }
                                             }}

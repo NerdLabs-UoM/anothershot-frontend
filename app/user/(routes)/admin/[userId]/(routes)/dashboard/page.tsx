@@ -70,8 +70,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     socket?.on("online-user-count", (data) => {
-      console.log(data);
-      setTotalActiveUsers(data.activeUsers);
+      setTotalActiveUsers(data);
     });
     return () => {
       socket?.off("online-user-count");
