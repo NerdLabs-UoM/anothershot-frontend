@@ -43,20 +43,13 @@ const EarningSection:React.FC<EarningSectionProps> = ({userId}) => {
     ];
     
     return (
-        <div className="w-[100%] ">
-        {/* <Card className="w-[350px] mt-8 h-[300px] mx-auto md:justify-start">
-            <CardHeader>
-                <CardTitle className="text-5xl font-['Inter']">Earnings</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4 "> */}
+        <div className="w-auto">
                 {fields.map((item, index) => (
-                    <div key={index} className="grid grid-cols-2">
-                        <div className="text-xl  ">{item.name}:</div>
-                        <div className="inline-block pt-1 ml-6 align-middle text-xl ">{`USD ${item.value}`}</div>
+                    <div key={index} className="sm:grid grid-cols-[150px_auto] items-center gap-2 md:gap-4 mb-2">
+                        <div className="md:text-xl font-semibold">{item.name}:</div>
+                        <div className="inline-block pt-1 ml-6 align-middle text-sm md:text-xl ">{`(USD) ${item.value}`}</div>
                     </div>
                 ))}
-            {/* </CardContent> */}
-        {/* </Card> */}
         </div>
         
     );

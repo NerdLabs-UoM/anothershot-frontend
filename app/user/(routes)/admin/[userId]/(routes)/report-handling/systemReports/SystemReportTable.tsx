@@ -1,6 +1,6 @@
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import Pagination from "../../user-management/components/pagination";
+import Pagination from "@/components/pagination";
 import { useEffect, useState } from "react";
 import {
   fetchSystemReportData,
@@ -12,19 +12,19 @@ import toast from "react-hot-toast";
 const TableData = () => {
   const [page, setPage] = useState(1);
   const [last, setLast] = useState(1);
-  const [filteredUsers, setFilteredUsers] = useState<SystemReport[]>([]);
+  const [filteredReports, setFilteredReports] = useState<SystemReport[]>([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchReports = async () => {
       try {
         const data: SystemReport[] = await fetchSystemReportData(page);
         console.log("fetched data", data);
-        setFilteredUsers(data);
+        setFilteredReports(data);
       } catch (err) {
         toast.error("Error Fetching Data");
       }
     };
-    fetchUsers();
+    fetchReports();
   }, [page]);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const TableData = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={filteredUsers} />
+      <DataTable columns={columns} data={filteredReports} />
       <Pagination
         lastPage={last}
         currentPage={page}

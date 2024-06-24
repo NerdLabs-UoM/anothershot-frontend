@@ -2,7 +2,7 @@ import { Profilereport, columns } from "./columns";
 import { DataTable } from "./data-table";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import PaginationBar from "./pegination";
+import PaginationBar from "@/components/pagination";
 import { fetchLastPage, fetchReportData } from "../fetchReportData";
 
 const TableData = () => {
