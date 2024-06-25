@@ -134,7 +134,6 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
         
   const renderEditButton = () => {
     if (session?.user?.id === userId) {
-      console.log("session", session?.user?.id);
       return (
         <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
           <Button
