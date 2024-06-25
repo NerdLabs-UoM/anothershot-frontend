@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 
 const PackagesSection = () => {
   const [packageList, setPackageList] = useState<Package[]>([]);
+  const [initialFetchDone, setInitialFetchDone] = useState(false);
   const { userId } = useParams();
   const { data: session } = useSession();
 
@@ -23,14 +24,16 @@ const PackagesSection = () => {
         );
         const data = response.data;
         setPackageList(data);
+        setInitialFetchDone(true);
       } catch (error) {
-        if (packageList.length <= 0)
+        setInitialFetchDone(true);
+        if (packageList.length <= 0) {
           toast('This photographer did not create packages yet.');
-        else {
+        } else {
           toast.error("Cannot fetch packages. Please try again.");
         }
-      };
-    }
+      }
+    };
     fetchPackages();
   }, [userId]);
 
@@ -45,28 +48,27 @@ const PackagesSection = () => {
         }
       </div>
       {packageList.length > 0 ? (
-        <>
-          <div className="flex flex-wrap justify-center">
-            {packageList.map((packageItem) => (
-              <PackageCard
-                src={packageItem.coverPhotos[0]}
-                name={packageItem.name}
-                description={packageItem.description}
-                price={packageItem.price}
-                key={packageItem.id}
-                packageId={packageItem.id}
-              />
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="text-center text-slate-950 mt-4">
-          No Packages to display.
+        <div className="flex flex-wrap justify-center">
+          {packageList.map((packageItem) => (
+            <PackageCard
+              src={packageItem.coverPhotos[0]}
+              name={packageItem.name}
+              description={packageItem.description}
+              price={packageItem.price}
+              key={packageItem.id}
+              packageId={packageItem.id}
+            />
+          ))}
         </div>
+      ) : (
+        initialFetchDone && (
+          <div className="text-center text-slate-950 mt-4">
+            No Packages to display.
+          </div>
+        )
       )}
-
-
     </div>
   );
 };
+
 export default PackagesSection;

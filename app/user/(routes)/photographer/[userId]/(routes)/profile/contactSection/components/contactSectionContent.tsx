@@ -21,14 +21,20 @@ const ContactSectionContent = () => {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/contactdetails/${userId}`);
         setContactDets(res.data);
       } catch (err) {
-        if (contactDets == null)
+        if (!contactDets) {
           toast("No contact details for this photographer yet");
-        else
+        } else {
           toast.error("Cannot fetch contactDetails. Please try again.");
+        }
       }
     };
-    fetchContactDets();
-  }, []);
+  
+    if (userId) {
+      fetchContactDets();
+    }
+  }, [userId]);
+  
+  
 
   const handleDirect = (url: string) => {
     window.open(url, "_blank");

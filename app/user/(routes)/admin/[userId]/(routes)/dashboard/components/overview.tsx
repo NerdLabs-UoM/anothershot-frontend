@@ -19,16 +19,14 @@ export const Overview: React.FC<OverviewProps> = ({ setMonthlyTotal }) => {
       try {
         const res = await axios.get<MonthlyTotal[]>(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/monthlyTotals`);
         setData(res.data);
-        
-        // If you want to set a total value to a state variable
         const total = res.data.reduce((acc, item) => acc + item.total, 0);
         setMonthlyTotal(total);
       } catch (error) {
+        console.error("Failed to fetch monthly totals:", error);
       }
     };
-
     fetchMonthlyTotal();
-  }, []);
+  }, [setMonthlyTotal]);
 
   return (
     <ResponsiveContainer width="100%" height={350}>

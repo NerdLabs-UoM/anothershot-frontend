@@ -36,11 +36,11 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                 setPhotographer(res.data);
             }
             catch (err) {
-                toast.error("at package Cannot fetch data. Please try again.")
+                toast.error("Cannot fetch data. Please try again.");
             }
         };
         fetchData();
-    }, []);
+    }, [userId]);
 
     useEffect(() => {
         if (userId !== session?.user.id) {
@@ -48,7 +48,7 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
         } else {
             setIsPhotographer(true);
         }
-    }, [photographer, session]);
+    }, [userId, session]);
 
     return (
         <main>
@@ -73,16 +73,16 @@ const AddCoverPhotos: React.FC<PackageEditFormProps> = ({ packageId, setCoverPho
                                         senderId: session?.user?.id, 
                                         receiverId: session?.user.id,
                                         type: 'contact_updated',
-                                        title: 'contact Updated',
+                                        title: 'Contact Updated',
                                         description: '',
                                       });
                                 }
                                 catch (error) {
-                                    toast.error("An error occured. Please try again.")
+                                    toast.error("An error occurred. Please try again.");
                                 }
                             }
 
-                            update()
+                            update();
                             setCoverPhoto({ url: uploadedResult.secure_url });
 
                         }}
