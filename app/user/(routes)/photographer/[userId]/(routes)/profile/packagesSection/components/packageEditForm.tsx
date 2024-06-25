@@ -63,13 +63,13 @@ const formSchema = z.object({
     name: z
         .string()
         .min(2, {
-            message: "Package name must be at least 2 characters long",
+            message: "Username must be at least 2 characters long",
         })
         .max(50),
     description: z
         .string()
         .min(2, {
-            message: "Package description must be at least 2 characters long",
+            message: "Username must be at least 2 characters long",
         })
         .max(200),
     price: z.number().positive({
@@ -79,9 +79,9 @@ const formSchema = z.object({
 });
 
 const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp }) => {
-    const { data: session } = useSession();
-    const [selectedPackageId, setSelectedPackageId] = useState<string>("");
-    const [isNew, setIsNew] = useState<boolean>(false);
+    const { data: session } = useSession()
+    const [selectedPackageId, setSelectedPackageId] = useState<string>("")
+    const [isNew, setIsNew] = useState<boolean>(false)
     const { userId } = useParams();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -94,54 +94,54 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         }
     });
 
+    const priceString = form.getValues("price").toString();
+    const priceNumber = parseFloat(priceString);
+
     const handlePackageChange = (value: string) => {
-        const selectedPackage = packages.find((packageItem) => packageItem.id === value);
+        const selectedPackage = packages.find((packageItem) => packageItem.id === value)
         if (selectedPackage) {
-            form.setValue("name", selectedPackage.name);
-            form.setValue("description", selectedPackage.description);
-            form.setValue("price", selectedPackage.price);
+            form.setValue("name", selectedPackage.name)
+            form.setValue("description", selectedPackage.description)
+            form.setValue("price", selectedPackage.price)
         }
-        setSelectedPackageId(value);
-    };
+        setSelectedPackageId(value)
+    }
 
     const handleSaveChanges = async () => {
-        const priceNumber = form.getValues("price");
-        if (priceNumber <= 0) {
-            toast.error("Price must be a positive number");
-            return;
-        }
         const data = {
             photographerId: session?.user?.id,
             packageId: selectedPackageId,
             name: form.getValues("name"),
             description: form.getValues("description"),
             price: priceNumber
-        };
+        }
         try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data);
+            const priceNumber = form.getValues("price");
+            if (priceNumber <= 0) {
+                toast.error("Price must be a positive number");
+                return;
+            }
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data)
             const updatedPackage: Package = response.data;
             packageProp(prevPackageList => prevPackageList.map(packageItem =>
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
             ));
-            toast.success("Package details updated successfully.");
+           
+            toast.success("Package details updated successfully.")
             NotificationService({
-                senderId: session?.user?.id,
+                senderId: session?.user?.id, 
                 receiverId: session?.user.id,
                 type: 'packages_updated',
-                title: 'Packages Updated',
+                title: 'packages Updated',
                 description: '',
-            });
-        } catch (error) {
-            toast.error("An error occurred. Please try again.");
+              });
         }
-    };
+        catch (error) {
+            toast.error("An error occurred. Please try again.")
+        }
+    }
 
     const handleCreatePackage = async () => {
-        const priceNumber = form.getValues("price");
-        if (priceNumber <= 0) {
-            toast.error("Price must be a positive number");
-            return;
-        }
         if (!session?.user?.id) return;
         const data = {
             photographerId: session.user.id,
@@ -151,52 +151,60 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             price: priceNumber,
         };
         try {
+            const priceNumber = form.getValues("price");
+            if (priceNumber <= 0) {
+                toast.error("Price must be a positive number");
+                return;
+            }
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
-            const newPackage: Package = response.data;
+            const newPackage: Package = response.data
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
-            } else {
+            } 
+            else {
                 packageProp(prevPackageList => [...prevPackageList, newPackage]);
+               
                 toast.success("Package created successfully.");
-                NotificationService({
-                    senderId: session?.user?.id,
-                    receiverId: session?.user.id,
-                    type: 'packages_created',
-                    title: 'Packages Created',
-                    description: '',
-                });
             }
+            NotificationService({
+                senderId: session?.user?.id, 
+                receiverId: session?.user.id,
+                type: 'packages_created',
+                title: 'packages created',
+                description: '',
+              });
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
     };
 
     const handleDeletePackage = async () => {
-        if (session?.user?.id === undefined) return;
+        if (session?.user?.id === undefined) return
         const data = {
             photographerId: session.user.id,
             packageId: selectedPackageId
-        };
+        }
         try {
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data });
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data })
             packageProp(prevPackageList => prevPackageList.filter(packageItem => packageItem.id !== selectedPackageId));
-            toast.success("Package deleted successfully.");
+            toast.success("Package deleted successfully.")
             NotificationService({
-                senderId: session?.user?.id,
+                senderId: session?.user?.id, 
                 receiverId: session?.user.id,
                 type: 'packages_deleted',
-                title: 'Packages Deleted',
+                title: 'packages Deleted',
                 description: '',
-            });
-        } catch (error) {
-            toast.error("An error occurred. Please try again.");
+              });
         }
-    };
+        catch (error) {
+            toast.error("An error occurred. Please try again.")
+        }
+    }
 
     const renderEditButton = () => {
         if (session && session.user && session.user.id === userId) {
             return (
-                <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end">
+                <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
                     <Button
                         variant={"outline"}
                         size={"icon"}
@@ -209,6 +217,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         }
         return null;
     };
+
     return (
         <main>
             <div className="w-full sm:pr-10">
@@ -343,5 +352,4 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
         </main >
     );
 };
-
 export default PackageEditForm;
