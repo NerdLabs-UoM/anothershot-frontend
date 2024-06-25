@@ -135,7 +135,7 @@ const ProfileBio = () => {
         });
         if (response.status === 201) {
           setLoading(false);
-          e.target.reset();
+          //e.target.reset();
           console.log(response.status);
           toast.success("Successfully submitted details.");
         }
@@ -148,6 +148,14 @@ const ProfileBio = () => {
     }
     setIsOpen(false);
   };
+  useEffect(() => {
+    if (client) {
+        form.reset({
+          name: values.name || "",
+          bio: values.bio || "",
+        })
+    }
+}, [client, form])
 
   return (
     <div className= "rounded-lg border border-slate-100 shadow-inner drop-shadow-md w-11/12 lg:w-1/3 h-full p-3 lg:mr-5 lg:mt-20">

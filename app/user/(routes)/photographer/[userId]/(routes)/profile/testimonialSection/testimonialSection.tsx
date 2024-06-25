@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 
-import CarouselMessages from "./components/CarouselMessages";
 import EditButton from "./components/EditButton";
 import SubmitForm from "./components/SubmitForm";
 import { Testimonial } from "@/app/lib/types";
@@ -24,7 +23,7 @@ const TestMonialsSection = () => {
   }, [userId]);
 
   return (
-    <div className="flex flex-col items-center w-full pb-40 pt-14 sm:pt-10 sm:border-t-2">
+    <div className="flex flex-col items-center w-full pb-40 pt-12 sm:pt-10 border-t-2">
       <EditButton
         testimonialsData={testimonials}
       />
