@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { fetchData, fetchLastPage } from "./serviceData";
-import PaginationSection from "./components/pagination";
+import PaginationSection from "@/components/pagination";
 import { User } from "@/app/lib/types";
 import { set } from "lodash";
 

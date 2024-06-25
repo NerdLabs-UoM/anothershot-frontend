@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-export type Payment = {
+export type PaymentSummary = {
   name: string;
   bookingsId: string;
   updatedAt: string;
@@ -11,7 +11,7 @@ export type Payment = {
   category: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<PaymentSummary>[] = [
   {
     accessorKey: "client.name",
     header: "Client Name",

@@ -1,3 +1,5 @@
+// "use client";
+
 import {
     Pagination,
     PaginationContent,
@@ -16,7 +18,7 @@ interface PaginationProps {
     currentPage: number;
 }
 
-const PaginationBar: React.FC<PaginationProps> = ({
+const PaginationSection: React.FC<PaginationProps> = ({
     currentPage,
     lastPage,
     handlePrev,
@@ -24,7 +26,7 @@ const PaginationBar: React.FC<PaginationProps> = ({
     handleClick,
 }) => {
     return (
-        <Pagination className="mt-5">
+        <Pagination className="mt-5 text-xs flex justify-center">
             <PaginationContent>
                 <PaginationItem>
                     {1 !== currentPage && (
@@ -74,4 +76,4 @@ const PaginationBar: React.FC<PaginationProps> = ({
     );
 };
 
-export default PaginationBar;
+export default PaginationSection;
