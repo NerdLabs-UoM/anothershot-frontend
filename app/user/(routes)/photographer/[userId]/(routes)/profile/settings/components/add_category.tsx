@@ -119,8 +119,8 @@ const AddCategorySection = () => {
                         name="category"
                         render={({ field }) => (
                             <FormItem className="items-center justify-center">
-                                <div className="flex gap-2.5 ">
-                                    <FormLabel className="text-md">
+                                <div className="md:flex gap-2.5 ">
+                                    <FormLabel className="text-sm md:text-base">
                                         Category
                                     </FormLabel>
                                     <Popover>
@@ -216,7 +216,7 @@ const AddCategorySection = () => {
                         )}
                     />
                     <FormItem className="flex flex-wrap">
-                        <FormLabel className="items-end text-md">
+                        <FormLabel className="items-end text-sm md:text-base">
                             List
                         </FormLabel>
                         {selectedCategories?.map((category, index) => (

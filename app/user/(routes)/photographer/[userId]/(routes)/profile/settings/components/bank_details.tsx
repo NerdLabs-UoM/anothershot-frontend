@@ -103,12 +103,12 @@ const BankDetailsSection = () => {
     }
 
     return (
-        <div className="w-[100%]">
+        <div className="w-[100%] block">
 
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(handleSubmision)}
-                    className="grid gap-5 mr-5 md:grid-cols-2"
+                    className="grid md:grid-cols-2 gap-4 place-content-center"
                 >
                     {BankDetailsProps.map((item, index) => (
                         <FormField
@@ -116,15 +116,15 @@ const BankDetailsSection = () => {
                             control={form.control}
                             name={item.name as "bankName" | "accountName" | "accountBranch" | "accountNumber" | "accountBranchCode"}
                             render={({ field }) => (
-                                <FormItem>
-                                    <div className="grid gap-2 md:grid-cols-2 ">
-                                        <FormLabel>{item.label} :</FormLabel>
+                                <FormItem className="md:flex-col">
+                                    <div>
+                                        <FormLabel className="">{item.label} :</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="text"
                                                 placeholder={item.placeholder}
                                                 {...field}
-                                                className="w-[100%] sm:w-auto"
+                                                className="md:w-[300px] lg:w-[400px] xl:w-[500px] sm:w-auto "
                                             />
                                         </FormControl>
                                     </div>

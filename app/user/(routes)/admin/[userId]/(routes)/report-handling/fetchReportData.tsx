@@ -46,3 +46,28 @@ export const fetchLastImageReportPage = async (name:string): Promise<number> => 
         throw new Error("Error Fetching User Reports");
     }
 };
+
+
+// ------ System Reports ---------------
+
+export const fetchSystemReportData = async (page: number) => {
+    try {
+        const reports = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/admin/getallSystemReports?page=${page}`
+        );
+        return reports.data;
+    } catch (error) {
+        throw new Error("Error fetching system reports");
+    }
+}
+
+export const fetchLastSystemReportPage = async (): Promise<number> => {
+    try {
+        const lastPage = await axios.get<number>(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/admin/getlastSystemReportpage`
+        );
+        return lastPage.data;
+    } catch (error) {
+        throw new Error("Error Fetching System Reports last page");
+    }
+};
