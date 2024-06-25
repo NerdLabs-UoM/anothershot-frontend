@@ -232,7 +232,7 @@ const ClientBookings = () => {
                           <div className="flex flex-col text-xs sm:text-sm">
                             <p>Date: {booking.start ? booking.start.toLocaleString().split(',')[0] : ''}</p>
                             {booking.status === "CONFIRMED" || booking.status === "COMPLETED" ? (
-                              <p className="font-semibold text-slate-600">Total cost: {booking.offer?.price} Rs</p>
+                              <p className="font-semibold text-slate-600">Total cost: {booking.offer?.price} USD</p>
                             ) : booking.status === "CANCELLED" ? (
                               <p className="font-medium text-red-500">Booking has been cancelled</p>
                             ) : (
