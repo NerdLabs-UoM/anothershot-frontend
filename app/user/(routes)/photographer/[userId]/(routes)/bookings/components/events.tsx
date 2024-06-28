@@ -46,7 +46,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useParams } from "next/navigation";
 import React from "react";
-import { PlusSquare } from "lucide-react";
+import { PenSquare, PlusSquare } from "lucide-react";
 import { Booking, Event } from "@/app/lib/types";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 import { NotificationService } from "@/components/notification/notification";
@@ -88,6 +88,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedBookingId, setSelectedBookingId] = useState<string>("");
   const [selectedEventId, setSelectedEventId] = useState<string>("");
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const defaultStartDate = new Date();
   // defaultStartDate.setHours(defaultStartDate.getHours() + 5);
@@ -216,7 +217,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     const selectedEvent = eventItems.find((events) => events.id === value);
     if (selectedEvent) {
       form.setValue("title", selectedEvent.title);
-      console.log(`Selected Event ID: ${selectedEvent.id}`);  
+      console.log(`Selected Event ID: ${selectedEvent.id}`);
     }
     setSelectedEventId(value);
 
@@ -248,7 +249,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       toast.error("Please select an event to update");
       return;
     }
-    console.log(`Selected Event ID before update: ${selectedEventId}`);  
+    console.log(`Selected Event ID before update: ${selectedEventId}`);
 
     try {
       const data = {
@@ -258,15 +259,15 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         start: startString,
         end: endString
       };
-      console.log(`Selected Event ID before update: ${selectedEventId}`); 
+      console.log(`Selected Event ID before update: ${selectedEventId}`);
 
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${selectedEventId}/event/update`, data);
       const updatedEvent: Event = response.data;
       console.log(updatedEvent);
       eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id === selectedEventId ? updatedEvent : eventItems));
       NotificationService({
-        senderId: session?.user?.id, 
-        receiverId: session?.user.id, 
+        senderId: session?.user?.id,
+        receiverId: session?.user.id,
         type: 'Event_Updated',
         title: 'Event Updated successfully',
         description: '',
@@ -286,7 +287,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       eventProp(prevEventList => prevEventList.filter(eventItem => eventItem.id !== selectedEventId));
       toast.success("Event deleted successfully");
       NotificationService({
-        senderId: session?.user?.id, 
+        senderId: session?.user?.id,
         receiverId: userId as string,
         type: 'Event_Deleted',
         title: 'Event deleted successfully',
@@ -300,7 +301,13 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   return (
     <main>
       <div className="w-full sm:pr-10">
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) {
+            setIsNew(false);
+            form.reset();
+          }
+        }}>
           {renderEditButton()}
           <DialogContent className="max-w-[400px] sm:max-w-[430px] max-h-[700px] overflow-y-auto">
             <DialogHeader>
@@ -310,7 +317,17 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
               </DialogDescription>
             </DialogHeader>
 
-            <Button variant={"default"} size={"lg"} onClick={() => { setIsNew(true); setIsOld(false); }}><PlusSquare />Add New Event</Button>
+            <Button variant={"default"} size={"lg"} onClick={() => { setIsNew(!isNew); }}>
+              {isNew ? (
+                <>
+                  <PenSquare className="mr-2"/> Update Events
+                </>
+              ) : (
+                <>
+                  <PlusSquare className="mr-2"/> Add New Event
+                </>
+              )}
+            </Button>
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleSaveChanges)}>
@@ -453,7 +470,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
               )}
               <Button variant={"outline"} onClick={() => {
                 form.reset();
-                setIsNew(false);
               }}>Cancel</Button>
               {!isNew && <Button onClick={form.handleSubmit(handleSaveChanges)}>
                 Update
