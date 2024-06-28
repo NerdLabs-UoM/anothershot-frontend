@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MoreVertical } from "lucide-react";
+import { Images, MoreVertical } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -36,6 +36,12 @@ import { NotificationService } from "@/components/notification/notification";
 import { useSession } from "next-auth/react";
 import PayNow from "@/components/checkout/PayAlbum";
 import { useParams } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type AlbumCardProps = {
   albumData: Album[];
@@ -129,8 +135,8 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-[2rem] ">
-    {albumData.length === 0
-        ? "No Albums yet"
+      {albumData.length === 0
+        ? <p >"No Albums yet"</p>
         : albumData.map((album) => (
             <Card
               key={album.id}
@@ -153,9 +159,18 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                 />
               </Link>
               <>
-                <div className="absolute top-2 right-5 bg-slate-950 bg-opacity-45 rounded-full px-2 text-white text-xs">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="absolute top-4 left-5 bg-slate-950 bg-opacity-45 px-2 py-2 rounded-full text-white"><Images height={15} width={15}/></TooltipTrigger>
+                    <TooltipContent>
+                      <p>{`${album.images.length} images`}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <div className="absolute top-4 right-5 bg-slate-950 bg-opacity-45 rounded-full px-2 text-white text-xs">
                   {album.price !== 0 ? "PAID" : "FREE"}
                 </div>
+
                 <div className="absolute bottom-0 left-0 w-full h-[120px] bg-gradient-to-t from-black to-transparent rounded-b-[40px] p-4 flex items-center justify-between">
                   <div className="flex flex-col justify-center">
                     <HoverCard>
@@ -255,11 +270,15 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                             </button>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            {userId ==session?.user.id ?"":<PayNow
-                              albumId={album.id}
-                              name={album.name}
-                              price={album.price}
-                            />}
+                            {userId == session?.user.id ? (
+                              ""
+                            ) : (
+                              <PayNow
+                                albumId={album.id}
+                                name={album.name}
+                                price={album.price}
+                              />
+                            )}
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
@@ -269,7 +288,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
               </>
             </Card>
           ))}
-       </div>
+    </div>
   );
 };
 
