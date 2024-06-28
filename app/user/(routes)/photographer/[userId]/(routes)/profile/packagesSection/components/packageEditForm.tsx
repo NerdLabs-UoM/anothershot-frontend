@@ -9,11 +9,11 @@ import {
     FormControl,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PlusSquare } from 'lucide-react';
+import { PlusSquare, Pencil, PenSquare } from 'lucide-react';
 import {
     Dialog,
     DialogTrigger,
@@ -43,14 +43,12 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Pencil } from "lucide-react";
 import { Package } from "@/app/lib/types";
 import { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import { useParams } from "next/navigation";
 import { NotificationService } from "@/components/notification/notification";
 
 interface PackageEditFormProps {
@@ -63,13 +61,13 @@ const formSchema = z.object({
     name: z
         .string()
         .min(2, {
-            message: "Username must be at least 2 characters long",
+            message: "Package name must be at least 2 characters long",
         })
         .max(50),
     description: z
         .string()
         .min(2, {
-            message: "Username must be at least 2 characters long",
+            message: "Description must be at least 2 characters long",
         })
         .max(200),
     price: z.number().positive({
@@ -79,10 +77,12 @@ const formSchema = z.object({
 });
 
 const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp }) => {
-    const { data: session } = useSession()
-    const [selectedPackageId, setSelectedPackageId] = useState<string>("")
-    const [isNew, setIsNew] = useState<boolean>(true)
+    const { data: session } = useSession();
+    const [selectedPackageId, setSelectedPackageId] = useState<string>("");
+    const [isNew, setIsNew] = useState<boolean>(false);
     const { userId } = useParams();
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -98,14 +98,14 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
     const priceNumber = parseFloat(priceString);
 
     const handlePackageChange = (value: string) => {
-        const selectedPackage = packages.find((packageItem) => packageItem.id === value)
+        const selectedPackage = packages.find((packageItem) => packageItem.id === value);
         if (selectedPackage) {
-            form.setValue("name", selectedPackage.name)
-            form.setValue("description", selectedPackage.description)
-            form.setValue("price", selectedPackage.price)
+            form.setValue("name", selectedPackage.name);
+            form.setValue("description", selectedPackage.description);
+            form.setValue("price", selectedPackage.price);
         }
-        setSelectedPackageId(value)
-    }
+        setSelectedPackageId(value);
+    };
 
     const handleSaveChanges = async () => {
         const data = {
@@ -114,32 +114,32 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             name: form.getValues("name"),
             description: form.getValues("description"),
             price: priceNumber
-        }
+        };
         try {
             const priceNumber = form.getValues("price");
             if (priceNumber <= 0) {
                 toast.error("Price must be a positive number");
                 return;
             }
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data)
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data);
             const updatedPackage: Package = response.data;
             packageProp(prevPackageList => prevPackageList.map(packageItem =>
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
             ));
-           
-            toast.success("Package details updated successfully.")
+
+            toast.success("Package details updated successfully.");
             NotificationService({
-                senderId: session?.user?.id, 
+                senderId: session?.user?.id,
                 receiverId: session?.user.id,
                 type: 'packages_updated',
-                title: 'packages Updated',
+                title: 'Packages Updated',
                 description: '',
-              });
+            });
         }
         catch (error) {
-            toast.error("An error occurred. Please try again.")
+            toast.error("An error occurred. Please try again.");
         }
-    }
+    };
 
     const handleCreatePackage = async () => {
         if (!session?.user?.id) return;
@@ -157,53 +157,49 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                 return;
             }
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
-            const newPackage: Package = response.data
+            const newPackage: Package = response.data;
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
-            } 
+            }
             else {
                 packageProp(prevPackageList => [...prevPackageList, newPackage]);
-               
+
                 toast.success("Package created successfully.");
             }
             NotificationService({
-                senderId: session?.user?.id, 
+                senderId: session?.user?.id,
                 receiverId: session?.user.id,
                 type: 'packages_created',
-                title: 'packages created',
+                title: 'Packages Created',
                 description: '',
-              });
+            });
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
     };
 
     const handleDeletePackage = async () => {
-        if (!selectedPackageId) {
-            toast.error("Please select a package to delete.");
-            return;
-        }
-        if (session?.user?.id === undefined) return
+        if (session?.user?.id === undefined) return;
         const data = {
             photographerId: session.user.id,
             packageId: selectedPackageId
-        }
+        };
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data })
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data });
             packageProp(prevPackageList => prevPackageList.filter(packageItem => packageItem.id !== selectedPackageId));
-            toast.success("Package deleted successfully.")
+            toast.success("Package deleted successfully.");
             NotificationService({
-                senderId: session?.user?.id, 
+                senderId: session?.user?.id,
                 receiverId: session?.user.id,
                 type: 'packages_deleted',
-                title: 'packages Deleted',
+                title: 'Packages Deleted',
                 description: '',
-              });
+            });
         }
         catch (error) {
-            toast.error("An error occurred. Please try again.")
+            toast.error("An error occurred. Please try again.");
         }
-    }
+    };
 
     const renderEditButton = () => {
         if (session && session.user && session.user.id === userId) {
@@ -225,45 +221,60 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
     return (
         <main>
             <div className="w-full sm:pr-10">
-                <Dialog>
+                <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                    setIsDialogOpen(open);
+                    if (!open) {
+                        setIsNew(false);
+                        form.reset();
+                    }
+                }}>
                     {renderEditButton()}
                     <DialogContent className="max-w-[300px] sm:max-w-[450px]">
                         <DialogHeader>
-                            <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit Package Details</DialogTitle>
+                            <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">
+                                {isNew ? "Add New Package" : "Edit Package Details"}
+                            </DialogTitle>
                             <DialogDescription className="sm:mt-2 sm:mb-4">
-                                Make changes to your package details here. Click save when you're done.
+                                {isNew ? "Enter the details for the new package." : "Make changes to your package details here. Click save when you're done."}
                             </DialogDescription>
                         </DialogHeader>
-                        <Button variant={"default"} size={"lg"} onClick={() => setIsNew(false)}><PlusSquare />Update Package</Button>
+                        <Button
+                            variant={"default"}
+                            size={"lg"}
+                            onClick={() => setIsNew(!isNew)}
+                        >
+                            {isNew ? <><PenSquare className="mr-2"/> Update Packages </>: <><PlusSquare className="mr-2" /> Add New Package</>}
+                        </Button>
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(handleSaveChanges)}>
-                                {!isNew &&
-                                <FormField
-                                    control={form.control}
-                                    name="packageId"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Packages</FormLabel>
-                                            <Select onValueChange={(value: string) => handlePackageChange(value)}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a package" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent >
-                                                    <SelectGroup>
-                                                        {packages.map((packageItem) => (
-                                                            <SelectItem key={packageItem.id} value={packageItem.id}>
-                                                                <SelectLabel>{packageItem.name}</SelectLabel>
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />}
+                            <form onSubmit={form.handleSubmit(isNew ? handleCreatePackage : handleSaveChanges)}>
+                                
+                                    <FormField
+                                        control={form.control}
+                                        name="packageId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Packages</FormLabel>
+                                                <Select onValueChange={(value: string) => handlePackageChange(value)}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a package" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent >
+                                                        <SelectGroup>
+                                                            {packages.map((packageItem) => (
+                                                                <SelectItem key={packageItem.id} value={packageItem.id}>
+                                                                    <SelectLabel>{packageItem.name}</SelectLabel>
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                
                                 <FormField
                                     control={form.control}
                                     name="name"
@@ -273,7 +284,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormControl>
                                                 <Input
                                                     type="name"
-                                                    placeholder="package name"
+                                                    placeholder="Package name"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -289,8 +300,8 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormControl>
                                                 <Input
                                                     type="description"
-                                                    placeholder="package description"
-                                                    maxLength={100} // Set the maximum character limit
+                                                    placeholder="Package description"
+                                                    maxLength={200} // Set the maximum character limit
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -306,7 +317,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormControl>
                                                 <Input
                                                     type="price"
-                                                    placeholder="price"
+                                                    placeholder="Price"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -317,18 +328,16 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                         </Form>
                         <DialogFooter>
                             {!isNew && (
-
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button variant={'destructive'}
-                                        >Delete</Button>
+                                        <Button variant={'destructive'}>Delete</Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
                                                 This action cannot be undone. This will permanently delete your
-                                                packages and remove your data from our servers.
+                                                package and remove your data from our servers.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
@@ -337,24 +346,20 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-
                             )}
                             <Button variant={"outline"} onClick={() => {
-                                form.reset()
-                                setIsNew(true)
+                                form.reset();
+                                
+                               
                             }}>Cancel</Button>
-                            {!isNew && <Button onClick={() => handleSaveChanges()}>
-                                Update
+                            <Button onClick={form.handleSubmit(isNew ? handleCreatePackage : handleSaveChanges)}>
+                                {isNew ? "Save" : "Update"}
                             </Button>
-                            }
-                            {isNew && <Button onClick={() => handleCreatePackage()}>
-                                Save
-                            </Button>}
                         </DialogFooter>
-                    </DialogContent >
-                </Dialog >
-            </div >
-        </main >
+                    </DialogContent>
+                </Dialog>
+            </div>
+        </main>
     );
 };
 export default PackageEditForm;
