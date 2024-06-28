@@ -72,6 +72,21 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
     },
   });
 
+  const populateForm = () => {
+    form.setValue("contactNum1", contactDets?.phoneNum1 || "");
+    form.setValue("contactNum2", contactDets?.phoneNum2 || "");
+    form.setValue("email", contactDets?.email || "");
+    form.setValue("street", contactDets?.address?.street || "");
+    form.setValue("city", contactDets?.address?.city || "");
+    form.setValue("state", contactDets?.address?.state || "");
+    form.setValue("zip", contactDets?.address?.zip || "");
+    form.setValue("country", contactDets?.address?.country || "");
+    form.setValue("instagram", contactDets?.socialMedia?.instagram || "");
+    form.setValue("facebook", contactDets?.socialMedia?.facebook || "");
+    form.setValue("youtube", contactDets?.socialMedia?.youtube || "");
+    form.setValue("tiktok", contactDets?.socialMedia?.tiktok || "");
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/contactdetails`, {
@@ -135,7 +150,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
   const renderEditButton = () => {
     if (session?.user?.id === userId) {
       return (
-        <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end ">
+        <DialogTrigger className="sm:col-span-4 sm:flex sm:justify-end " onClick={populateForm}>
           <Button
             variant={"outline"}
             size={"icon"}

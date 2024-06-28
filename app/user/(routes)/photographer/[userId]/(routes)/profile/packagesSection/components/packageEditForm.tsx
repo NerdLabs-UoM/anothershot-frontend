@@ -81,7 +81,7 @@ const formSchema = z.object({
 const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp }) => {
     const { data: session } = useSession()
     const [selectedPackageId, setSelectedPackageId] = useState<string>("")
-    const [isNew, setIsNew] = useState<boolean>(false)
+    const [isNew, setIsNew] = useState<boolean>(true)
     const { userId } = useParams();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -179,6 +179,10 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
     };
 
     const handleDeletePackage = async () => {
+        if (!selectedPackageId) {
+            toast.error("Please select a package to delete.");
+            return;
+        }
         if (session?.user?.id === undefined) return
         const data = {
             photographerId: session.user.id,
@@ -230,9 +234,10 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                 Make changes to your package details here. Click save when you're done.
                             </DialogDescription>
                         </DialogHeader>
-                        <Button variant={"default"} size={"lg"} onClick={() => setIsNew(true)}><PlusSquare />Add New Package</Button>
+                        <Button variant={"default"} size={"lg"} onClick={() => setIsNew(false)}><PlusSquare />Update Package</Button>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(handleSaveChanges)}>
+                                {!isNew &&
                                 <FormField
                                     control={form.control}
                                     name="packageId"
@@ -258,7 +263,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormMessage />
                                         </FormItem>
                                     )}
-                                />
+                                />}
                                 <FormField
                                     control={form.control}
                                     name="name"
@@ -336,7 +341,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                             )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset()
-                                setIsNew(false)
+                                setIsNew(true)
                             }}>Cancel</Button>
                             {!isNew && <Button onClick={() => handleSaveChanges()}>
                                 Update
