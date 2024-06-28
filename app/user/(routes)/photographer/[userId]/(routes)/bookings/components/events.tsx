@@ -51,6 +51,7 @@ import { Booking, Event } from "@/app/lib/types";
 import { DateTimePickerForm } from "@/components/DateTimePickers/date-time-picker-form";
 import { NotificationService } from "@/components/notification/notification";
 import { BiSolidPlusSquare } from "react-icons/bi";
+import FloatingAddButton from "./floatingAddButton";
 
 
 export interface EventFormProps {
@@ -128,7 +129,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     if (session && session.user && session.user.id === userId) {
       return (
         <DialogTrigger className="flex justify-center items-center">
-          <BiSolidPlusSquare size={50} />
+          <BiSolidPlusSquare className="hidden sm:inline-block" size={50} />
+
         </DialogTrigger>
       );
     }
@@ -309,6 +311,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
           }
         }}>
           {renderEditButton()}
+
           <DialogContent className="max-w-[400px] sm:max-w-[430px] max-h-[700px] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="sm:mt-2 sm:mb-2 sm:text-2xl">Edit event Details</DialogTitle>
@@ -480,6 +483,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
       </div>
     </main>
   );
