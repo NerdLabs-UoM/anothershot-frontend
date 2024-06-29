@@ -56,6 +56,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { LoaderCircle } from 'lucide-react';
 
 const formSchema = z.object({
     eventName: z.string().min(2, "Event name should be between 5-50 characters").max(50, "Event name should be between 2-50 characters"),
@@ -241,7 +242,7 @@ const AddBooking = () => {
                                     name="eventName"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Event Name</FormLabel>
+                                            <FormLabel>Event Name*</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Event Name" {...field} />
                                             </FormControl>
@@ -254,7 +255,7 @@ const AddBooking = () => {
                                     name="eventLocation"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Location*</FormLabel>
+                                            <FormLabel>Location (optional)</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="eg:- Light House, Galle (optional)" {...field} />
                                             </FormControl>
@@ -267,7 +268,7 @@ const AddBooking = () => {
                                     name="sdate"
                                     render={({ field }) => (
                                         <FormItem className='flex flex-col'>
-                                            <FormLabel>Start</FormLabel>
+                                            <FormLabel>Start*</FormLabel>
                                             <DateTimePickerForm
                                                 setDate={setStartDate}
                                                 date={startDate}
@@ -281,7 +282,7 @@ const AddBooking = () => {
                                     name="edate"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>End</FormLabel>
+                                            <FormLabel>End*</FormLabel>
                                             <DateTimePickerForm
                                                 setDate={setEndDate}
                                                 date={endDate}
@@ -295,7 +296,7 @@ const AddBooking = () => {
                                     name="eventType"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Event Type</FormLabel>
+                                            <FormLabel>Event Type*</FormLabel>
                                             <Select onValueChange={field.onChange}>
                                                 <FormControl>
                                                     <SelectTrigger>
@@ -323,7 +324,7 @@ const AddBooking = () => {
                                     name="package"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Packages</FormLabel>
+                                            <FormLabel>Packages*</FormLabel>
                                             <Select onValueChange={field.onChange}>
                                                 <FormControl>
                                                     <SelectTrigger>
@@ -357,7 +358,9 @@ const AddBooking = () => {
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={form.handleSubmit(onSubmit)}>Continue</AlertDialogAction>
+                                            <AlertDialogAction onClick={form.handleSubmit(onSubmit)} disabled={loading}>  {
+                                                loading ? <LoaderCircle className="animate-spin" /> : 'Continue'
+                                            }</AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
