@@ -248,7 +248,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(isNew ? handleCreatePackage : handleSaveChanges)}>
                                 
-                                    <FormField
+                                    {!isNew && (<FormField
                                         control={form.control}
                                         name="packageId"
                                         render={({ field }) => (
@@ -273,7 +273,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                                 <FormMessage />
                                             </FormItem>
                                         )}
-                                    />
+                                    />)}
                                 
                                 <FormField
                                     control={form.control}

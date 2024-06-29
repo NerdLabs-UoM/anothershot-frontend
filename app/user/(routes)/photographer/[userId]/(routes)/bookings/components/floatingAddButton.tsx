@@ -2,9 +2,6 @@ import React from 'react';
 import { BiSolidPlusSquare } from 'react-icons/bi';
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import {
-    DialogTrigger,
-} from "@/components/ui/dialog";
 
 interface FloatingAddButtonProps {
     onClick: () => void;
