@@ -136,7 +136,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-[2rem] ">
       {albumData.length === 0
-        ? <p >"No Albums yet"</p>
+        ? <p className="absolute right-1/2 md:text-xl text-sm">No Albums yet</p>
         : albumData.map((album) => (
             <Card
               key={album.id}
@@ -159,6 +159,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                 />
               </Link>
               <>
+                {album.images.length !== 0 && 
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="absolute top-4 left-5 bg-slate-950 bg-opacity-45 px-2 py-2 rounded-full text-white"><Images height={15} width={15}/></TooltipTrigger>
@@ -166,7 +167,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                       <p>{`${album.images.length} images`}</p>
                     </TooltipContent>
                   </Tooltip>
-                </TooltipProvider>
+                </TooltipProvider>}
                 <div className="absolute top-4 right-5 bg-slate-950 bg-opacity-45 rounded-full px-2 text-white text-xs">
                   {album.price !== 0 ? "PAID" : "FREE"}
                 </div>
