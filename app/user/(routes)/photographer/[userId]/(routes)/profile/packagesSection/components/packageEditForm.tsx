@@ -179,6 +179,10 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
     };
 
     const handleDeletePackage = async () => {
+        if (!selectedPackageId) {
+            toast.error("Please select a package to delete.");
+            return;
+        }
         if (session?.user?.id === undefined) return;
         const data = {
             photographerId: session.user.id,
@@ -243,38 +247,36 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                             size={"lg"}
                             onClick={() => setIsNew(!isNew)}
                         >
-                            {isNew ? <><PenSquare className="mr-2"/> Update Packages </>: <><PlusSquare className="mr-2" /> Add New Package</>}
+                            {isNew ? <><PenSquare className="mr-2" /> Update Packages </> : <><PlusSquare className="mr-2" /> Add New Package</>}
                         </Button>
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(isNew ? handleCreatePackage : handleSaveChanges)}>
-                                
-                                    {!isNew && (<FormField
-                                        control={form.control}
-                                        name="packageId"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Packages</FormLabel>
-                                                <Select onValueChange={(value: string) => handlePackageChange(value)}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select a package" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent >
-                                                        <SelectGroup>
-                                                            {packages.map((packageItem) => (
-                                                                <SelectItem key={packageItem.id} value={packageItem.id}>
-                                                                    <SelectLabel>{packageItem.name}</SelectLabel>
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />)}
-                                
+                            <form onSubmit={form.handleSubmit(handleSaveChanges)}>
+                                <FormField
+                                    control={form.control}
+                                    name="packageId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Packages</FormLabel>
+                                            <Select onValueChange={(value: string) => handlePackageChange(value)}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select a package" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent >
+                                                    <SelectGroup>
+                                                        {packages.map((packageItem) => (
+                                                            <SelectItem key={packageItem.id} value={packageItem.id}>
+                                                                <SelectLabel>{packageItem.name}</SelectLabel>
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="name"
@@ -284,7 +286,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormControl>
                                                 <Input
                                                     type="name"
-                                                    placeholder="Package name"
+                                                    placeholder="package name"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -300,8 +302,8 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormControl>
                                                 <Input
                                                     type="description"
-                                                    placeholder="Package description"
-                                                    maxLength={200} // Set the maximum character limit
+                                                    placeholder="package description"
+                                                    maxLength={100} // Set the maximum character limit
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -317,7 +319,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormControl>
                                                 <Input
                                                     type="price"
-                                                    placeholder="Price"
+                                                    placeholder="price"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -328,16 +330,18 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                         </Form>
                         <DialogFooter>
                             {!isNew && (
+
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button variant={'destructive'}>Delete</Button>
+                                        <Button variant={'destructive'}
+                                        >Delete</Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
                                                 This action cannot be undone. This will permanently delete your
-                                                package and remove your data from our servers.
+                                                packages and remove your data from our servers.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
@@ -346,15 +350,24 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
+
                             )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset();
-                                
-                               
+
+
                             }}>Cancel</Button>
-                            <Button onClick={form.handleSubmit(isNew ? handleCreatePackage : handleSaveChanges)}>
+                            {/* <Button onClick={form.handleSubmit(isNew ? handleCreatePackage : handleSaveChanges)}>
                                 {isNew ? "Save" : "Update"}
+                            </Button> */}
+                             {!isNew && <Button onClick={() => handleSaveChanges()}>
+                                Update
                             </Button>
+                            }
+                            {isNew && <Button onClick={() => handleCreatePackage()}>
+                                Save
+                            </Button>}
+
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
