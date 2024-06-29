@@ -19,7 +19,6 @@ import FloatingAddButton from '@/app/user/(routes)/photographer/[userId]/(routes
 interface FullCalendarProps {
     events: Event[];
 }
-
 const mapEventToEventInput = (event: Event): EventInput => ({
     id: event.id,
     title: event.title,
@@ -33,7 +32,7 @@ const FullCalendarComp: React.FC<FullCalendarProps> = ({ events }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  
     const eventInputs: EventInput[] = events.map(mapEventToEventInput);
 
     const handleDateClick = (arg: { dateStr: string }) => {
@@ -55,9 +54,9 @@ const FullCalendarComp: React.FC<FullCalendarProps> = ({ events }) => {
         setModalIsOpen(true);
     };
 
-    const handleAddEvent = () => {
-        setIsDialogOpen(true); // Open the dialog when clicking the floating button
-    };
+    // const handleAddEvent = () => {
+    //     setIsDialogOpen(true); 
+    // };
 
     return (
         <div className="relative">
@@ -73,7 +72,9 @@ const FullCalendarComp: React.FC<FullCalendarProps> = ({ events }) => {
                     events={eventInputs}
                     dateClick={handleDateClick}
                 />
-                <FloatingAddButton onClick={handleAddEvent} />
+
+                {/* <FloatingAddButton onClick={handleAddEvent} setIsDialogOpen={setIsDialogOpen} /> */}
+
             </div>
             <Modal
                 isOpen={modalIsOpen}
@@ -93,11 +94,8 @@ const FullCalendarComp: React.FC<FullCalendarProps> = ({ events }) => {
                     </button>
                 </div>
             </Modal>
-            {/* Event Form Dialog */}
-            <Dialog open={isDialogOpen} onOpenChange={(open) => setIsDialogOpen(open)}>
-                {/* Your event form component goes here */}
-                {/* Example: <EventForm /> */}
-            </Dialog>
+                
+
         </div>
     );
 };

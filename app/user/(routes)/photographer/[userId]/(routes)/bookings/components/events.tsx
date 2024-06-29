@@ -136,6 +136,9 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     }
     return null;
   };
+  const handleAddEvent = () => {
+    setIsDialogOpen(true); 
+};
 
   const onSubmit = async (values: z.infer<typeof formSchema>, e: any) => {
     const startObject = start ? new Date(start) : new Date();
@@ -311,6 +314,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
           }
         }}>
           {renderEditButton()}
+          <FloatingAddButton onClick={handleAddEvent} setIsDialogOpen={setIsDialogOpen} />
+
 
           <DialogContent className="max-w-[400px] sm:max-w-[430px] max-h-[700px] overflow-y-auto">
             <DialogHeader>

@@ -3,43 +3,43 @@ import { BiSolidPlusSquare } from 'react-icons/bi';
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import {
-    Dialog,
     DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter
 } from "@/components/ui/dialog";
 
 interface FloatingAddButtonProps {
     onClick: () => void;
+    setIsDialogOpen: (isOpen: boolean) => void;
 }
 
-export const FloatingAddButton: React.FC<FloatingAddButtonProps> = ({ onClick }) => {
+export const FloatingAddButton: React.FC<FloatingAddButtonProps> = ({ onClick, setIsDialogOpen }) => {
     const { userId } = useParams();
     const { data: session } = useSession();
+
+    const handleClick = () => {
+        onClick();
+        setIsDialogOpen(true); 
+    };
 
     const renderButton = () => {
         if (session && session.user && session.user.id === userId) {
             return (
-                <DialogTrigger asChild>
+                <div>
                     <button
-                        className="absolute sm:hidden bottom-4 right-4 rounded-full w-14 h-14 shadow-lg z-50 bg-black text-white flex items-center justify-center"
-                        onClick={onClick}
+                        className="fixed sm:hidden bottom-16 right-4 rounded-full w-14 h-14 shadow-lg z-50 bg-black text-white flex items-center justify-center"
+                        onClick={handleClick}
                     >
                         <BiSolidPlusSquare className="w-6 h-6" />
                     </button>
-                </DialogTrigger>
+                </div>
             );
         }
     };
 
-    return <div>
-        <Dialog>
+    return (
+        <div>
             {renderButton()}
-        </Dialog></div>;
+        </div>
+    );
 };
 
 export default FloatingAddButton;
-
