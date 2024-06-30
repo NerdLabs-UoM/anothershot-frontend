@@ -43,8 +43,8 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, isOpened, onClose })
                             ) : (
                                 <p className="text-slate-500"><b>Package :</b> Selected package not available</p>
                             )}
-                            <p><b>Start :</b> {booking.start ? new Date(booking.start).toLocaleString() : ''}</p>
-                            <p><b>End :</b> {booking.end ? new Date(booking.end).toLocaleString() : ''}</p>
+                            <p><b>Start :</b> {booking.start ? new Date(booking.start).toISOString() : ''}</p>
+                            <p><b>End :</b> {booking.end ? new Date(booking.end).toISOString() : ''}</p>
 
                         </div>
                     </div>

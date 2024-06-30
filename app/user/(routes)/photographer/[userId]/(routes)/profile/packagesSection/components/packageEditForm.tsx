@@ -116,15 +116,17 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             price: priceNumber
         }
         try {
+            const priceNumber = form.getValues("price");
+            if (priceNumber <= 0) {
+                toast.error("Price must be a positive number");
+                return;
+            }
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data)
             const updatedPackage: Package = response.data;
             packageProp(prevPackageList => prevPackageList.map(packageItem =>
                 packageItem.id === selectedPackageId ? updatedPackage : packageItem
             ));
-            if(updatedPackage.price < 0){
-                toast.error("Price must be a positive number");
-                return;
-            }
+           
             toast.success("Package details updated successfully.")
             NotificationService({
                 senderId: session?.user?.id, 
@@ -149,6 +151,11 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             price: priceNumber,
         };
         try {
+            const priceNumber = form.getValues("price");
+            if (priceNumber <= 0) {
+                toast.error("Price must be a positive number");
+                return;
+            }
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
             const newPackage: Package = response.data
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
@@ -156,10 +163,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             } 
             else {
                 packageProp(prevPackageList => [...prevPackageList, newPackage]);
-                if(newPackage.price<0){
-                    toast.error("Price must be a positive number");
-                    return;
-                }
+               
                 toast.success("Package created successfully.");
             }
             NotificationService({

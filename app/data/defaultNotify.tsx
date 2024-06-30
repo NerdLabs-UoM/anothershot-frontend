@@ -1,30 +1,21 @@
 
 interface NotificationProps {
-    id: any;
     type:string;
     title: string;
     description: string;
-    read: boolean;
-    time: string;
 }
 
 export const defaultNotify: NotificationProps[] = [
     {
-        id: 1,
         type:"Default",
         title: "Welcome to Anothershot",
-        description:"",
-        read: false,
-        time: "Just now",
+        description:"Join us in this journey of capturing moments and creating memories. Because here, every snapshot tells a story!",
     },
     {
-        id: 2,
-        type:"Default",
+        type:"signIn",
         title: "Sign in to our website",
-        description:"",
-        read: false,
-        time: "Just now",
-    },
+        description:"Access personalized tools and connect with a vibrant community. Let's make every click count!",
+    }
 ];
 
 
