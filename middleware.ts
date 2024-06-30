@@ -3,27 +3,24 @@ import { decode } from "next-auth/jwt";
 import { UserRole } from "@/app/lib/enums";
 import cookie from "cookie";
 
-const corsOptions = {
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
-
 export async function middleware(request: NextRequest) {
-  const origin = request.headers.get("origin") ?? "";
+  const origin = request.headers.get("origin") ?? "*";
   const isPreflight = request.method === "OPTIONS";
-
   const isAdminRoute = request.nextUrl.pathname.startsWith("/user/admin/");
 
   console.log(`Origin: ${origin}`);
   console.log(`Is preflight request: ${isPreflight}`);
   console.log(`Is admin route: ${isAdminRoute}`);
 
+  const corsOptions = {
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Origin": origin,
+  };
+
   if (isPreflight) {
-    const preflightHeaders = {
-      "Access-Control-Allow-Origin": origin,
-      ...corsOptions,
-    };
-    return NextResponse.json({}, { headers: preflightHeaders });
+    return NextResponse.json({}, { headers: corsOptions });
   }
 
   if (isAdminRoute) {
@@ -41,7 +38,7 @@ export async function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
-  response.headers.set("Access-Control-Allow-Origin", origin);
+  // Apply CORS headers to all responses
   Object.entries(corsOptions).forEach(([key, value]) => {
     response.headers.set(key, value as string);
   });
