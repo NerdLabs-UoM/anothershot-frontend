@@ -76,6 +76,17 @@ export function DateTimePickerForm(
                                     </PopoverTrigger>
                                 </FormControl>
                                 <PopoverContent className="w-auto p-0 max-h-64 overflow-y-auto">
+                                <div className="p-3 border-t border-border flex items-center justify-center">
+                                        <TimePickerDemo
+                                            setDate={(date) => {
+                                                if (date && !isBefore(date, today)) {
+                                                    field.onChange(date);
+                                                    props.setDate(date);
+                                                }
+                                            }}
+                                            date={props.date}
+                                        />
+                                    </div>
                                     <Calendar
                                         mode="single"
                                         selected={props.date}
@@ -88,17 +99,6 @@ export function DateTimePickerForm(
                                         initialFocus
                                         disabled={(date) => isBefore(date, today)}
                                     />
-                                    <div className="p-3 border-t border-border">
-                                        <TimePickerDemo
-                                            setDate={(date) => {
-                                                if (date && !isBefore(date, today)) {
-                                                    field.onChange(date);
-                                                    props.setDate(date);
-                                                }
-                                            }}
-                                            date={props.date}
-                                        />
-                                    </div>
                                 </PopoverContent>
                             </Popover>
                         </FormItem>

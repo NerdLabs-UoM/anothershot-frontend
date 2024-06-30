@@ -54,6 +54,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
+import { LoaderCircle } from 'lucide-react';
 
 interface EditButtonProps {
   testimonialsData: Testimonial[];
@@ -80,7 +81,7 @@ const EditButton: React.FC<EditButtonProps> = ({
     setTestimonials(testimonialsData);
   }, [testimonialsData]);
 
-  useEffect(()=> {
+  useEffect(() => {
     const publicTestimonials = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${userId}/profile/testimonials/public`);
@@ -417,8 +418,10 @@ const EditButton: React.FC<EditButtonProps> = ({
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={() => handleSubmit()}>
-                Save changes
+              <Button type="submit" onClick={() => handleSubmit()} disabled = {loading}>
+                {
+                  loading ? <LoaderCircle className="animate-spin" /> : 'Save Changes'
+                }
               </Button>
             </DialogFooter>
           </DialogContent>

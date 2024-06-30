@@ -72,7 +72,7 @@ const PhotographerBookingsPage = () => {
             {session && session.user && session.user.id === userId &&
               <Events eventItems={eventList} eventProp={setEventList} start={startDate} setStartDate={setStartDate} end={endDate} setEndDate={setEndDate} />}
           </div>
-          <div className="overflow-x-auto p-6 sm:p-0">
+          <div className="overflow-x-auto p-2 sm:p-0">
             <FullCalendarComp events={eventList} />
           </div>
           <div className="mt-6 overflow-x-auto">
