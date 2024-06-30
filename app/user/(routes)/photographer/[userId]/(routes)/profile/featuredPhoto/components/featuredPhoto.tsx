@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { NotificationService } from "@/components/notification/notification";
 
+
 export default function FeaturedPhoto() {
   const { userId } = useParams();
   const [featuredPhoto, setFeaturedPhoto] = useState<string[]>([]);
@@ -108,22 +109,6 @@ export default function FeaturedPhoto() {
     return null;
   };
 
-  const renderFeedButton = () => {
-    if (session?.user?.id !== userId) {
-      return (
-        <div>
-          <Link href={`/user/photographer/${userId}/feed`}>
-            <Button
-              variant="outline"
-              className="">
-              View Feed
-            </Button>
-          </Link>
-        </div>
-      );
-    }
-    return null;
-  };
   const defaultImage = "https://res.cloudinary.com/dcyqrcuf3/image/upload/v1711975294/defaultImages/fearuredDefault_snh844.avif"
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { CldUploadWidget, CldUploadWidgetInfo, CldUploadWidgetResults } from 'next-cloudinary';
 import { Button } from "@/components/ui/button";
-import { PlusSquare } from "lucide-react";
+import { PenSquare } from "lucide-react";
 import { useSession } from 'next-auth/react';
 
 interface UploadFeaturePhoto {
@@ -45,7 +45,7 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                                 image: uploadedResult.secure_url,
                             };
                             setFeaturedPhotoURL(FeaturedURL.image);
-                            handleUpdateFeaturePhoto(index, uploadedResult.secure_url)       
+                            handleUpdateFeaturePhoto(index, uploadedResult.secure_url)
                         }
                         }
 
@@ -92,7 +92,7 @@ const UploadFeaturePhoto = ({ userId, index, handleUpdateFeaturePhoto }: UploadF
                                         open();
                                     }}
                                 >
-                                    <PlusSquare style={{ color: 'black' }} />
+                                    <PenSquare style={{ color: 'black' }} />
                                 </Button>
                             );
                         }}
