@@ -66,6 +66,7 @@ const handleStatus = async (ReportId:string,status:string) => {
       }
     )
     .then((response) => {
+      window.location.reload();
       toast.success("report status updated successfully");
     })
     .catch((error) => {

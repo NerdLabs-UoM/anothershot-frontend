@@ -85,10 +85,7 @@ const Hero = () => {
     "https://res.cloudinary.com/dts2l2pnj/image/upload/v1708486003/oooolhqi3vcrtcqhhy3b.jpg"
   );
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [values, setValues] = useState({
-    name: "",
-    description: "",
-  });
+ 
   const [isOpen, setIsOpen] = useState(false);
   const [isSuspended, setIsSuspended] = useState<Suspended>("NOT_SUSPENDED");
   const router = useRouter();
@@ -138,6 +135,11 @@ const Hero = () => {
       router.push(`${process.env.NEXT_PUBLIC_BASE_URL}/suspended`);
     }
   }, [isSuspended]);
+  
+  const [values, setValues] = useState({
+    name: "",
+    description: "",
+  });
 
   useEffect(() => {
     if (photographer) {
@@ -167,8 +169,8 @@ const Hero = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      bio: "",
+      name: `${values.name}`,
+      bio: `${values.description}`,
     },
   });
 
