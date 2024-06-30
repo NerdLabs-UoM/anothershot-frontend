@@ -77,7 +77,6 @@ export const Masonrygrid: React.FC<MasonrygridProps> = ({
             coverImage: img,
           }
         );
-        console.log("image updated=>", res.data);
         toast.success("Cover image updated successfully");
       } catch (e) {
         toast.error("Error updating cover image");
@@ -89,7 +88,7 @@ export const Masonrygrid: React.FC<MasonrygridProps> = ({
   const handleDownload = (url: string, filename: string) => {
     fetchPaymentStatus();
     try {
-      if (!isPhotographer || albumData?.price === 0 || status === "PAID") {
+      if (isPhotographer || albumData?.price === 0 || status === "PAID") {
         axios
           .get(url, {
             responseType: "blob",
