@@ -123,11 +123,17 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             }
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data);
             const updatedPackage: Package = response.data;
-            packageProp(prevPackageList => prevPackageList.map(packageItem =>
-                packageItem.id === selectedPackageId ? updatedPackage : packageItem
-            ));
+          
+            if (packages.some((packages: Package) => packages.name === updatedPackage.name)) {
+                toast.error("Package already exists.");
+            }
+            else {
+                packageProp(prevPackageList => prevPackageList.map(packageItem =>
+                    packageItem.id === selectedPackageId ? updatedPackage : packageItem
+                ));
+                toast.success("Package details updated successfully.");
 
-            toast.success("Package details updated successfully.");
+            }
             NotificationService({
                 senderId: session?.user?.id,
                 receiverId: session?.user.id,
@@ -251,7 +257,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                         </Button>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(handleSaveChanges)}>
-                                <FormField
+                                {!isNew && (<FormField
                                     control={form.control}
                                     name="packageId"
                                     render={({ field }) => (
@@ -276,7 +282,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormMessage />
                                         </FormItem>
                                     )}
-                                />
+                                />)}
                                 <FormField
                                     control={form.control}
                                     name="name"
@@ -354,12 +360,8 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                             )}
                             <Button variant={"outline"} onClick={() => {
                                 form.reset();
-
-
-                            }}>Cancel</Button>
-                            {/* <Button onClick={form.handleSubmit(isNew ? handleCreatePackage : handleSaveChanges)}>
-                                {isNew ? "Save" : "Update"}
-                            </Button> */}
+                            }}>Reset</Button>
+                           
                              {!isNew && <Button onClick={() => handleSaveChanges()}>
                                 Update
                             </Button>

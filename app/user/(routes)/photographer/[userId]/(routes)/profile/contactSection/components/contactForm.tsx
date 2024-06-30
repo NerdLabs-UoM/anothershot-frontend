@@ -35,8 +35,8 @@ interface ContactDetailsFormProps {
 }
 
 const formSchema = z.object({
-  contactNum1: z.string().min(9).max(12).regex(/^[0-9+]+$/),
-  contactNum2: z.string().min(9).regex(/^[0-9]+$/).nullable(),
+  contactNum1: z.string().regex(/^\+?[0-9]{9,12}$/),
+  contactNum2: z.string().regex(/^\+?[0-9]{9,12}$/).nullable().optional(),
   email: z.string().email().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
   street: z.string(),
   city: z.string(),

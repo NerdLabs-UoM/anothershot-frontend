@@ -181,11 +181,8 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         );
         const data = response.data;
         setLoading(false);
-        console.log(data);
         const newEvent: Event = response.data;
-        console.log(newEvent);
         const newBooking: Booking = response.data;
-        console.log(newBooking);
         if (eventItems.some((eventItem: Event) => eventItem.bookingId === newEvent.bookingId
         )) {
           toast.error("Event already exists.");
@@ -206,7 +203,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       });
     }
     catch (error) {
-      toast.error("An error occurred. Please try again.");
+      toast.error("Please Select another booking");
     }
   };
 
