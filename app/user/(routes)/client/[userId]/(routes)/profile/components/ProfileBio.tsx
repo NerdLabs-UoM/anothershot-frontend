@@ -35,7 +35,8 @@ import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";  
+import { Skeleton } from "@/components/ui/skeleton";
+import { LoaderCircle } from 'lucide-react';
 
 const formSchema = z.object({
   name: z
@@ -135,7 +136,6 @@ const ProfileBio = () => {
         });
         if (response.status === 201) {
           setLoading(false);
-          //e.target.reset();
           console.log(response.status);
           toast.success("Successfully submitted details.");
         }
@@ -150,15 +150,15 @@ const ProfileBio = () => {
   };
   useEffect(() => {
     if (client) {
-        form.reset({
-          name: values.name || "",
-          bio: values.bio || "",
-        })
+      form.reset({
+        name: values.name || "",
+        bio: values.bio || "",
+      })
     }
-}, [client, form])
+  }, [client, form])
 
   return (
-    <div className= "rounded-lg border border-slate-100 shadow-inner drop-shadow-md w-11/12 lg:w-1/3 h-full p-3 lg:mr-5 lg:mt-20">
+    <div className="rounded-lg border border-slate-100 shadow-inner drop-shadow-md w-11/12 lg:w-1/3 h-full p-3 lg:mr-5 lg:mt-20">
       <div className="flex justify-between">
         <Avatar className="relative w-20 h-20 lg:w-24 lg:h-24">
           <div className="z-20 w-full bg-black h-30 opacity-5 hover:opacity-40">
@@ -254,7 +254,7 @@ const ProfileBio = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input placeholder="Alex" {...field} />
                       </FormControl>
@@ -281,27 +281,29 @@ const ProfileBio = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit">{
+                  loading ? <LoaderCircle className="animate-spin" /> : 'Save'
+                }</Button>
               </form>
             </Form>
           </DialogContent>
         </Dialog>
       </div>
       <div>
-       {isLoadingprofile ? (
+        {isLoadingprofile ? (
           <div className="flex items-center space-x-4">
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[250px]" />
-            <Skeleton className="h-4 w-[200px]" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
+          </div>) : (
+          <div className="flex flex-col">
+            <h1 className="texl-xl lg:text-2xl font-bold">{values.name}</h1>
+            <p className="text-gray-700 font-normal text-xs lg:text-base leading-4">@{client?.user.userName}</p>
+            <Separator className="mt-2" />
+            <p className="text-xs lg:text-sm pt-3">{values.bio ? values.bio : "Something about you..."}</p>
           </div>
-        </div>) : (
-      <div className="flex flex-col">
-        <h1 className="texl-xl lg:text-2xl font-bold">{values.name}</h1>
-        <p className="text-gray-700 font-normal text-xs lg:text-base leading-4">@{client?.user.userName}</p>
-        <Separator className="mt-2" />
-        <p className="text-xs lg:text-sm pt-3">{values.bio ? values.bio : "Something about you..."}</p>
-      </div>
-          )}
+        )}
       </div>
     </div>
   );
