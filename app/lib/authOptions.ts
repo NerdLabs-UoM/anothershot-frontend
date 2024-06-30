@@ -61,21 +61,28 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (credentials) {
-          const { email, password } = credentials;
-          const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-            {
-              email,
-              password,
-            }
-          );
+        try {
+          if (credentials) {
+            const { email, password } = credentials;
+            const res = await axios.post(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+              {
+                email,
+                password,
+              }
+            );
 
-          if (res.status === 401) {
-            throw new Error("Invalid credentials");
+            console.log(res.status);
+
+            if (res.status === 401) {
+              throw new Error("Invalid credentials");
+            }
+
+            const user = await res.data;
+            return user;
           }
-          const user = await res.data;
-          return user;
+        } catch (error: any) {
+          throw new Error(error.message);
         }
       },
     }),
