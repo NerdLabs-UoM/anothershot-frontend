@@ -21,11 +21,13 @@ import { useSession } from "next-auth/react"
 import { NotificationService } from "@/components/notification/notification";
 
 const formSchema = z.object({
-  description: z.string().min(2,{
+  description: z.string().min(2, {
     message: "Description is required"
   }).max(500),
-  price: z.number().min(10, {
-    message: "Price is required"
+  price: z.number().nonnegative({
+    message: "Price must be a non-negative number"
+  }).min(10, {
+    message: "Price must be at least 10"
   })
 })
 

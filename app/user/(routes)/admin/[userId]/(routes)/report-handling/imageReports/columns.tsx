@@ -82,6 +82,7 @@ const handleStatus = async (ImageReportId: string, status: string) => {
       }
     )
     .then((response) => {
+      window.location.reload();
       toast.success("report status updated successfully");
     })
     .catch((error) => {
