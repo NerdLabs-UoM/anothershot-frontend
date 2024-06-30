@@ -60,15 +60,13 @@ const formSchema = z.object({
     packageId: z.string(),
     name: z
         .string()
-        .min(2, {
-            message: "Package name must be at least 2 characters long",
-        })
+        .min(3, "Package name must be at least 3 characters long"
+        )
         .max(50),
     description: z
         .string()
-        .min(2, {
-            message: "Description must be at least 2 characters long",
-        })
+        .min(5, "Description must be at least 2 characters long"
+        )
         .max(200),
     price: z.number().positive({
         message: "Price must be a positive number",
@@ -121,9 +119,9 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                 toast.error("Price must be a positive number");
                 return;
             }
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data);
+            const response = await axios.put('${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit', data);
             const updatedPackage: Package = response.data;
-          
+
             if (packages.some((packages: Package) => packages.name === updatedPackage.name)) {
                 toast.error("Package already exists.");
             }
@@ -143,7 +141,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             });
         }
         catch (error) {
-            toast.error("An error occurred. Please try again.");
+            toast.error("Cannot update package. Please try again.");
         }
     };
 
@@ -162,7 +160,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                 toast.error("Price must be a positive number");
                 return;
             }
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create`, data);
+            const response = await axios.post('${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/create', data);
             const newPackage: Package = response.data;
             if (packages.some((packages: Package) => packages.name === newPackage.name)) {
                 toast.error("Package already exists.");
@@ -180,7 +178,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                 description: '',
             });
         } catch (error) {
-            toast.error("An error occurred. Please try again.");
+            toast.error("Cannot create package. Please try again.");
         }
     };
 
@@ -195,7 +193,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             packageId: selectedPackageId
         };
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete`, { data });
+            const response = await axios.delete('${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/delete', { data });
             packageProp(prevPackageList => prevPackageList.filter(packageItem => packageItem.id !== selectedPackageId));
             toast.success("Package deleted successfully.");
             NotificationService({
@@ -207,7 +205,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             });
         }
         catch (error) {
-            toast.error("An error occurred. Please try again.");
+            toast.error("Cannot delete package. Please try again.");
         }
     };
 
@@ -255,7 +253,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                         >
                             {isNew ? <><PenSquare className="mr-2" /> Update Packages </> : <><PlusSquare className="mr-2" /> Add New Package</>}
                         </Button>
-                        <Form {...form}>
+                        {/* <Form {...form}>
                             <form onSubmit={form.handleSubmit(handleSaveChanges)}>
                                 {!isNew && (<FormField
                                     control={form.control}
@@ -289,13 +287,14 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Name</FormLabel>
-                                            <FormControl>
+                                            <FormControl className="col-span-8">
                                                 <Input
-                                                    type="name"
+                                                    // type="name"
                                                     placeholder="package name"
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage className="row-span-8"/>
                                         </FormItem>
                                     )}
                                 />
@@ -313,6 +312,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage className="col-span-8"/>
                                         </FormItem>
                                     )}
                                 />
@@ -329,11 +329,88 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage className="col-span-8"/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </form>
+                        </Form> */}
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(handleSaveChanges)} className="grid grid-cols-1 gap-6 sm:grid-cols-8 sm:gap-4">
+                                {!isNew && (
+                                    <FormField
+                                        control={form.control}
+                                        name="packageId"
+                                        render={({ field }) => (
+                                            <FormItem className="col-span-8 sm:col-span-8">
+                                                <FormLabel className="block mb-2">Packages</FormLabel>
+                                                <Select onValueChange={(value: string) => handlePackageChange(value)}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a package" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            {packages.map((packageItem) => (
+                                                                <SelectItem key={packageItem.id} value={packageItem.id}>
+                                                                    <SelectLabel>{packageItem.name}</SelectLabel>
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                )}
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-8 sm:col-span-8">
+                                            <FormLabel className="block mb-2">Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Package name" {...field} />
+                                            </FormControl>
+                                            <FormMessage className="col-span-8" />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-8 sm:col-span-8">
+                                            <FormLabel className="block mb-2">Description</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Package description"
+                                                    maxLength={100} // Set the maximum character limit
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage className="col-span-8"/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="price"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-8 sm:col-span-8">
+                                            <FormLabel className="block mb-2">Price</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Price" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                             </form>
                         </Form>
+
                         <DialogFooter>
                             {!isNew && (
 
@@ -361,8 +438,8 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                             <Button variant={"outline"} onClick={() => {
                                 form.reset();
                             }}>Reset</Button>
-                           
-                             {!isNew && <Button onClick={() => handleSaveChanges()}>
+
+                            {!isNew && <Button onClick={() => handleSaveChanges()}>
                                 Update
                             </Button>
                             }

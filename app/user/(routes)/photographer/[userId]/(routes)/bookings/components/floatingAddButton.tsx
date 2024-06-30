@@ -22,7 +22,7 @@ export const FloatingAddButton: React.FC<FloatingAddButtonProps> = ({ onClick, s
             return (
                 <div>
                     <button
-                        className="fixed sm:hidden bottom-16 right-4 rounded-full w-14 h-14 shadow-lg z-50 bg-black text-white flex items-center justify-center"
+                        className="absolute sm:hidden bottom-16 right-4 rounded-full w-14 h-14 shadow-lg z-50 bg-black text-white flex items-center justify-center"
                         onClick={handleClick}
                     >
                         <BiSolidPlusSquare className="w-6 h-6" />

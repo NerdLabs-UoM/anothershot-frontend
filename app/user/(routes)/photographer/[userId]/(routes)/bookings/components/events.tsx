@@ -72,10 +72,10 @@ export const formSchema = z.object({
   bookingId: z.string(),
   title: z
     .string()
-    .min(2, "Username must be between 2-50 characters long").max(50, "Username must be between 2-50 characters long"),
+    .min(2, "eventName must be at least 2 characters long").max(50, "Username must be between 2-50 characters long"),
   description: z
     .string()
-    .min(2, "Username must be between 2-100 characters long").max(100, "Username must be between 2-100 characters long"),
+    .min(2, "eventName must be at least 2 characters long").max(100, "Username must be between 2-100 characters long"),
   start: z.date(),
   end: z.date()
 });
@@ -92,11 +92,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const defaultStartDate = new Date();
-  // defaultStartDate.setHours(defaultStartDate.getHours() + 5);
-  // defaultStartDate.setMinutes(defaultStartDate.getMinutes() + 30);
-  const defaultEndDate = new Date();
-  // defaultEndDate.setHours(defaultEndDate.getHours() + 5);
-  // defaultEndDate.setMinutes(defaultEndDate.getMinutes() + 30);
+    const defaultEndDate = new Date();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -203,7 +199,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       });
     }
     catch (error) {
-      toast.error("Please Select another booking");
+      toast.error("This booking already has an event");
     }
   };
 
@@ -219,7 +215,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
     const selectedEvent = eventItems.find((events) => events.id === value);
     if (selectedEvent) {
       form.setValue("title", selectedEvent.title);
-      console.log(`Selected Event ID: ${selectedEvent.id}`);
     }
     setSelectedEventId(value);
 
@@ -251,7 +246,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
       toast.error("Please select an event to update");
       return;
     }
-    console.log(`Selected Event ID before update: ${selectedEventId}`);
 
     try {
       const data = {
@@ -261,11 +255,9 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
         start: startString,
         end: endString
       };
-      console.log(`Selected Event ID before update: ${selectedEventId}`);
 
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/${selectedEventId}/event/update`, data);
       const updatedEvent: Event = response.data;
-      console.log(updatedEvent);
       eventProp(prevEventList => prevEventList.map(eventItems => eventItems.id === selectedEventId ? updatedEvent : eventItems));
       NotificationService({
         senderId: session?.user?.id,
@@ -373,6 +365,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                             <SelectValue placeholder="Select an Event" />
                           </SelectTrigger>
                         </FormControl>
+                        <FormMessage className="col-span-8"/>
                         <SelectContent >
                           <SelectGroup>
                             {eventItems.map((events) => (
@@ -383,7 +376,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />)}
@@ -401,6 +393,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           {...field}
                           size={15} />
                       </FormControl>
+                      <FormMessage className="col-span-8" />
                     </FormItem>
                   )} />
                 <FormField
@@ -417,6 +410,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           {...field}
                           size={50} />
                       </FormControl>
+                      <FormMessage className="col-span-8"/>
                     </FormItem>
                   )} />
                 <FormField
@@ -431,7 +425,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           date={start} />
                         }
                       </div>
-                      <FormMessage />
+                      <FormMessage className="col-span-8"/>
                     </FormItem>
                   )} />
                 <FormField
@@ -446,7 +440,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           date={end} />
                         }
                       </div>
-                      <FormMessage />
+                      <FormMessage className="col-span-8"/>
                     </FormItem>
                   )} />
               </form>
