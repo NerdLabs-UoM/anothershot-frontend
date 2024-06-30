@@ -65,14 +65,6 @@ function AdminHeader() {
           Payment Handling
         </NavigationMenuLink>
       </NavigationMenuItem>
-      <NavigationMenuItem className="list-none">
-        <NavigationMenuLink
-          onClick={() => handleDirection("inbox")}
-          className={`m-1 ${path("inbox") ? 'bg-white hover:bg-white text-gray-900 shadow-sm' : 'bg-transparent'} ${navigationMenuTriggerStyle()} cursor-pointer `}
-        >
-          Inbox
-        </NavigationMenuLink>
-      </NavigationMenuItem>
     </NavigationMenu>
   );
 }
