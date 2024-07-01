@@ -35,12 +35,19 @@ interface ContactDetailsFormProps {
 }
 
 const formSchema = z.object({
-  contactNum1: z.string().regex(/^\+?[0-9]{9,12}$/),
-  contactNum2: z.string().regex(/^\+?[0-9]{9,12}$/).nullable().optional(),
-  email: z.string().email().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+  contactNum1: z.string()
+    .regex(/^\+?[0-9]{9,12}$/, { message: "Contact number 1 must be between 9 and 12 digits, and can optionally start with a '+'." }),
+  contactNum2: z.string()
+    .regex(/^\+?[0-9]{9,12}$/, { message: "Contact number 2 must be between 9 and 12 digits, and can optionally start with a '+'." })
+    .nullable()
+    .optional(),
+  email: z.string()
+    .email({ message: "Please enter a valid email address." })
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: "Please enter a valid email address format." }),
   street: z.string(),
   city: z.string(),
-  state: z.string().regex(/^[a-zA-Z]+$/),
+  state: z.string()
+    .regex(/^[a-zA-Z]+$/, { message: "State must only contain letters." }),
   zip: z.string(),
   country: z.string(),
   instagram: z.string().nullable(),
@@ -135,7 +142,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
         toast.error("Failed to update contact details");
       }
       NotificationService({
-        senderId: session?.user?.id, 
+        senderId: session?.user?.id,
         receiverId: session?.user.id,
         type: 'contact_updated',
         title: 'contact Updated',
@@ -146,7 +153,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
       toast.error("An error occured. Please try again.")
     }
   }
-        
+
   const renderEditButton = () => {
     if (session?.user?.id === userId) {
       return (
@@ -188,7 +195,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                   <FormControl className="col-span-3">
                     <Input placeholder="Mobile" {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="col-span-8" />
                   <FormField
                     control={form.control}
                     name="contactNum2"
@@ -198,7 +205,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                           <Input placeholder="Office" {...field}
                             value={field.value || ''} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="col-span-12" />
                       </FormItem>
                     )}
                   />
@@ -215,7 +222,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                   <FormControl className="col-span-6">
                     <Input placeholder="Email" {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="col-span-8" />
                 </FormItem>
               )}
             />
@@ -230,7 +237,6 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                   <FormControl className="col-span-3">
                     <Input placeholder="Street" {...field} />
                   </FormControl>
-                  <FormMessage />
                   <FormField
                     control={form.control}
                     name="city"
@@ -239,7 +245,6 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                         <FormControl className="w-full">
                           <Input placeholder="City" {...field} />
                         </FormControl>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -256,7 +261,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                   <FormControl className="col-span-3">
                     <Input placeholder="State" {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="col-span-8" />
                   <FormField
                     control={form.control}
                     name="zip"
@@ -265,7 +270,6 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                         <FormControl>
                           <Input placeholder="Zip" {...field} />
                         </FormControl>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -283,7 +287,6 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
                   <FormControl className="col-span-6">
                     <Input placeholder="Country" {...field} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -370,7 +373,7 @@ const ContactDetsEditForm: React.FC<ContactDetailsFormProps> = ({ contactDets, s
           </form>
         </Form>
         <DialogFooter>
-          <Button variant={"outline"} onClick={() => form.reset()}>Cancel</Button>
+          <Button variant={"outline"} onClick={() => form.reset()}>Reset</Button>
           <Button onClick={() => form.handleSubmit(onSubmit)()}>Save</Button>
         </DialogFooter>
       </DialogContent >
