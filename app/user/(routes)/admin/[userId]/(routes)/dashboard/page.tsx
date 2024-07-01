@@ -119,7 +119,7 @@ return (
                     })}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {/* +20.1% from last month */}
+                    +20.1% from last month
                   </p>
                 </CardContent>
               </Card>
@@ -144,7 +144,7 @@ return (
                 <CardContent>
                   <div className="text-2xl font-bold">+{totalUsers}</div>
                   <p className="text-xs text-muted-foreground">
-                    
+                    +150.2% from last month
                   </p>
                 </CardContent>
               </Card>
@@ -170,7 +170,7 @@ return (
                 <CardContent>
                   <div className="text-2xl font-bold">+{totalBookings}</div>
                   <p className="text-xs text-muted-foreground">
-                    {/* +16% from last month */}
+                    +16% from last month
                   </p>
                 </CardContent>
               </Card>
@@ -197,7 +197,7 @@ return (
                     +{totalActiveUsers}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {/* +50 since last hour */}
+                    +50 since last hour
                   </p>
                 </CardContent>
               </Card>
