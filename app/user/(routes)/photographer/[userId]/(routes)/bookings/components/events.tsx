@@ -350,7 +350,6 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )} />)}
                 {!isNew && (<FormField
@@ -469,7 +468,7 @@ export const Events: React.FC<EventFormProps> = ({ eventItems, eventProp, start,
               )}
               <Button variant={"outline"} onClick={() => {
                 form.reset();
-              }}>Cancel</Button>
+              }}>Reset</Button>
               {!isNew && <Button onClick={form.handleSubmit(handleSaveChanges)}>
                 Update
               </Button>}
