@@ -21,6 +21,7 @@ import {Textarea} from "@/components/ui/textarea";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { resolve } from "path/win32";
+import { useSession } from "next-auth/react";
 
 const ReportFormSchema = z.object({
     subject: z.string().regex(/^[A-Za-z0-9 ]+$/,{message:"Enter valid Report"}).max(100).min(1,{message: "Enter a subject"}),
@@ -28,8 +29,9 @@ const ReportFormSchema = z.object({
 });
 
 const SystemReportSection = () => {
-    const { userId } = useParams();
-    
+    const { data: session } = useSession();
+
+    const userId = session?.user.id
     const form = useForm<z.infer<typeof ReportFormSchema>>({
         resolver: zodResolver(ReportFormSchema),
         defaultValues: {

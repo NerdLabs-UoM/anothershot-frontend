@@ -15,7 +15,7 @@ const Logo=()=> {
           height={10}
           alt='logo'
           />
-          <div className = "font-bold">AnotherShot</div>
+          <div className = "font-bold">AnotherShots</div>
         </div>
     </div>
   )

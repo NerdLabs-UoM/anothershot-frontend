@@ -17,6 +17,7 @@ import {
 import Offers from "@/components/offer/offers";
 import BookingCard from "./bookingCard";
 import { RiMoreFill } from "react-icons/ri";
+import OfferUpdate from "@/components/offer/offerUpdate";
 
 const BookingTable = () => {
     const { userId } = useParams();
@@ -75,7 +76,7 @@ const BookingTable = () => {
                                     <TableCell className='text-center text-xs hidden sm:table-cell'>{booking.start ? new Date(booking.start).toISOString() : ""}</TableCell>
                                     <TableCell className='text-center text-xs hidden sm:table-cell'>{booking.status}</TableCell>
                                     <TableCell className='text-center text-xs'>
-                                        {booking.offer ? <div className="bg-blue-500 py-1 rounded-md bg-opacity-40">Offer exists</div> : <Offers bookingId={booking.id} clientId={booking.client.id} eventName={booking.category} />}
+                                        {booking.offer ? <OfferUpdate bookingId={booking.id} clientId={booking.client.id} eventName={booking.category} /> : <Offers bookingId={booking.id} clientId={booking.client.id} eventName={booking.category} />}
                                     </TableCell>
                                     <TableCell className='flex justify-center text-center text-xs'>
                                         <button className="flex items-center justify-center" onClick={() => handleOpenDialog(booking)}>
