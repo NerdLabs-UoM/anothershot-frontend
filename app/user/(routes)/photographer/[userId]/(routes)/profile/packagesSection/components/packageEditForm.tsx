@@ -60,16 +60,14 @@ const formSchema = z.object({
     packageId: z.string(),
     name: z
         .string()
-        .min(2, {
-            message: "Package name must be at least 2 characters long",
-        })
-        .max(50),
+        .min(3, "Package name must be at least 3 characters long",
+        )
+        .max(50, "Package name should be between 3-50 characters"),
     description: z
         .string()
-        .min(2, {
-            message: "Description must be at least 2 characters long",
-        })
-        .max(200),
+        .min(5, "Description must be at least 5 characters long",
+        )
+        .max(50, "Description should be between 5-50 characters"),
     price: z.number().positive({
         message: "Price must be a positive number",
     }),
@@ -123,17 +121,13 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
             }
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/photographer/packages/edit`, data);
             const updatedPackage: Package = response.data;
-          
-            if (packages.some((packages: Package) => packages.name === updatedPackage.name)) {
-                toast.error("Package already exists.");
-            }
-            else {
-                packageProp(prevPackageList => prevPackageList.map(packageItem =>
-                    packageItem.id === selectedPackageId ? updatedPackage : packageItem
-                ));
-                toast.success("Package details updated successfully.");
 
-            }
+            packageProp(prevPackageList => prevPackageList.map(packageItem =>
+                packageItem.id === selectedPackageId ? updatedPackage : packageItem
+            ));
+            toast.success("Package details updated successfully.");
+
+
             NotificationService({
                 senderId: session?.user?.id,
                 receiverId: session?.user.id,
@@ -279,7 +273,6 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
-                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />)}
@@ -291,11 +284,12 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                             <FormLabel>Name</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    type="name"
+                                                    // type="name"
                                                     placeholder="package name"
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage  />
                                         </FormItem>
                                     )}
                                 />
@@ -313,6 +307,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage  />
                                         </FormItem>
                                     )}
                                 />
@@ -329,6 +324,7 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage  />
                                         </FormItem>
                                     )}
                                 />
@@ -361,8 +357,8 @@ const PackageEditForm: React.FC<PackageEditFormProps> = ({ packages, packageProp
                             <Button variant={"outline"} onClick={() => {
                                 form.reset();
                             }}>Reset</Button>
-                           
-                             {!isNew && <Button onClick={() => handleSaveChanges()}>
+
+                            {!isNew && <Button onClick={() => handleSaveChanges()}>
                                 Update
                             </Button>
                             }
